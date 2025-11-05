@@ -3,7 +3,7 @@
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @version 26/SEP/25
+ * @version 05/NOV/25
  */
 public class Cell
 {
@@ -40,5 +40,17 @@ public class Cell
         if(0 < val & val < 10){ //we make sure the digit is valid.
             this.value = val; //we fill in the digit if it is.
         }
+    }
+    
+    /**
+     * Method isFilled is true if a digit from 1 to 9 exists in this cell of
+     * the sudoku.
+     * 
+     * @return true if the value attribute of this cell is diferent from 0
+     * and false if it is 0, therefore being empty.
+     */
+    public boolean isFilled()
+    {
+        return this.value != 0;
     }
 }

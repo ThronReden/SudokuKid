@@ -1,0 +1,10 @@
+DEVELOPMENT NOTES:
+
+30/10/2025 - Naked Sinlges:
+    Need to comment isFilled() method in Cell and naked singles method
+    in sudoku is VERY unfinished still. This changes werent traked with git. 
+
+05/11/2025 - Naked Sinlges, getSqr() & getPosInSqr():
+    Added this two new methods that encapsulate the formulas that get us the
+    square a Cell in a given row and column belongs to and it's position in
+    its square (also given its row and column) respectively.       

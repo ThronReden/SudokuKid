@@ -6,19 +6,24 @@
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 26/SEP/25
+ * @version 30/OCT/25
  */
 public class Sudoku
 {
-    /*
+    /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
+     * //////////////////////////////////////////////////////////////////////
      */
-    private CellGroup rows[]; //will contain the 9 rows of the sudoku
-    private CellGroup cols[]; //will contain the 9 columns
-    private CellGroup sqrs[]; //will contain the 9 squares
+    private CellGroup rows[] = new CellGroup [9];
+    //will contain the 9 rows of the sudoku
+    private CellGroup cols[] = new CellGroup [9];
+    //will contain the 9 columns
+    private CellGroup sqrs[] = new CellGroup [9];
+    //will contain the 9 squares
     
-    /*
+    /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
+     * //////////////////////////////////////////////////////////////////////
      */
     /**
      * Constructor for objects of class Sudoku
@@ -29,7 +34,7 @@ public class Sudoku
      */
     public Sudoku()
     {
-        this.rows = new CellGroup [9]; //we initialize the list of rows
+        //ROWS
         for(int i = 0; i < this.rows.length; i++){
             this.rows[i] = new CellGroup(); //For rows we'll just
             //create new cells by using the standard CellGroup
@@ -45,9 +50,9 @@ public class Sudoku
             }
              */          
         }
-        this.cols = new CellGroup [9]; //now we initialize the list of
-        //columns
-        Cell cellList[]; //and declare the list we'll send to the
+        
+        //COLUMNS
+        Cell cellList[]; //now we declare the list we'll send to the
         //overloaded constructor with the correct cells
         for(int i = 0; i < this.cols.length; i++){
             cellList = new Cell[9]; //We initialize it in the for loop
@@ -73,7 +78,8 @@ public class Sudoku
             //Even more obsolete testing code:
             //System.out.println(i+" es "+this.cols[i]);
         }
-        this.sqrs = new CellGroup[9]; //now with our 9 squares
+        
+        //SQUARES
         Cell cellList2[]; //We'll be needing two more aux lists
         Cell cellList3[]; //as we'll be filling 3 squares at the same
         //time.
@@ -87,47 +93,14 @@ public class Sudoku
                 //we scan throug it's cells and
                 if(j < 3){
                     //add the first 3 to the first aux list
-                    cellList[i%3*3+j%3] = this.rows[i].cells[j];
+                    cellList[getPosInSqr(i,j)] = this.rows[i].cells[j];
                 }else if(j < 6){
                     //the next 3 to the second aux list
-                    cellList2[i%3*3+j%3] = this.rows[i].cells[j];
+                    cellList2[getPosInSqr(i,j)] = this.rows[i].cells[j];
                 }else{
                     //and the last 3 to the third list
-                    cellList3[i%3*3+j%3] = this.rows[i].cells[j];
+                    cellList3[getPosInSqr(i,j)] = this.rows[i].cells[j];
                 }
-                /* ABOUT i%3*3+j%3
-                 * 
-                 * i takes values from 0 to 8.
-                 * Now, i%3 is 0 for i=0, 1 for i=1, 2 for i=2 BUT
-                 * 0 for i=3, and 1 for i=4, and so on.
-                 * Then i%3*3 will loop through 0, 3 and 6.
-                 * 
-                 * We're going to be "adding cells" to 3 squares at a
-                 * time (actually to their asigned aux list, left to
-                 * right). This is due to rows having cells from 3
-                 * different squares (Ej: cells 1 to 3 from row 1
-                 * belong to sqr 1, 4 to 6 belong to sqr 2 and 7 to 9
-                 * belong to sqr 3. Squares are numbered from left to
-                 * right, from higher to lower).
-                 * 
-                 * Now, knowing i is our rows and we want cells from
-                 * row 1 to be the first 3 cells of our squares; cells
-                 * from row 2 to be 4th, 5th and 6th; cells from row
-                 * 3 to be 7th, 8th and 9th; and then back to 1st, 2nd
-                 * and 3rd for row 4 this makes sense, as we want our
-                 * first cell from each row to be added either to the
-                 * 1st [0], 4th [3] or 7th [6] position of the aux
-                 * lists.
-                 * 
-                 * Then j%3, also looping through 0, 1 and 2, lets us
-                 * add the cell to the desired column in the square.
-                 * 
-                 * This is how the operand i%3*3+j%3 lets us assign
-                 * every cell to the correct place in a square.
-                 * 
-                 * (I'm now thinking, ¿maybe there's no reason to have
-                 * cells in squares sorted? Anyways, ours are.)
-                 */
             }
             if(i%3 == 2){
                 //For every 3 rows (i%3 == 2) we use our aux lists to
@@ -145,11 +118,12 @@ public class Sudoku
         //and 9 squares sharing cells for a total of 81 slots.
     }
     
-    /*
+    /* //////////////////////////////////////////////////////////////////////
      * METHODS FOR ADDING DIGITS:
      * this are not solving methods, this algorithms are suposed to add
      * the given numbers of the sudoku to the grid both one by one or
      * from a given matrix valid as a sudoku.
+     * //////////////////////////////////////////////////////////////////////
      */
     /**
      * Method addNum sets the value of the cell in a given position
@@ -294,24 +268,82 @@ public class Sudoku
         this.rows[row].update(val);
         this.cols[col].update(val);
         this.sqrs[row/3*3+col/3].update(val);
-        //maybe encapsulate row/3*3+col/3 as Cell.getSqr(row,col)?
+        //maybe encapsulate row/3*3+col/3 as getSqr(row,col)?
     }
     
-    /*
+    public int getPosInSqr(int row, int col){
+        
+        return row%3*3+col%3;
+        
+        /* For those curious I'll explain in detail:
+         * 
+         * ABOUT i%3*3+j%3
+         * 
+         * i takes values from 0 to 8.
+         * Now, i%3 is 0 for i=0, 1 for i=1, 2 for i=2 BUT
+         * 0 for i=3, and 1 for i=4, and so on.
+         * Then i%3*3 will loop through 0, 3 and 6.
+         * 
+         * We're going to be "adding cells" to 3 squares at a
+         * time (actually to their asigned aux list, left to
+         * right). This is due to rows having cells from 3
+         * different squares (Ej: cells 1 to 3 from row 1
+         * belong to sqr 1, 4 to 6 belong to sqr 2 and 7 to 9
+         * belong to sqr 3. Squares are numbered from left to
+         * right, from higher to lower).
+         * 
+         * Now, knowing i is our rows and we want cells from
+         * row 1 to be the first 3 cells of our squares; cells
+         * from row 2 to be 4th, 5th and 6th; cells from row
+         * 3 to be 7th, 8th and 9th; and then back to 1st, 2nd
+         * and 3rd for row 4 this makes sense, as we want our
+         * first cell from each row to be added either to the
+         * 1st [0], 4th [3] or 7th [6] position of the aux
+         * lists.
+         * 
+         * Then j%3, also looping through 0, 1 and 2, lets us
+         * add the cell to the desired column in the square.
+         * 
+         * This is how the operand i%3*3+j%3 lets us assign
+         * every cell to the correct place in a square.
+         * 
+         * (I'm now thinking, ¿maybe there's no reason to have
+         * cells in squares sorted? Anyways, ours are.)
+         * ~months later~
+         * (Thinking further, we very much need them sorted or at
+         * the very least it makes our lifes easyer.)
+         */
+    }
+    
+    /* //////////////////////////////////////////////////////////////////////
      * SOLVING METHODS:
      * we use them to fill in digits into the grid based on the
      * available information. I'm gonna try to ordem them from most
      * simple to most complicated but the middlegrounds might be muddy.
+     * //////////////////////////////////////////////////////////////////////
      */
     //DISCLAIMER: some of them have funny names so bare with me "O3O
     /**
      * Method solveNakedSingles is the simplest solving method, based
      * solely on basic sudoku rules aplied to rows, columns and squares.
-     * 
+     * It will try to solve for the whole sudoku, wont stop untill we've
+     * looped throug all of its cells.
      * 
      * TOLD YOU THEY HAD FUNNY NAMES!!
+     * 
+     * @return true if a solve was made, false else.
      */
-    public void solveNakedSingles(){
-        
+    public boolean solveNakedSingles(){
+        boolean solve = false;
+        for(int i = 0; i < this.sqrs.length; i++){
+            if(!this.sqrs[i].isComplete()){
+                for(int j = 0; j < this.sqrs[i].cells.length; j++){
+                    if(!this.sqrs[i].cells[j].isFilled()){
+
+                    }
+                }
+            }
+        }
+        return solve;
     }
 }
