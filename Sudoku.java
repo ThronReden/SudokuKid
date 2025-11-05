@@ -268,13 +268,38 @@ public class Sudoku
         this.rows[row].update(val);
         this.cols[col].update(val);
         this.sqrs[row/3*3+col/3].update(val);
-        //maybe encapsulate row/3*3+col/3 as getSqr(row,col)?
     }
     
+    /**
+     * Method getSqr finds the square a Cell in a given row and column
+     * belongs to.
+     * We encapsulated this as we may need to use it a bunch of times.
+     *
+     * @param row, the Cells row
+     * @param col, its column
+     * @return an integer from 0 to 8 corresponding to this Cells square
+     * position in our sqrs array.
+     * (sqrs[we get this number].cells[this Cells position in the square])
+     */
+    public int getSqr(int row, int col) {
+        //"maybe encapsulate row/3*3+col/3 as getSqr(row,col)?", we did hehe.
+        return row/3*3+col/3;
+    }
+    
+    /**
+     * Method getPosInSqr finds the position a Cell in a given row and column
+     * will be at in its square, but not the square it belongs to.
+     * We encapsulated this as we may need to use it a bunch of times.
+     *
+     * @param row, the Cells row
+     * @param col, its column
+     * @return an integer from 0 to 8 corresponding to this Cells position
+     * in its corresponding square.
+     * (sqrs[this Cells square].cells[we get this number])
+     */
     public int getPosInSqr(int row, int col){
         
         return row%3*3+col%3;
-        
         /* For those curious I'll explain in detail:
          * 
          * ABOUT i%3*3+j%3

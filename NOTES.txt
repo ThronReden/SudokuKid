@@ -7,4 +7,6 @@ DEVELOPMENT NOTES:
 05/11/2025 - Naked Sinlges, getSqr() & getPosInSqr():
     Added this two new methods that encapsulate the formulas that get us the
     square a Cell in a given row and column belongs to and it's position in
-    its square (also given its row and column) respectively.   
+    its square (also given its row and column) respectively.
+    
+    - Added commentary to both new methods.
