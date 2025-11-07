@@ -9,4 +9,16 @@ DEVELOPMENT NOTES:
     square a Cell in a given row and column belongs to and it's position in
     its square (also given its row and column) respectively.
     
-    - Added commentary to both new methods.
+    + Added commentary to both new methods.
+    
+07/11/2025 - Naked Singles, NumPlausibleValues(), getPlausVal(n), etc:
+    + Added NumPlausibleValues() method in Cell that gets us the number of
+    values that could go in it.
+    + Added getPlausVal(n) method in Cell that gets us the value of the "n"th
+    digit that could fill it.
+    + Added getPlausVal() overloaded method in Cell that gets us the value of
+    the lowest digit that could fill it.
+    + Now Naked Singles method loops through ROWS instead of squares.
+    + Added numPlausCells(val) method in CellGroup thatt gets us the number of
+    Cells in that group that could be filled with a given digit.
+    + Naked Singles method COMPLETED.

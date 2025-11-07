@@ -3,7 +3,7 @@
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @version 05/NOV/25
+ * @version 07/NOV/25
  */
 public class Cell
 {
@@ -52,5 +52,73 @@ public class Cell
     public boolean isFilled()
     {
         return this.value != 0;
+    }
+    
+    /**
+     * Method numPlausibleValues gets us the number of digits that could
+     * fill this Cell with the curren information of the Sudoku. Example:
+     * if only a 5, a 6 or a 9 could fill this Cell the method will return
+     * the number 3.
+     *
+     * @return sum, the number of plausible values
+     */
+    public int numPlausibleValues(){
+        int sum = 0; //a variable to contain the number of values
+        for(int i = 0; i < this.plausibleValues.length; i++){
+            if(plausibleValues[i]){
+                sum++; //if a position of the array is true we add 1 to the
+                //sum of plausible numbers
+            }
+        }
+        return sum;
+    }
+    
+    /**
+     * Method getPlausVal gets us the "n"th plausible value that could fill
+     * this Cell. Example: if only a 5, a 6 or a 9 could fill this Cell and
+     * we introduce 3 as n, the method will return 9. If we introduce 1 as n
+     * instead, it'll return 3. If we introduce 0 or less or any other value
+     * for n that doesnt match a plausible value (like 4 or more in the given
+     * example) the method will return 0.
+     *
+     * @param n the number plausible value we want
+     * @return val, the value of that plausible value
+     */
+    public int getPlausVal(int n){
+        int val = 0; //a value to be returned, 0 in case of invalid n
+        if(n > 0 && n <= 9){
+            //if valid n
+            int sum = 0; //the sum of plausible values
+            for(int i = 0; i < this.plausibleValues.length; i++){
+                if(plausibleValues[i]){
+                    sum++; //we count the plausible values
+                }
+                if(sum == n){
+                    //if the plausible val number is n
+                    val = i+1; //we return it (its position + 1)
+                    return val;
+                }
+            }
+        }
+        return val;
+    }
+    /**
+     * Method getPlausVal overload gets us the lowest plausible value that
+     * could fill this Cell with the current Sudoku information. We can use
+     * this simpler method if we've already confirmed there's a single
+     * plausible digit for the Cell to get said digit.
+     *
+     * @return val, the lowest plausible value
+     */
+    public int getPlausVal(){
+        int val = 0; //we initialze val in case there's no plausible value
+        for(int i = 0; i < this.plausibleValues.length; i++){
+            if(plausibleValues[i]){
+                //as soon as we get a plausible value
+                val = i+1; //we return it (its position + 1)
+                return val;
+            }
+        }
+        return val;
     }
 }

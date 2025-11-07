@@ -6,7 +6,7 @@
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 30/OCT/25
+ * @version 07/NOV/25
  */
 public class Sudoku
 {
@@ -212,10 +212,8 @@ public class Sudoku
                     int row2 = (i+2)%3+i/3*3;//sqr the digit's not at.
                     int col1 = (j+1)%3+j/3*3;//we get the cols of the
                     int col2 = (j+2)%3+j/3*3;//sqr the digit's not at.
-                    if(nums[row1][col1] == val |
-                       nums[row1][col2] == val |
-                       nums[row2][col1] == val |
-                       nums[row2][col2] == val){
+                    if(nums[row1][col1] == val | nums[row1][col2] == val |
+                       nums[row2][col1] == val | nums[row2][col2] == val){
                         //if there's an identic digit in the same
                         //square the matrix isn't valid.
                         valid = false;
@@ -359,12 +357,36 @@ public class Sudoku
      * @return true if a solve was made, false else.
      */
     public boolean solveNakedSingles(){
-        boolean solve = false;
-        for(int i = 0; i < this.sqrs.length; i++){
+        boolean solve = false; //we'll be returning this
+        for(int i = 0; i < this.rows.length; i++){
+            //we loop through the list of rows
             if(!this.sqrs[i].isComplete()){
-                for(int j = 0; j < this.sqrs[i].cells.length; j++){
-                    if(!this.sqrs[i].cells[j].isFilled()){
-
+                //if a row is full we wont try to fill it
+                for(int j = 0; j < this.rows[i].cells.length; j++){
+                    //now we loop in each row looking for empty Cells
+                    if(!this.rows[i].cells[j].isFilled()){
+                        //the cell is empty, we get the number of digits
+                        //that fit in it.
+                        int plausVals = this.rows[i].cells[j].numPlausibleValues();
+                        if(plausVals == 1){
+                            //if it could only be filled with one digit
+                            //we fill it in
+                            addNum(this.rows[i].cells[j].getPlausVal(),i,j);
+                            solve = true; //we've solved a Cell
+                        } else {
+                            //if multiple digits fit we check if it is the
+                            //only Cell of its row, column or square that
+                            //could contain that digit
+                            for(int n = 1; n <= plausVals; n++){
+                                int val = this.rows[i].cells[j].getPlausVal(n);
+                                if(this.rows[i].numPlausCells(val) == 1
+                                || this.cols[j].numPlausCells(val) == 1
+                                || this.sqrs[getSqr(i,j)].numPlausCells(val) == 1){
+                                    addNum(val,i,j); //if it is we fill it
+                                    solve = true; //we've solved a Cell
+                                }
+                            }
+                        }
                     }
                 }
             }
