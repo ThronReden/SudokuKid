@@ -6,7 +6,7 @@
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 07/NOV/25
+ * @version 11/NOV/25
  */
 public class Sudoku
 {
@@ -360,29 +360,34 @@ public class Sudoku
         boolean solve = false; //we'll be returning this
         for(int i = 0; i < this.rows.length; i++){
             //we loop through the list of rows
-            if(!this.sqrs[i].isComplete()){
+            if(!this.rows[i].isComplete()){
                 //if a row is full we wont try to fill it
                 for(int j = 0; j < this.rows[i].cells.length; j++){
                     //now we loop in each row looking for empty Cells
                     if(!this.rows[i].cells[j].isFilled()){
                         //the cell is empty, we get the number of digits
                         //that fit in it.
+                        //System.out.println("Cell "+i+", "+j+" is empty.");
                         int plausVals = this.rows[i].cells[j].numPlausibleValues();
                         if(plausVals == 1){
                             //if it could only be filled with one digit
                             //we fill it in
                             addNum(this.rows[i].cells[j].getPlausVal(),i,j);
+                            //System.out.println("Cell "+i+", "+j+" solved.");
                             solve = true; //we've solved a Cell
                         } else {
                             //if multiple digits fit we check if it is the
                             //only Cell of its row, column or square that
                             //could contain that digit
+                            int val = 0;
                             for(int n = 1; n <= plausVals; n++){
-                                int val = this.rows[i].cells[j].getPlausVal(n);
+                                val = this.rows[i].cells[j].getPlausVal(n);
+                                //System.out.println("Seach groups for "+val+".");
                                 if(this.rows[i].numPlausCells(val) == 1
                                 || this.cols[j].numPlausCells(val) == 1
                                 || this.sqrs[getSqr(i,j)].numPlausCells(val) == 1){
                                     addNum(val,i,j); //if it is we fill it
+                                    //System.out.println("Cell "+i+", "+j+" solved for "+val+".");
                                     solve = true; //we've solved a Cell
                                 }
                             }
@@ -392,5 +397,32 @@ public class Sudoku
             }
         }
         return solve;
+    }
+    
+    /**
+     * Method toString converts our Sudoku into a String in the format of a
+     * valid Sudoku matrix (a 9x9 java array matrix).
+     *
+     * @return text, a String that represents our Sudoku.
+     */
+    public String toString(){
+        String text = "{";
+        for(int i = 0; i < this.rows.length; i++){
+            if(i == 0){
+                text += "{";
+            } else {
+                text += ",{";
+            }
+            for(int j = 0; j < this.rows[i].cells.length; j++){
+                text += this.rows[i].cells[j].value;
+                if(j == this.rows[i].cells.length-1){
+                    text += "}";
+                } else {
+                    text += ",";
+                }
+            }
+            text += "}";
+        }
+        return text+"}";
     }
 }

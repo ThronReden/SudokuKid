@@ -18,7 +18,18 @@ DEVELOPMENT NOTES:
     digit that could fill it.
     + Added getPlausVal() overloaded method in Cell that gets us the value of
     the lowest digit that could fill it.
-    + Now Naked Singles method loops through ROWS instead of squares.
+    * Now Naked Singles method loops through ROWS instead of squares.
     + Added numPlausCells(val) method in CellGroup thatt gets us the number of
     Cells in that group that could be filled with a given digit.
     + Naked Singles method COMPLETED.
+    
+11/11/2025 - Naked Singles & Sudoku toString():
+    + Added a method to Sudoku that returns a representative String for that
+    instance of Sudoku.
+    * Fixed NakedSingles method failing cause we where counting filled Cells
+    as plausible for containing digits when cheking if a Cell was the only
+    one of a group that could contain a certain digit.
+    * Fixed NakedSingles method still cheking if the square was full instead
+    of the row, creating isues as not looping though the full Sudoku.
+    + Added to NakedSingles method some testing souts, commented but ready to
+    un-comment and use if needed.

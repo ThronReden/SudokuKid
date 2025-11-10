@@ -5,7 +5,7 @@
  * with digits from 1 to 9 different from eachother.
  * 
  * @author TR 
- * @version 07/NOV/25
+ * @version 11/NOV/25
  */
 public class CellGroup
 {
@@ -123,7 +123,7 @@ public class CellGroup
     
     /**
      * Method numPlausCells gets us the number of Cells in this CellGroup
-     * that could be filled with a given value.
+     * that could be filled with a given value. It only counts empty Cells.
      *
      * @param val the value we want to check for
      * @return the number of Cells that could be filled with it
@@ -133,9 +133,11 @@ public class CellGroup
         //in arrays
         int sum = 0; //the number of Cells that can fit the given value
         for(int i = 0; i < this.cells.length; i++){
-            if(this.cells[i].plausibleValues[pos]){
+            if(!this.cells[i].isFilled() && this.cells[i].plausibleValues[pos]){
                 sum++;
             }
+            //maybe encapsulate the content of the if parenthesis in a method
+            //in Cell.
         }
         return sum;
     }
