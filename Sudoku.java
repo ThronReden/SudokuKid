@@ -6,7 +6,7 @@
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 11/NOV/25
+ * @version 21/NOV/25
  */
 public class Sudoku
 {
@@ -23,6 +23,7 @@ public class Sudoku
     
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
+     * builds objects of this class.
      * //////////////////////////////////////////////////////////////////////
      */
     /**
@@ -159,8 +160,10 @@ public class Sudoku
             for(int i = 0; i < nums.length; i++){
                 for(int j = 0; j < nums[i].length; j++){
                     //this next check is redundant
-                    if(nums[i][j] > 0 & nums[i][j] < 10){
-                        addNum(nums[i][j],i,j); //we add valid digits
+                    int val = nums[i][j]; //we get the digit
+                    //we check if it's valid
+                    if(val > 0 & val < 10){
+                        addNum(val,i,j); //we add valid digits
                     }
                 }
             }
@@ -243,12 +246,13 @@ public class Sudoku
     //{{0,0,3,7,0,6,9,0,5},{7,5,4,9,0,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6}}
     //{{0,0,3,7,0,6,9,0,5},{7,5,4,9,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6,5,3}}
     
-    /*
+    /* //////////////////////////////////////////////////////////////////////
      * COHERENCE AND DATA METHODS:
      * suposed to mantain data coherence, enure the data in every cell
      * and group of the sudoku is up to date to the latest change in
      * the grid (like a digit being filled into a cell) so that our
      * solving algorithms work on truthfull, accurate data.
+     * //////////////////////////////////////////////////////////////////////
      */
     /**
      * Method updateAffected updates the state of the afected
@@ -265,7 +269,7 @@ public class Sudoku
     {
         this.rows[row].update(val);
         this.cols[col].update(val);
-        this.sqrs[row/3*3+col/3].update(val);
+        this.sqrs[getSqr(row,col)].update(val);
     }
     
     /**
@@ -279,9 +283,11 @@ public class Sudoku
      * position in our sqrs array.
      * (sqrs[we get this number].cells[this Cells position in the square])
      */
-    public int getSqr(int row, int col) {
+    public int getSqr(int row, int col)
+    {
         //"maybe encapsulate row/3*3+col/3 as getSqr(row,col)?", we did hehe.
-        return row/3*3+col/3;
+        int sqr = row/3*3+col/3; //the corresponding square
+        return sqr; //we return it
     }
     
     /**
@@ -295,9 +301,11 @@ public class Sudoku
      * in its corresponding square.
      * (sqrs[this Cells square].cells[we get this number])
      */
-    public int getPosInSqr(int row, int col){
+    public int getPosInSqr(int row, int col)
+    {       
+        int pos = row%3*3+col%3; //the poition in its square
+        return pos; //we return it
         
-        return row%3*3+col%3;
         /* For those curious I'll explain in detail:
          * 
          * ABOUT i%3*3+j%3
@@ -356,7 +364,8 @@ public class Sudoku
      * 
      * @return true if a solve was made, false else.
      */
-    public boolean solveNakedSingles(){
+    public boolean solveNakedSingles()
+    {
         boolean solve = false; //we'll be returning this
         for(int i = 0; i < this.rows.length; i++){
             //we loop through the list of rows
@@ -389,6 +398,7 @@ public class Sudoku
                                     addNum(val,i,j); //if it is we fill it
                                     //System.out.println("Cell "+i+", "+j+" solved for "+val+".");
                                     solve = true; //we've solved a Cell
+                                    break; //we stop this for
                                 }
                             }
                         }
@@ -396,33 +406,62 @@ public class Sudoku
                 }
             }
         }
-        return solve;
+        return solve; //we return our boolean var, weather we solved or not.
     }
+    //Example Solvable Matrixs:
+    //{{0,0,3,7,0,6,9,0,5},{7,5,4,9,0,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6,5,3}}
+    //{{9,6,0,0,0,0,7,0,8},{8,0,0,0,0,4,3,0,0},{1,0,0,5,0,0,0,0,0},{0,0,0,0,0,0,1,7,6},{2,0,0,0,9,3,0,0,5},{7,0,8,0,0,0,0,0,0},{0,0,7,0,3,2,0,4,0},{3,8,2,1,0,5,6,0,0},{0,4,1,0,0,9,5,2,0}}
+    //Example Unsolvable Matrixs:
+    //
     
+    /* //////////////////////////////////////////////////////////////////////
+     * OTHER METHODS:
+     * other functionalities such as toString methods.
+     * //////////////////////////////////////////////////////////////////////
+     */
     /**
      * Method toString converts our Sudoku into a String in the format of a
      * valid Sudoku matrix (a 9x9 java array matrix).
      *
      * @return text, a String that represents our Sudoku.
      */
-    public String toString(){
-        String text = "{";
+    public String toString()
+    {
+        String text = "{"; //we open our 2d array
         for(int i = 0; i < this.rows.length; i++){
             if(i == 0){
-                text += "{";
+                text += "{"; //we open the first contained array of numbers
             } else {
-                text += ",{";
+                text += ",{"; //we open the rest of them
             }
+            //in each contained array of nubers
             for(int j = 0; j < this.rows[i].cells.length; j++){
+                //we concatenate each digit
                 text += this.rows[i].cells[j].value;
                 if(j == this.rows[i].cells.length-1){
-                    text += "}";
+                    text += "}"; //if its the last of the array we close it
                 } else {
-                    text += ",";
+                    text += ","; //else we add a coma between them
                 }
             }
-            text += "}";
         }
-        return text+"}";
+        return text+"}"; //we close the main array
+    }
+    
+    /**
+     * Method showSudoku prints on terminal a visual representation of the
+     * Sudoku. This lets us see the sudoku in the way it's usually depicted.
+     */
+    public void showSudoku()
+    {
+        for(int i = 0; i < this.rows.length; i++){
+            System.out.println("+---+---+---+---+---+---+---+---+---+");
+            String pattern = "| ";
+            for(int j = 0; j < this.rows[i].cells.length; j++){
+                pattern += this.rows[i].cells[j].value + " | ";
+            }
+            System.out.println(pattern);
+        }
+        System.out.println("+---+---+---+---+---+---+---+---+---+");
     }
 }

@@ -5,7 +5,7 @@
  * with digits from 1 to 9 different from eachother.
  * 
  * @author TR 
- * @version 11/NOV/25
+ * @version 21/NOV/25
  */
 public class CellGroup
 {
@@ -89,10 +89,13 @@ public class CellGroup
     {
         int val = 0;
         for(int i = 0; i < this.cells.length; i++){
-            val = this.cells[i].value; //we set val to the solved
-            //cell value
-            if(val != 0 & this.values[val-1] == false){
-                this.update(val); //we update for that value
+            if(!this.cells[i].isFilled()){
+                val = this.cells[i].value; //we set val to the solved
+                //cell value
+                int pos = val - 1; //we adjust for array index nomenclature
+                if(this.values[pos] == false){
+                    this.update(val); //we update for that value
+                }
             }
         }
     }
@@ -113,7 +116,7 @@ public class CellGroup
             this.values[pos] = true; //we mark the digits existence in
             //the group
             for(int i = 0; i < this.cells.length; i++){
-                if(this.cells[i].value == 0){
+                if(!this.cells[i].isFilled()){
                     this.cells[i].plausibleValues[pos] = false;//we
                     //rule that digit out from all empty cells left
                 }
@@ -128,7 +131,8 @@ public class CellGroup
      * @param val the value we want to check for
      * @return the number of Cells that could be filled with it
      */
-    public int numPlausCells(int val){
+    public int numPlausCells(int val)
+    {
         int pos = val - 1; //we compensate for position nomenclature
         //in arrays
         int sum = 0; //the number of Cells that can fit the given value

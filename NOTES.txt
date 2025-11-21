@@ -33,3 +33,23 @@ DEVELOPMENT NOTES:
     of the row, creating isues as not looping though the full Sudoku.
     + Added to NakedSingles method some testing souts, commented but ready to
     un-comment and use if needed.
+    
+20/11/2025 - Format, commentary & fixes:
+    * Fixed tabulation format of brackets oppening methods.
+    * Fixed a commentary format error in a method block divider in Sudoku.
+    * Fixed toString() method in Sudoku returning an incorrect bracket pattern.
+    + Added extended commentary to mentioned toString() method.
+    + Added commentary to nakedSingles() method in Sudoku w/ example sudoku
+    matrixs, some the method can and some it cannot fully solve.
+    % Discovered an error w/ nakedsingles(), don't know what it is!! :(
+    
+21/11/2025 - Naked Singles is fixed!! and other usefull stuff:
+    % Found the error: a break statement was missing to stop one of the
+    nested fors once a cell was solved and it was causing a digit to be
+    filled on top of the one we had just filled into the cell (and lots of
+    chaos w/ update methods and information coherence created because of this).
+    + Added showSudoku() method in Sudoku: it prints a visual representation
+    of the sudoku on the terminal.
+    * Small changes to getSqr() and getPosInSqr() for clarity, no
+    functionalities added.
+    + Added a couple lines of commentary here and there.
