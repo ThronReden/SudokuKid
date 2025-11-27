@@ -6,20 +6,27 @@ package SudokuKid;
  * with digits from 1 to 9 different from eachother.
  * 
  * @author TR 
- * @version 24/NOV/25
+ * @version 27/NOV/25
  */
-public class CellGroup
-{
+public class CellGroup {
+    /* //////////////////////////////////////////////////////////////////////
+     * ATTRIBUTES:
+     * //////////////////////////////////////////////////////////////////////
+     */
     public Cell cells[];//the list of 9 cells composing the group.
     public boolean values[];//a list of 9 booleans representing if
     //the digits from 1 to 9 already exist in a cell of the group.
     //Usefull information for some of the solving algorithms.
 
+    /* //////////////////////////////////////////////////////////////////////
+     * CONSTRUCTOR:
+     * builds objects of this class.
+     * //////////////////////////////////////////////////////////////////////
+     */
     /**
      * Constructor for objects of class CellGroup
      */
-    public CellGroup()
-    {
+    public CellGroup(){
         //we create 9 new instances of Cell and add them to our
         //cells list. This will be the cells of this row, column
         //or square.
@@ -43,8 +50,7 @@ public class CellGroup
      * @param cellList[], the list of the cells we want to conform
      * the group
      */
-    public CellGroup(Cell cellList[])
-    {
+    public CellGroup(Cell cellList[]){
         this.cells = new Cell[9];//we initialize an empty list for
         //our cells
         for(int i = 0; i < this.cells.length; i++){
@@ -61,7 +67,12 @@ public class CellGroup
             this.values[i] = false;
         }
     }
-
+    
+    /* //////////////////////////////////////////////////////////////////////
+     * METHODS:
+     * they do things ~~
+     * //////////////////////////////////////////////////////////////////////
+     */
     /**
      * Method isComplete cheks if the list is full and
      * (hopefully, if the methods for solving cells function correctly)
@@ -69,8 +80,7 @@ public class CellGroup
      *  
      * @return true if the group is complete and false if else.
      */
-    public boolean isComplete()
-    {
+    public boolean isComplete(){
         boolean complete = true;
         for(int i = 0; i < this.values.length; i++){
             if(this.values[i] == false)
@@ -86,8 +96,7 @@ public class CellGroup
      * In other words, we search for existing digits in the group we
      * didn't know about and forward that information.
      */
-    public void update()
-    {
+    public void update(){
         int val = 0;
         for(int i = 0; i < this.cells.length; i++){
             if(!this.cells[i].isFilled()){
@@ -109,8 +118,7 @@ public class CellGroup
      *
      * @param val the digit we know already exists in the group
      */
-    public void update(int val)
-    {
+    public void update(int val){
         if(val > 0 & val < 10){
             int pos = val-1; //we compensate for position nomenclature
             //in arrays
@@ -132,11 +140,11 @@ public class CellGroup
      * @param val the value we want to check for
      * @return the number of Cells that could be filled with it
      */
-    public int numPlausCells(int val)
-    {
+    public int numPlausCells(int val){
         int pos = val - 1; //we compensate for position nomenclature
         //in arrays
         int sum = 0; //the number of Cells that can fit the given value
+        //we loop through the cells of this group:
         for(int i = 0; i < this.cells.length; i++){
             if(!this.cells[i].isFilled() && this.cells[i].plausibleValues[pos]){
                 sum++;
@@ -144,6 +152,6 @@ public class CellGroup
             //maybe encapsulate the content of the if parenthesis in a method
             //in Cell.
         }
-        return sum;
+        return sum; //we return how many cells could fit that digit
     }
 }

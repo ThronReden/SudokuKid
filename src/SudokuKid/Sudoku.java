@@ -7,10 +7,9 @@ package SudokuKid;
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 24/NOV/25
+ * @version 27/NOV/25
  */
-public class Sudoku
-{
+public class Sudoku {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
      * //////////////////////////////////////////////////////////////////////
@@ -29,13 +28,12 @@ public class Sudoku
      */
     /**
      * Constructor for objects of class Sudoku
-     * 
-     * honnestly, this is a messy one, I'm considering encapsulating
-     * some of the algorithms it uses but I don't think I'll be using
-     * them any other place so yup, IDK, give me a break (:
      */
-    public Sudoku()
-    {
+    public Sudoku(){
+        //honnestly, this is a messy one, I'm considering encapsulating
+        //some of the algorithms it uses but I don't think I'll be using
+        //them any other place so yup, IDK, give me a break (:
+
         //ROWS
         for(int i = 0; i < this.rows.length; i++){
             this.rows[i] = new CellGroup(); //For rows we'll just
@@ -138,8 +136,7 @@ public class Sudoku
      * @param col, the column of that cell, this gets us its position
      * in the grid
      */
-    public void addNum(int val, int row, int col)
-    {
+    public void addNum(int val, int row, int col){
         this.rows[row].cells[col].setValue(val); //yup, simple as that.
         //If we're in a row, cell in the nth position belongs to the
         //nth column.
@@ -154,8 +151,7 @@ public class Sudoku
      *
      * @param nums, a 9x9 matrix of integers.
      */
-    public void addNum(int nums[][])
-    {
+    public void addNum(int nums[][]){
         //we check if nums matrix is valid
         if(validSudokuMatrix(nums)){
             for(int i = 0; i < nums.length; i++){
@@ -184,8 +180,7 @@ public class Sudoku
      * @return false if the matrix isn't a valid Sudoku puzzle,
      * true otherwise.
      */
-    public static boolean validSudokuMatrix(int nums[][])
-    {
+    public static boolean validSudokuMatrix(int nums[][]){
         boolean valid = true; //we'll update it according to the
         //results of some tests and retun it.
         //we check the matrix has 9 rows, no more no less.
@@ -266,8 +261,7 @@ public class Sudoku
      * @param row, the row of the cell it was added to
      * @param col, the column of that cell
      */
-    public void updateAffected(int val, int row, int col)
-    {
+    public void updateAffected(int val, int row, int col){
         this.rows[row].update(val);
         this.cols[col].update(val);
         this.sqrs[getSqr(row,col)].update(val);
@@ -284,8 +278,7 @@ public class Sudoku
      * position in our sqrs array.
      * (sqrs[we get this number].cells[this Cells position in the square])
      */
-    public int getSqr(int row, int col)
-    {
+    public int getSqr(int row, int col){
         //"maybe encapsulate row/3*3+col/3 as getSqr(row,col)?", we did hehe.
         int sqr = row/3*3+col/3; //the corresponding square
         return sqr; //we return it
@@ -302,8 +295,7 @@ public class Sudoku
      * in its corresponding square.
      * (sqrs[this Cells square].cells[we get this number])
      */
-    public int getPosInSqr(int row, int col)
-    {       
+    public int getPosInSqr(int row, int col){       
         int pos = row%3*3+col%3; //the poition in its square
         return pos; //we return it
         
@@ -365,41 +357,58 @@ public class Sudoku
      * 
      * @return true if a solve was made, false else.
      */
-    public boolean solveNakedSingles()
-    {
+    public boolean solveNakedSingles(){
+        
         boolean solve = false; //we'll be returning this
+        
+        //we loop through the list of rows:
         for(int i = 0; i < this.rows.length; i++){
-            //we loop through the list of rows
+            
+            //if a row is full we wont try to fill it:
             if(!this.rows[i].isComplete()){
-                //if a row is full we wont try to fill it
+                
+                //now we loop through the list of cells of this row looking
+                //for empty Cells:
                 for(int j = 0; j < this.rows[i].cells.length; j++){
-                    //now we loop in each row looking for empty Cells
+                    
+                    //if the cell is empty: 
                     if(!this.rows[i].cells[j].isFilled()){
-                        //the cell is empty, we get the number of digits
-                        //that fit in it.
                         //System.out.println("Cell "+i+", "+j+" is empty.");
-                        int plausVals = this.rows[i].cells[j].numPlausibleValues();
+                        //we get the number of digits that fit in it:
+                        int plausVals = 
+                                this.rows[i].cells[j].numPlausibleValues();
+                        //if it could only be filled with one digit:
                         if(plausVals == 1){
-                            //if it could only be filled with one digit
                             //we fill it in
                             addNum(this.rows[i].cells[j].getPlausVal(),i,j);
                             //System.out.println("Cell "+i+", "+j+" solved.");
                             solve = true; //we've solved a Cell
+                        //else, if multiple digits fit:
                         } else {
-                            //if multiple digits fit we check if it is the
-                            //only Cell of its row, column or square that
-                            //could contain that digit
-                            int val = 0;
+                            //we check if it is the only Cell of its row,
+                            //column or square that could contain that digit:
+                            int val = 0;//we'll save the plausible digits here
+                            //we check for each of the plausible digits:
                             for(int n = 1; n <= plausVals; n++){
+                                //we get the digit we're cheking for:
                                 val = this.rows[i].cells[j].getPlausVal(n);
                                 //System.out.println("Seach groups for "+val+".");
+                                
+                                //if the number of cells that could be filled
+                                //with that specific digit in the same row,
+                                //column or square as the original cell we're
+                                //trying to solve is 1:
                                 if(this.rows[i].numPlausCells(val) == 1
                                 || this.cols[j].numPlausCells(val) == 1
                                 || this.sqrs[getSqr(i,j)].numPlausCells(val) == 1){
-                                    addNum(val,i,j); //if it is we fill it
+                                    //then it's the only cell that can fit that
+                                    //digit and we fill it in:
+                                    addNum(val,i,j); //we add the digit
                                     //System.out.println("Cell "+i+", "+j+" solved for "+val+".");
                                     solve = true; //we've solved a Cell
-                                    break; //we stop this for
+                                    break; //we stop this for so no more digits
+                                    //are filled in this cell, as it's not
+                                    //empty anymore.
                                 }
                             }
                         }
@@ -407,13 +416,18 @@ public class Sudoku
                 }
             }
         }
-        return solve; //we return our boolean var, weather we solved or not.
+        return solve; //we return our boolean variable,
+        //weather we solved or not.
     }
-    //Example Solvable Matrixs:
-    //{{0,0,3,7,0,6,9,0,5},{7,5,4,9,0,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6,5,3}}
-    //{{9,6,0,0,0,0,7,0,8},{8,0,0,0,0,4,3,0,0},{1,0,0,5,0,0,0,0,0},{0,0,0,0,0,0,1,7,6},{2,0,0,0,9,3,0,0,5},{7,0,8,0,0,0,0,0,0},{0,0,7,0,3,2,0,4,0},{3,8,2,1,0,5,6,0,0},{0,4,1,0,0,9,5,2,0}}
-    //Example Unsolvable Matrixs:
-    //
+    /*Example Solvable Matrixs:
+     * {{0,0,3,7,0,6,9,0,5},{7,5,4,9,0,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6,5,3}}
+     * {{9,6,0,0,0,0,7,0,8},{8,0,0,0,0,4,3,0,0},{1,0,0,5,0,0,0,0,0},{0,0,0,0,0,0,1,7,6},{2,0,0,0,9,3,0,0,5},{7,0,8,0,0,0,0,0,0},{0,0,7,0,3,2,0,4,0},{3,8,2,1,0,5,6,0,0},{0,4,1,0,0,9,5,2,0}}
+     *
+     */
+    /*Example Unsolvable Matrixs:
+     *
+     *
+     */
     
     /* //////////////////////////////////////////////////////////////////////
      * OTHER METHODS:
@@ -426,8 +440,7 @@ public class Sudoku
      *
      * @return text, a String that represents our Sudoku.
      */
-    public String toString()
-    {
+    public String toString(){
         String text = "{"; //we open our 2d array
         for(int i = 0; i < this.rows.length; i++){
             if(i == 0){
@@ -453,8 +466,7 @@ public class Sudoku
      * Method showSudoku prints on terminal a visual representation of the
      * Sudoku. This lets us see the sudoku in the way it's usually depicted.
      */
-    public void showSudoku()
-    {
+    public void showSudoku(){
         for(int i = 0; i < this.rows.length; i++){
             System.out.println("+---+---+---+---+---+---+---+---+---+");
             String pattern = "| ";

@@ -55,3 +55,8 @@ DEVELOPMENT NOTES:
     + Added a couple lines of commentary here and there.
 
 24/11/2025 - PROJECT PORTED TO NETBEANS from BlueJ!
+
+27/11/2025 - Changes to format and commentary added:
+    + Added a couple more lines of commentary here and there.
+    * Changed a bit the line break format fashion.
+    + we are on NetBeans now!
