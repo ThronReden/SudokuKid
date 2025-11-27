@@ -1,4 +1,4 @@
- 
+package SudokuKid;
 
 /**
  * CellGroup objects represent one of the rows, columns
@@ -6,7 +6,7 @@
  * with digits from 1 to 9 different from eachother.
  * 
  * @author TR 
- * @version 21/NOV/25
+ * @version 24/NOV/25
  */
 public class CellGroup
 {

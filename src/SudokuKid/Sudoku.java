@@ -1,4 +1,4 @@
- 
+package SudokuKid;
  
 /**
  * Sudoku objects represent a whole sudoku containing 9 rows,
@@ -7,7 +7,7 @@
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 21/NOV/25
+ * @version 24/NOV/25
  */
 public class Sudoku
 {
@@ -15,11 +15,11 @@ public class Sudoku
      * ATTRIBUTES:
      * //////////////////////////////////////////////////////////////////////
      */
-    private CellGroup rows[] = new CellGroup [9];
+    private final CellGroup rows[] = new CellGroup [9];
     //will contain the 9 rows of the sudoku
-    private CellGroup cols[] = new CellGroup [9];
+    private final CellGroup cols[] = new CellGroup [9];
     //will contain the 9 columns
-    private CellGroup sqrs[] = new CellGroup [9];
+    private final CellGroup sqrs[] = new CellGroup [9];
     //will contain the 9 squares
     
     /* //////////////////////////////////////////////////////////////////////

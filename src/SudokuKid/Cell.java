@@ -1,10 +1,10 @@
- 
+package SudokuKid;
 
 /**
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @version 20/NOV/25
+ * @version 24/NOV/25
  */
 public class Cell
 {
