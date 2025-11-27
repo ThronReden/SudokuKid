@@ -1,12 +1,9 @@
-------------------------------------------------------------------------
-This is the project README file. Here, you should describe your project.
-Tell the reader (someone who does not know anything about this project)
-all they need to know. The comments should usually include at least:
-------------------------------------------------------------------------
 
-PROJECT TITLE:
-PURPOSE OF PROJECT:
-VERSION or DATE:
-HOW TO START THIS PROJECT:
-AUTHORS:
-USER INSTRUCTIONS:
+PROJECT TITLE: SudokuKid
+PURPOSE: Solving sudokus using algorithms similar to those a human person would
+aply.
+VERSION or DATE: 0.1 - Last BlueJ Version - 27/11/2025
+HOW TO START THIS PROJECT: It's still just classes, so just create a Sudoku
+object.
+AUTHOR: TR
+USER INSTRUCTIONS: what are u doing here?, theres no UI just yet!

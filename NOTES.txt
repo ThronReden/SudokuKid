@@ -53,3 +53,6 @@ DEVELOPMENT NOTES:
     * Small changes to getSqr() and getPosInSqr() for clarity, no
     functionalities added.
     + Added a couple lines of commentary here and there.
+
+24/11/2025 - PROJECT PORTED TO NETBEANS from BlueJ!
+27/11/2025 - Ver 0.1 - BlueJ project wont get any more updates.
