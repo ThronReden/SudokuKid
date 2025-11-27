@@ -1,5 +1,5 @@
-/nbproject/
-/test/
+**/nbproject/
+**/test/
 *.class
 *.ctxt
 *.bluej
