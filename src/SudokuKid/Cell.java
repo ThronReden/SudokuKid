@@ -4,20 +4,27 @@ package SudokuKid;
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @version 24/NOV/25
+ * @version 27/NOV/25
  */
-public class Cell
-{
+public class Cell {
+    /* //////////////////////////////////////////////////////////////////////
+     * ATTRIBUTES:
+     * //////////////////////////////////////////////////////////////////////
+     */
     public int value; //the digit contained by the cell, 1 to 9.
     //if value is 0 then the Cell is "empty".
     public boolean plausibleValues[]; //a list representing if each
     //of the 9 valid digits could be placed in the cell or not.
     
+    /* //////////////////////////////////////////////////////////////////////
+     * CONSTRUCTOR:
+     * builds objects of this class.
+     * //////////////////////////////////////////////////////////////////////
+     */
     /**
      * Constructor for objects of class Cell
      */
-    public Cell()
-    {
+    public Cell(){
         //the "value" attribute is always initialized to 0.
         this.value = 0;
         //all the booleans in the "plausibleValues" list attribute
@@ -30,14 +37,18 @@ public class Cell
         }
     }
 
+    /* //////////////////////////////////////////////////////////////////////
+     * METHODS:
+     * they do things ~~
+     * //////////////////////////////////////////////////////////////////////
+     */
     /**
      * Method setValue sets the "value" attribute of that instance
      * of Cell to a given digit.
      * 
      * @param val, the digit you want to fill into the Cell
      */
-    public void setValue(int val)
-    {
+    public void setValue(int val){
         if(0 < val & val < 10){ //we make sure the digit is valid.
             this.value = val; //we fill in the digit if it is.
         }
@@ -50,8 +61,7 @@ public class Cell
      * @return true if the value attribute of this cell is diferent from 0
      * and false if it is 0, therefore being empty.
      */
-    public boolean isFilled()
-    {
+    public boolean isFilled(){
         return this.value != 0;
     }
     
@@ -63,8 +73,7 @@ public class Cell
      *
      * @return sum, the number of plausible values
      */
-    public int numPlausibleValues()
-    {
+    public int numPlausibleValues(){
         int sum = 0; //a variable to contain the number of values
         for(int i = 0; i < this.plausibleValues.length; i++){
             if(plausibleValues[i]){
@@ -86,8 +95,7 @@ public class Cell
      * @param n the number plausible value we want
      * @return val, the value of that plausible value
      */
-    public int getPlausVal(int n)
-    {
+    public int getPlausVal(int n){
         int val = 0; //a value to be returned, 0 in case of invalid n
         if(n > 0 && n <= 9){
             //if valid n
@@ -113,8 +121,7 @@ public class Cell
      *
      * @return val, the lowest plausible value
      */
-    public int getPlausVal()
-    {
+    public int getPlausVal(){
         int val = 0; //we initialze val in case there's no plausible value
         for(int i = 0; i < this.plausibleValues.length; i++){
             if(plausibleValues[i]){
@@ -123,6 +130,6 @@ public class Cell
                 return val;
             }
         }
-        return val;
+        return val; //we return the first plausible value we find, the lowest.
     }
 }
