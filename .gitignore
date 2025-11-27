@@ -3,5 +3,5 @@
 *.bluej
 *.xml
 *.mf
-/nbproject/
-/test/
+nbproject/
+test/
