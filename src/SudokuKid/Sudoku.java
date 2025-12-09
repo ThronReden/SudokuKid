@@ -425,7 +425,7 @@ public class Sudoku {
      *
      */
     /*Example Unsolvable Matrixs:
-     *
+     * {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}}
      *
      */
     
@@ -468,13 +468,17 @@ public class Sudoku {
      */
     public void showSudoku(){
         for(int i = 0; i < this.rows.length; i++){
-            System.out.println("+---+---+---+---+---+---+---+---+---+");
-            String pattern = "| ";
+            System.out.println("++---+---+---++---+---+---++---+---+---++");
+            String pattern = "|| ";
             for(int j = 0; j < this.rows[i].cells.length; j++){
-                pattern += this.rows[i].cells[j].value + " | ";
+                if(j % 3 == 2){
+                    pattern += this.rows[i].cells[j].value + " || ";  
+                } else {
+                    pattern += this.rows[i].cells[j].value + " | ";  
+                }
             }
             System.out.println(pattern);
         }
-        System.out.println("+---+---+---+---+---+---+---+---+---+");
+        System.out.println("++---+---+---++---+---+---++---+---+---++");
     }
 }
