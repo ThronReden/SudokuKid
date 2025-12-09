@@ -468,10 +468,13 @@ public class Sudoku {
      */
     public void showSudoku(){
         for(int i = 0; i < this.rows.length; i++){
-            System.out.println("++---+---+---++---+---+---++---+---+---++");
-            String pattern = "|| ";
+            System.out.println("+---+---+---++---+---+---++---+---+---+");
+            if(i % 3 == 0 && i != 0){
+                System.out.println("+---+---+---++---+---+---++---+---+---+");
+            }
+            String pattern = "| ";
             for(int j = 0; j < this.rows[i].cells.length; j++){
-                if(j % 3 == 2){
+                if(j % 3 == 2 && j != 8){
                     pattern += this.rows[i].cells[j].value + " || ";  
                 } else {
                     pattern += this.rows[i].cells[j].value + " | ";  
@@ -479,6 +482,6 @@ public class Sudoku {
             }
             System.out.println(pattern);
         }
-        System.out.println("++---+---+---++---+---+---++---+---+---++");
+        System.out.println("+---+---+---++---+---+---++---+---+---+");
     }
 }
