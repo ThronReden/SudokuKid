@@ -358,19 +358,14 @@ public class Sudoku {
      * @return true if a solve was made, false else.
      */
     public boolean solveNakedSingles(){
-        
         boolean solve = false; //we'll be returning this
-        
         //we loop through the list of rows:
         for(int i = 0; i < this.rows.length; i++){
-            
             //if a row is full we wont try to fill it:
             if(!this.rows[i].isComplete()){
-                
                 //now we loop through the list of cells of this row looking
                 //for empty Cells:
                 for(int j = 0; j < this.rows[i].cells.length; j++){
-                    
                     //if the cell is empty: 
                     if(!this.rows[i].cells[j].isFilled()){
                         //System.out.println("Cell "+i+", "+j+" is empty.");
@@ -398,9 +393,9 @@ public class Sudoku {
                                 //with that specific digit in the same row,
                                 //column or square as the original cell we're
                                 //trying to solve is 1:
-                                if(this.rows[i].numPlausCells(val) == 1
-                                || this.cols[j].numPlausCells(val) == 1
-                                || this.sqrs[getSqr(i,j)].numPlausCells(val) == 1){
+                                if(this.rows[i].numPlausCells(val) == 1 ||
+                                this.cols[j].numPlausCells(val) == 1 ||
+                                this.sqrs[getSqr(i,j)].numPlausCells(val) == 1){
                                     //then it's the only cell that can fit that
                                     //digit and we fill it in:
                                     addNum(val,i,j); //we add the digit
@@ -428,6 +423,31 @@ public class Sudoku {
      * {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}}
      *
      */
+    
+    /**
+     * Method solveNakedPairs searches for pair patterns in groups that can
+     * eliminate plausible values from some cells in the group. This method
+     * role is mearly calling the method that does this for each of the groups
+     * in our sudoku.
+     * 
+     * @return true if we're closer to solving the sudoku, else otherwise
+     */
+    public boolean solveNakedPairs(){
+        boolean solve = false; //we'll be returning this
+        //we loop through our sudoku rows, columns and squares:
+        //(group lists lengths are equal, we use row's but could use whichever)
+        for(int i = 0; i < this.rows.length; i++){
+            //we run each groups pair finding method:
+            //(it'll internally check if the group is solved before begining)
+            solve |= this.rows[i].findNakedPairs();
+            solve |= this.cols[i].findNakedPairs();
+            solve |= this.sqrs[i].findNakedPairs();
+            //"solve |= " statement will cause our solve variable to become
+            //true if we find a pair and therefore we've made progress in
+            //solving the sudoku
+        }
+        return solve; //will be true if we're closer to solving the sudoku
+    }
     
     /* //////////////////////////////////////////////////////////////////////
      * OTHER METHODS:

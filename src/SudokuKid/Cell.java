@@ -13,7 +13,7 @@ public class Cell {
      */
     public int value; //the digit contained by the cell, 1 to 9.
     //if value is 0 then the Cell is "empty".
-    public boolean plausibleValues[]; //a list representing if each
+    private boolean plausibleValues[]; //a list representing if each
     //of the 9 valid digits could be placed in the cell or not.
     
     /* //////////////////////////////////////////////////////////////////////
@@ -131,5 +131,25 @@ public class Cell {
             }
         }
         return val; //we return the first plausible value we find, the lowest.
+    }
+
+    /**
+     * Method isPlausible returns if a given value could fill this Cell or not.
+     * 
+     * @param val, the value we want to check for
+     * @return true if it can fill the cell, false otherwise
+     */
+    public boolean isPlausible(int val) {
+        return this.plausibleValues[val-1];
+    }
+    
+    /**
+     * Method removePlausible sets the plausibility for a given value to fill
+     * this Cell to false.
+     * 
+     * @param val the value we want to set to not plausible for this Cell
+     */
+    public void removePlausible(int val) {
+        this.plausibleValues[val-1] = false;
     }
 }

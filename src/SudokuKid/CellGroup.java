@@ -75,8 +75,8 @@ public class CellGroup {
      */
     /**
      * Method isComplete cheks if the list is full and
-     * (hopefully, if the methods for solving cells function correctly)
      * solved, containing all numbers 1 to 9 once.
+     * (hopefully, if the methods for solving cells function correctly)
      *  
      * @return true if the group is complete and false if else.
      */
@@ -120,14 +120,12 @@ public class CellGroup {
      */
     public void update(int val){
         if(val > 0 & val < 10){
-            int pos = val-1; //we compensate for position nomenclature
-            //in arrays
-            this.values[pos] = true; //we mark the digits existence in
+            this.values[val-1] = true; //we mark the digits existence in
             //the group
             for(int i = 0; i < this.cells.length; i++){
                 if(!this.cells[i].isFilled()){
-                    this.cells[i].plausibleValues[pos] = false;//we
-                    //rule that digit out from all empty cells left
+                    this.cells[i].removePlausible(val);//we rule that digit
+                    //out from all empty cells left
                 }
             }
         }
@@ -141,17 +139,200 @@ public class CellGroup {
      * @return the number of Cells that could be filled with it
      */
     public int numPlausCells(int val){
-        int pos = val - 1; //we compensate for position nomenclature
-        //in arrays
         int sum = 0; //the number of Cells that can fit the given value
         //we loop through the cells of this group:
         for(int i = 0; i < this.cells.length; i++){
-            if(!this.cells[i].isFilled() && this.cells[i].plausibleValues[pos]){
+            if(!this.cells[i].isFilled() && this.cells[i].isPlausible(val)){
                 sum++;
             }
             //maybe encapsulate the content of the if parenthesis in a method
             //in Cell.
         }
         return sum; //we return how many cells could fit that digit
+    }
+    /**
+     * Method numPlausCells overload gets us the number of Cells in this
+     * CellGroup that could be filled with a given pair of values.
+     * 
+     * @param val1 the firs value of the pair we want to check for
+     * @param val2 the second value of the pair
+     * @return the number of Cells that could be filled with the pair
+     */
+    public int numPlausCells(int val1, int val2){
+        int sum = 0; //the number of Cells that can fit the given pair
+        //we loop through the cells of this group:
+        for(int i = 0; i < this.cells.length; i++){
+            if(!this.cells[i].isFilled()
+            && this.cells[i].isPlausible(val1)
+            && this.cells[i].isPlausible(val2)){
+                sum++;
+            }
+        }
+        return sum; //we return how many cells could fit that pair of digits
+    }
+     
+    /**
+     * Method numMissingValues counts how many values are still missing
+     * for the group to be complete.
+     * 
+     * @return the number of missing values in the group.
+     */
+    public int numMissingValues(){
+        int count = 0; //we'll count the missing values
+        //we loop through our list of values in the group:
+        for(int i = 0; i < this.values.length; i++){
+            //if a value is missing (false) we count it:
+            if(!this.values[i]){
+                count++;
+            }
+        }
+        return count; //we return the count of missing values
+    }
+    
+    /**
+     * Method getMissingVal gets the nth missing value of the group in case
+     * it esists and returns 0 otherwise.
+     * 
+     * @param n, the number value we want
+     * @return the missing value (a number from 1 to 9)
+     */
+    public int getMissingVal(int n){
+        int val = 0; //a value to be returned, 0 in case of invalid n
+        if(n > 0 && n <= 9){
+            //if valid n
+            int count = 0; //we'll count the missing values here
+            for(int i = 0; i < this.values.length; i++){
+                if(!this.values[i]){
+                    count++; //we count the missing values
+                }
+                //if the count of missing vals is n:
+                if(count == n){
+                    val = i+1; //we return it (its position + 1)
+                    return val;
+                }
+            }
+        }
+        return val;
+    }
+    /**
+     * Method getMissingVal overload gets the lowest missing value of the
+     * group. The first it finds looping through the list of existing values.
+     * 
+     * @return the missing value (a number from 1 to 9)
+     */
+    public int getMissingVal(){
+        int val = 0; //a value to be returned
+        for(int i = 0; i < this.values.length; i++){
+            if(!this.values[i]){
+                val = i+1; //we return it (its position + 1)
+                return val;
+            }
+        }
+        return val;
+    }
+    
+    /**
+     * Method findNakedPairs sarches for pair patterns in the group that
+     * eliminate plausible values from some cells in the group.
+     * Specifically, we'll search for cases in which there's a pair of cells
+     * that can only be filled with the same pair, meaning none of the digits
+     * of the pair can fill any other cell in the group; or a pair of cells in
+     * the group that is the only that can be filled with a certain pair of
+     * numbers, meaning the rest of seeingly plausible values for that pair
+     * of cells isn't really plausible and can be removed.
+     * 
+     * @return true if we found a pair and therefore made progress in solving
+     */
+    public boolean findNakedPairs(){
+        boolean solve = false; //we'll be returning this
+        //if the group isn't solved:
+        if(!this.isComplete()){
+            int n = this.numMissingValues(); //we get how many numbers are
+            //missing
+            //if it is at least 2:
+            if(n > 1){
+                //for each pair of missing values:
+                for(int i = 1; i < n; i++){
+                    for(int j = i + 1; j <= n; j++){
+                        int val1 = this.getMissingVal(i); //first value of the
+                        //pair
+                        int val2 = this.getMissingVal(j); //second value of the
+                        //pair
+                        //we search how many cells can be filled with both
+                        //values of the pair:
+                        int numCells = this.numPlausCells(val1, val2);
+                        //if it's only 2:
+                        if(numCells == 2){
+                            //we create variables to retain the index of
+                            //the two cells that can be filled with both
+                            //values in the pair:
+                            int cell1 = -1; //the first cell
+                            int cell2 = 0; //and the second cell
+                            boolean valsExistAlone = false; //we'll check if
+                            //the values of the pair exist alone
+                            //we loop through this groups cells:
+                            for(int k = 0; k < this.cells.length; k++){
+                                //if there's a cell that can be filled with
+                                //one value and not the other one of the pair:
+                                if((this.cells[k].isPlausible(val1)
+                                && !this.cells[k].isPlausible(val2))
+                                || (!this.cells[k].isPlausible(val1)
+                                && this.cells[k].isPlausible(val2))){
+                                    //then value(s) exist alone:
+                                    valsExistAlone = true;
+                                } else if (this.cells[k].isPlausible(val1)
+                                && this.cells[k].isPlausible(val2)){
+                                    //we retain the index of the pair of
+                                    //cells found earlier:
+                                    if(cell1 == -1){
+                                        cell1 = k;
+                                    } else {
+                                        cell2 = k;
+                                    }
+                                }
+                            }
+                            //if the pair of cells that can be filled with
+                            //both values of the pair aren't the only cells
+                            //in the group that can be filled with one of the
+                            //values in the pair:
+                            if(valsExistAlone){
+                                //but the cells that can be filled with both
+                                //can only be filled with one or the other
+                                //and not any other number:
+                                if(this.cells[cell1].numPlausibleValues()== 2
+                                && this.cells[cell2].numPlausibleValues()== 2){
+                                    //then we've found a naked pair and the
+                                    //rest of the cells in the group can't be
+                                    //filled with those numbers:
+                                    solve = true;
+                                    for(int k = 0; k < this.cells.length; k++){
+                                        if(k != cell1 && k != cell2){
+                                            this.cells[k].
+                                            removePlausible(val1);
+                                            this.cells[k].
+                                            removePlausible(val2);
+                                        }
+                                    }
+                                }
+                            } else {
+                                //in the case those two cells we found are the
+                                //only cells in the group that can be filled
+                                //with any and both values of the pair:
+                                //we rule out any other value we may have had
+                                //stored as plausible for those two cells:
+                                solve = true;
+                                for(int k = 1; k <= 9; k++){
+                                    if(k != val1 && k != val2){
+                                        this.cells[cell1].removePlausible(k);
+                                        this.cells[cell2].removePlausible(k);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return solve;
     }
 }
