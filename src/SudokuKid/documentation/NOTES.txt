@@ -41,7 +41,7 @@ DEVELOPMENT NOTES:
     + Added extended commentary to mentioned toString() method.
     + Added commentary to nakedSingles() method in Sudoku w/ example sudoku
     matrixs, some the method can and some it cannot fully solve.
-    % Discovered an error w/ nakedsingles(), don't know what it is!! :(
+    % Discovered an error w/ solveNakedSingles(), don't know what it is!! :(
     
 21/11/2025 - Naked Singles is fixed!! and other usefull stuff:
     % Found the error: a break statement was missing to stop one of the
@@ -60,3 +60,24 @@ DEVELOPMENT NOTES:
     + Added a couple more lines of commentary here and there.
     * Changed a bit the line break format fashion.
     + we are on NetBeans now!
+
+07/01/2026 - Major progress with the NakedPairs method:
+    + Added solveNakedPairs() method to Sudoku.
+    + Added findNakedPairs() method to CellGroup. It's horrible at the moment.
+    + Added numMissingValues() and getMissingValues() methods to CellGroup.
+    + Added isPlausible(int val) and removePlausible(int val) methods to
+    Cell.
+
+08/01/2026 - Major fixes and design improvements to NakedPairs methods:
+    * Changed most of findNakedPairs() method relegating functionalities to
+    new methods in CellGroup and Cell:
+        + Added getPlausCells, getRestCells, valsExistAlone and
+        numCellsOnlyPair methods to CellGroup.
+        + Added removeAllPlausibleBut method to Cell.
+        % numPlausCells for two values is kinda obsolete as it's the same as
+        checking the length of the array returned by getPlausCells for those
+        same values, but it's staying for now JIC.
+    * Fixed removePlausible(int val) in Cell and findNakedPairs() in CellGroup
+    accounting for filled cells, when it shouldn't.
+    * Changed showSudoku() so it prints an empty space instead of a 0 for
+    empty cells, this cleans the visual representation a lot.

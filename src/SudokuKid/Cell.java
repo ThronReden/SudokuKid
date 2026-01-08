@@ -13,7 +13,7 @@ public class Cell {
      */
     public int value; //the digit contained by the cell, 1 to 9.
     //if value is 0 then the Cell is "empty".
-    public boolean plausibleValues[]; //a list representing if each
+    private boolean plausibleValues[]; //a list representing if each
     //of the 9 valid digits could be placed in the cell or not.
     
     /* //////////////////////////////////////////////////////////////////////
@@ -75,10 +75,12 @@ public class Cell {
      */
     public int numPlausibleValues(){
         int sum = 0; //a variable to contain the number of values
-        for(int i = 0; i < this.plausibleValues.length; i++){
-            if(plausibleValues[i]){
-                sum++; //if a position of the array is true we add 1 to the
-                //sum of plausible numbers
+        if(!this.isFilled()){
+            for(int i = 0; i < this.plausibleValues.length; i++){
+                if(plausibleValues[i]){
+                    sum++; //if a position of the array is true we add 1 to the
+                    //sum of plausible numbers
+                }
             }
         }
         return sum;
@@ -131,5 +133,42 @@ public class Cell {
             }
         }
         return val; //we return the first plausible value we find, the lowest.
+    }
+
+    /**
+     * Method isPlausible returns if a given value could fill this Cell or not.
+     * 
+     * @param val, the value we want to check for
+     * @return true if it can fill the cell, false otherwise
+     */
+    public boolean isPlausible(int val) {
+        return !this.isFilled() && this.plausibleValues[val-1];
+    }
+    
+    /**
+     * Method removePlausible sets the plausibility for a given value to fill
+     * this Cell to false.
+     * 
+     * @param val the value we want to set to not plausible for this Cell
+     */
+    public void removePlausible(int val) {
+        if(!this.isFilled()){
+            this.plausibleValues[val-1] = false;
+        }
+    }
+
+    /**
+     * Method removeAllPlausibleBut sets all numbers but the two given to
+     * unplausible for filling this cell.
+     * 
+     * @param val1, the first value that will stay plausible
+     * @param val2, the second
+     */
+    public void removeAllPlausibleBut(int val1, int val2) {
+        for(int i = 0; i < this.plausibleValues.length; i++) {
+            if(i != val1-1 && i != val2-1){
+                this.plausibleValues[i] = false;
+            }
+        }
     }
 }
