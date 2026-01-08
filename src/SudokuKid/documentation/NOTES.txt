@@ -70,8 +70,13 @@ DEVELOPMENT NOTES:
 
 08/01/2026 - Major fixes and design improvements to NakedPairs methods:
     * Changed most of findNakedPairs() method relegating functionalities to
-    new methods in CellGroup such as numPlausCells(val1, val2) and Cell search
-    methods such as plausCells(val1, val2) and restCells(val1, val2).
+    new methods in CellGroup and Cell:
+        + Added getPlausCells, getRestCells, valsExistAlone and
+        numCellsOnlyPair methods to CellGroup.
+        + Added removeAllPlausibleBut method to Cell.
+        % numPlausCells for two values is kinda obsolete as it's the same as
+        checking the length of the array returned by getPlausCells for those
+        same values, but it's staying for now JIC.
     * Fixed removePlausible(int val) in Cell and findNakedPairs() in CellGroup
     accounting for filled cells, when it shouldn't.
     * Changed showSudoku() so it prints an empty space instead of a 0 for

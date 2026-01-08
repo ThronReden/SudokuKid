@@ -154,4 +154,19 @@ public class Cell {
             this.plausibleValues[val-1] = false;
         }
     }
+
+    /**
+     * Method removeAllPlausibleBut sets all numbers but the two given to
+     * unplausible for filling this cell.
+     * 
+     * @param val1, the first value that will stay plausible
+     * @param val2, the second
+     */
+    public void removeAllPlausibleBut(int val1, int val2) {
+        for(int i = 0; i < this.plausibleValues.length; i++) {
+            if(i != val1-1 && i != val2-1){
+                this.plausibleValues[i] = false;
+            }
+        }
+    }
 }
