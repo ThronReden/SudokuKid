@@ -439,14 +439,29 @@ public class Sudoku {
         for(int i = 0; i < this.rows.length; i++){
             //we run each groups pair finding method:
             //(it'll internally check if the group is solved before begining)
-            solve |= this.rows[i].findNakedPairs();
-            solve |= this.cols[i].findNakedPairs();
-            solve |= this.sqrs[i].findNakedPairs();
+            solve |= this.rows[i].findNakedPairs(); //rows
+            solve |= this.cols[i].findNakedPairs(); //columns
+            solve |= this.sqrs[i].findNakedPairs(); //squares
             //"solve |= " statement will cause our solve variable to become
             //true if we find a pair and therefore we've made progress in
             //solving the sudoku
         }
         return solve; //will be true if we're closer to solving the sudoku
+    }
+    /*Example Unsolvable Matrixs:
+     * {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}}
+     *
+     */
+    
+    public boolean solvePointingSingles(){
+        boolean solve = false;
+        for(int i = 0; i < this.sqrs.length; i++){
+            int numMissingVals = this.sqrs[i].numMissingValues();
+            for(int n = 1; n <= numMissingVals; n++){
+                
+            }
+        }
+        return solve;
     }
     
     /* //////////////////////////////////////////////////////////////////////

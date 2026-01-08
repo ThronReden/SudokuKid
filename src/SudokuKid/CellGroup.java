@@ -171,6 +171,18 @@ public class CellGroup {
         return sum; //we return how many cells could fit that pair of digits
     }
     
+    public int[] getPlausCellsIndex(int val){
+        int[] indexs = new int[this.numPlausCells(val)];
+        int j = 0;
+        for(int i = 0; i < this.cells.length; i++){
+            if(this.cells[i].isPlausible(val)){
+                indexs[j] = i;
+                j++;
+            }
+        }
+        return indexs;
+    }
+    
     /**
      * Method getPlausCells gets us the list of cells in this group, in case
      * any exists, that could be filled with both given numbers.
