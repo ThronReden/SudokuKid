@@ -494,10 +494,14 @@ public class Sudoku {
             }
             String pattern = "| ";
             for(int j = 0; j < this.rows[i].cells.length; j++){
+                String val = " ";
+                if(this.rows[i].cells[j].value != 0){
+                    val = String.valueOf(this.rows[i].cells[j].value);
+                }
                 if(j % 3 == 2 && j != 8){
-                    pattern += this.rows[i].cells[j].value + " || ";  
+                    pattern += val + " || ";  
                 } else {
-                    pattern += this.rows[i].cells[j].value + " | ";  
+                    pattern += val + " | ";  
                 }
             }
             System.out.println(pattern);

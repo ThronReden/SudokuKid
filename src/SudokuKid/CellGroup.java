@@ -261,73 +261,39 @@ public class CellGroup {
                         //we search how many cells can be filled with both
                         //values of the pair:
                         int numCells = this.numPlausCells(val1, val2);
-                        //if it's only 2:
-                        if(numCells == 2){
-                            //we create variables to retain the index of
-                            //the two cells that can be filled with both
-                            //values in the pair:
-                            int cell1 = -1; //the first cell
-                            int cell2 = 0; //and the second cell
-                            boolean valsExistAlone = false; //we'll check if
-                            //the values of the pair exist alone
-                            //we loop through this groups cells:
-                            for(int k = 0; k < this.cells.length; k++){
-                                //if there's a cell that can be filled with
-                                //one value and not the other one of the pair:
-                                if((this.cells[k].isPlausible(val1)
-                                && !this.cells[k].isPlausible(val2))
-                                || (!this.cells[k].isPlausible(val1)
-                                && this.cells[k].isPlausible(val2))){
-                                    //then value(s) exist alone:
-                                    valsExistAlone = true;
-                                } else if (this.cells[k].isPlausible(val1)
-                                && this.cells[k].isPlausible(val2)){
-                                    //we retain the index of the pair of
-                                    //cells found earlier:
-                                    if(cell1 == -1){
-                                        cell1 = k;
-                                    } else {
-                                        cell2 = k;
-                                    }
-                                }
-                            }
-                            //if the pair of cells that can be filled with
-                            //both values of the pair aren't the only cells
-                            //in the group that can be filled with one of the
-                            //values in the pair:
-                            if(valsExistAlone){
-                                //but the cells that can be filled with both
-                                //can only be filled with one or the other
-                                //and not any other number:
-                                if(this.cells[cell1].numPlausibleValues()== 2
-                                && this.cells[cell2].numPlausibleValues()== 2){
-                                    //then we've found a naked pair and the
-                                    //rest of the cells in the group can't be
-                                    //filled with those numbers:
-                                    solve = true;
-                                    for(int k = 0; k < this.cells.length; k++){
-                                        if(k != cell1 && k != cell2){
-                                            this.cells[k].
-                                            removePlausible(val1);
-                                            this.cells[k].
-                                            removePlausible(val2);
-                                        }
-                                    }
-                                }
-                            } else {
-                                //in the case those two cells we found are the
-                                //only cells in the group that can be filled
-                                //with any and both values of the pair:
-                                //we rule out any other value we may have had
-                                //stored as plausible for those two cells:
+                        //we create an array to retain the cells that can be
+                        //filled with both values in the pair:
+                        Cell[] foundCells = this.plausCells(val1, val2);
+                        //we create an array to retain the rest of the cells:
+                        Cell[] restCells = this.restCells(val1, val2);
+                        //if the cells that can be filled with both values of
+                        //the pair aren't the only cells in the group that can
+                        //be filled with one of the values in the pair:
+                        if(this.valsExistAlone(val1,val2)){
+                            //but two of the cells that can be filled with
+                            //both can only be filled with one or the other
+                            //and not any other number:
+                            if(this.numCellsOnlyPair(val1,val2) == 2){
+                                //then we've found a naked pair and the
+                                //rest of the cells in the group can't be
+                                //filled with those numbers:
                                 solve = true;
-                                for(int k = 1; k <= 9; k++){
-                                    if(k != val1 && k != val2){
-                                        this.cells[cell1].removePlausible(k);
-                                        this.cells[cell2].removePlausible(k);
-                                    }
+                                for(int k = 0; k < restCells.length; k++){
+                                    restCells[k].removePlausible(val1);
+                                    restCells[k].removePlausible(val2);
                                 }
                             }
+                        } else if(numCells == 2){
+                            //in the case we found only two cells and are the
+                            //only cells in the group that can be filled
+                            //with any and both values of the pair:
+                            //we rule out any other value we may have had
+                            //stored as plausible for those two cells:
+                            solve = true;
+                            for(int k = 0; k < foundCells.length; k++){
+                                    foundCells[k].
+                                    removeAllPlausibleBut(val1,val2);
+                                }
                         }
                     }
                 }

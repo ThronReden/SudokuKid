@@ -140,7 +140,7 @@ public class Cell {
      * @return true if it can fill the cell, false otherwise
      */
     public boolean isPlausible(int val) {
-        return this.plausibleValues[val-1];
+        return !this.isFilled() && this.plausibleValues[val-1];
     }
     
     /**
@@ -150,6 +150,8 @@ public class Cell {
      * @param val the value we want to set to not plausible for this Cell
      */
     public void removePlausible(int val) {
-        this.plausibleValues[val-1] = false;
+        if(!this.isFilled()){
+            this.plausibleValues[val-1] = false;
+        }
     }
 }
