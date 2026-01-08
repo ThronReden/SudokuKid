@@ -226,7 +226,7 @@ public class CellGroup {
     private boolean valsExistAlone(int val1, int val2) {
         boolean exists = false;
         for(int i = 0; i < this.cells.length; i++){
-            exists =
+            exists |=
             (this.cells[i].isPlausible(val1)
                 && !this.cells[i].isPlausible(val2))
             || (!this.cells[i].isPlausible(val1)

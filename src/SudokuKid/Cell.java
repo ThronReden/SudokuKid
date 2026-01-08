@@ -75,10 +75,12 @@ public class Cell {
      */
     public int numPlausibleValues(){
         int sum = 0; //a variable to contain the number of values
-        for(int i = 0; i < this.plausibleValues.length; i++){
-            if(plausibleValues[i]){
-                sum++; //if a position of the array is true we add 1 to the
-                //sum of plausible numbers
+        if(!this.isFilled()){
+            for(int i = 0; i < this.plausibleValues.length; i++){
+                if(plausibleValues[i]){
+                    sum++; //if a position of the array is true we add 1 to the
+                    //sum of plausible numbers
+                }
             }
         }
         return sum;
