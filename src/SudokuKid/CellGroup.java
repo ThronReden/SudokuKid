@@ -421,9 +421,6 @@ public class CellGroup {
                                     restCells[k].removePlausible(val1);
                                     restCells[k].removePlausible(val2);
                                 }
-                                //This pattern applied to a row or a column is
-                                //what we call a pointing pair.
-                                //Not sure if it has a name for squares.
                             }
                         //in the case we found only two cells and those are
                         //the only cells in the group that can be filled
@@ -439,7 +436,6 @@ public class CellGroup {
                                 foundCells[k].
                                 removeAllPlausibleBut(val1,val2);
                             }
-                            //This is a hidden pair pattern.
                         }
                     }
                 }

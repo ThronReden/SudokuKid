@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class main {
     
     private static boolean NP = true; //weather to use Naked Pairs
-    private static boolean PS = true; //weather to use Pointing Singles
+    private static boolean PP = true; //weather to use Pointing Pairs
     
     private static final int[][] EL_PAIS_experto_2025_12_05 = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
     private static final int[][] EL_PAIS_medio_2026_01_09 = {{0,2,5,0,4,6,0,0,0},{0,0,0,0,0,0,7,0,0},{1,0,9,0,0,0,0,0,0},{0,0,0,2,9,0,0,7,4},{6,0,7,0,0,0,0,8,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,8,4,0,5,0},{0,6,8,0,0,0,2,0,0},{0,0,0,0,0,1,0,0,9}};
@@ -37,7 +37,7 @@ public class main {
             while(NP && !solve && sudoku.solveNakedPairs()){
                 solve = true; //we've solved something
             }
-            while(PS && !solve && sudoku.solvePointingSingles()){
+            while(PP && !solve && sudoku.solvePointingPairs()){
 //                System.out.println("solvePointingSingles SUCCES");
                 solve = true; //we've solved something
             }

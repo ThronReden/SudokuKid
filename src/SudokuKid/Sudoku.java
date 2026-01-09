@@ -467,7 +467,7 @@ public class Sudoku {
      */
     
     /**
-     * Method solveNakedPairs searches for hidden pair and pointing pair
+     * Method solveNakedPairs searches for naked pair and hidden pair
      * patterns in groups that can eliminate plausible values from some cells
      * in the group.
      * This methods role is mearly calling the method that does this for each
@@ -502,10 +502,12 @@ public class Sudoku {
      * are in the same row or column, meaning there shouldn't be any other
      * plausible cells for that numnber in cells of that row or column outside
      * of the square.
+     * This includes pointing pairs and pointing triplets pattersn but we'll
+     * name the method after the first case, as it is the most known.
      * 
      * @return true if we've found a new pointing digit, false otherwise
      */
-    public boolean solvePointingSingles(){
+    public boolean solvePointingPairs(){
         boolean solve = false;
         for(int i = 0; i < this.sqrs.length; i++){
             int numMissingVals = this.sqrs[i].numMissingValues();
