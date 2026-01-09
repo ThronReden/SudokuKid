@@ -408,16 +408,14 @@ public class Sudoku {
      */
     //DISCLAIMER: some of them have funny names so bare with me "O3O
     /**
-     * Method solveNakedSingles is the simplest solving method, based
-     * solely on basic sudoku rules aplied to rows, columns and squares.
+     * Method solveAllSingles joins Naked Singles and Hidden Singles methods
+     * in a single sweep of the sudoku.
      * It will try to solve for the whole sudoku, wont stop untill we've
      * looped throug all of its cells.
      * 
-     * TOLD YOU THEY HAD FUNNY NAMES!!
-     * 
      * @return true if a solve was made, false else.
      */
-    public boolean solveNakedSingles(){
+    public boolean solveAllSingles(){
         boolean solve = false; //we'll be returning this
         //we loop through the list of rows:
         for(int i = 0; i < this.rows.length; i++){
@@ -483,6 +481,105 @@ public class Sudoku {
      * {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}}
      *
      */
+    /**
+     * Method solveNakedSingles is the simplest solving method, based
+     * solely on basic sudoku rules aplied to rows, columns and squares.
+     * It will try to solve for the whole sudoku, wont stop untill we've
+     * looped throug all of its cells.
+     * 
+     * TOLD YOU THEY HAD FUNNY NAMES!!
+     * 
+     * @return true if a solve was made, false else.
+     */
+    public boolean solveNakedSingles(){
+        boolean solve = false; //we'll be returning this
+        //we loop through the list of rows:
+        for(int i = 0; i < this.rows.length; i++){
+            //if a row is full we wont try to fill it:
+            if(!this.rows[i].isComplete()){
+                //now we loop through the list of cells of this row looking
+                //for empty Cells:
+                for(int j = 0; j < this.rows[i].cells.length; j++){
+                    //if the cell is empty: 
+                    if(!this.rows[i].cells[j].isFilled()){
+                        //System.out.println("Cell "+i+", "+j+" is empty.");
+                        //we get the number of digits that fit in it:
+                        int plausVals = 
+                                this.rows[i].cells[j].numPlausibleValues();
+                        //if it could only be filled with one digit:
+                        if(plausVals == 1){
+                            //we fill it in
+                            addNum(this.rows[i].cells[j].getPlausVal(),i,j);
+                            //System.out.println("Cell "+i+", "+j+" solved.");
+                            solve = true; //we've solved a Cell
+                        }
+                    }
+                }
+            }
+        }
+        return solve; //we return our boolean variable,
+        //weather we solved or not.
+    }
+    /**
+     * Method solveHiddenSingles is the second simplest solving method, it
+     * finds if a cells is the only in the row, column or square that could
+     * be filled with a ceirtain digit and fills it in, in case it is.
+     * It will try to solve for the whole sudoku, wont stop untill we've
+     * looped throug all of its cells.
+     * 
+     * @return true if a solve was made, false else.
+     */
+    public boolean solveHiddenSingles(){
+        boolean solve = false; //we'll be returning this
+        //we loop through the list of rows:
+        for(int i = 0; i < this.rows.length; i++){
+            //if a row is full we wont try to fill it:
+            if(!this.rows[i].isComplete()){
+                //now we loop through the list of cells of this row looking
+                //for empty Cells:
+                for(int j = 0; j < this.rows[i].cells.length; j++){
+                    //if the cell is empty: 
+                    if(!this.rows[i].cells[j].isFilled()){
+                        //System.out.println("Cell "+i+", "+j+" is empty.");
+                        //we get the number of digits that fit in it:
+                        int plausVals = 
+                                this.rows[i].cells[j].numPlausibleValues();
+                        //if multiple digits fit:
+                        if(plausVals > 1){
+                            //we check if it is the only Cell of its row,
+                            //column or square that could contain that digit:
+                            int val = 0;//we'll save the plausible digits here
+                            //we check for each of the plausible digits:
+                            for(int n = 1; n <= plausVals; n++){
+                                //we get the digit we're cheking for:
+                                val = this.rows[i].cells[j].getPlausVal(n);
+                                //System.out.println("Seach groups for "+val+".");
+                                
+                                //if the number of cells that could be filled
+                                //with that specific digit in the same row,
+                                //column or square as the original cell we're
+                                //trying to solve is 1:
+                                if(this.rows[i].numPlausCells(val) == 1 ||
+                                this.cols[j].numPlausCells(val) == 1 ||
+                                this.sqrs[getSqr(i,j)].numPlausCells(val) == 1){
+                                    //then it's the only cell that can fit that
+                                    //digit and we fill it in:
+                                    addNum(val,i,j); //we add the digit
+                                    //System.out.println("Cell "+i+", "+j+" solved for "+val+".");
+                                    solve = true; //we've solved a Cell
+                                    break; //we stop this for so no more digits
+                                    //are filled in this cell, as it's not
+                                    //empty anymore.
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return solve; //we return our boolean variable,
+        //weather we solved or not.
+    }
     
     /**
      * Method solveNakedPairs searches for naked pair and hidden pair

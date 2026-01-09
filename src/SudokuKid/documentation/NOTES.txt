@@ -109,3 +109,7 @@ DEVELOPMENT NOTES:
     and triplets from the begining.
     + New solvePointingPairs & solvePointingTriplets methods in Sudoku that
     asolate those solving methods.
+    * solveNakedSingles now is solveAllSingles, as it found both naked singles
+    and hidden singles from the begining.
+    + New solveNakedSingles & solveHiddenSingles methods in Sudoku to asolate
+    those solving methods.
