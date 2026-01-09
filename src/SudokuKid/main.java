@@ -10,9 +10,13 @@ public class main {
     
     private static boolean NP = true; //weather to use Naked Pairs
     private static boolean PP = true; //weather to use Pointing Pairs
+    private static boolean PT = true; //weather to use Pointing Triplets
+    private static boolean PN = PP && PT; //weather to use Pointing Numbers
     
+    //SOLVABLE:
     private static final int[][] EL_PAIS_experto_2025_12_05 = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
     private static final int[][] EL_PAIS_medio_2026_01_09 = {{0,2,5,0,4,6,0,0,0},{0,0,0,0,0,0,7,0,0},{1,0,9,0,0,0,0,0,0},{0,0,0,2,9,0,0,7,4},{6,0,7,0,0,0,0,8,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,8,4,0,5,0},{0,6,8,0,0,0,2,0,0},{0,0,0,0,0,1,0,0,9}};
+    //UNSOLVABLE:
     private static final int[][] EL_PAIS_dificil_2026_01_09 = {{0,0,0,0,0,0,8,0,0},{0,4,5,0,0,0,0,0,9},{0,9,0,8,0,0,0,0,0},{1,0,0,9,0,0,6,0,0},{0,2,0,0,6,0,0,9,7},{0,0,0,0,0,1,0,0,8},{0,0,0,3,0,7,0,0,2},{0,1,0,0,2,0,0,0,0},{0,0,6,0,0,0,3,0,4}};
     
     public static void main (String[] args){
@@ -31,15 +35,26 @@ public class main {
             solve = false;
             numAdded = false;
             while(sudoku.solveNakedSingles()){
+//                System.out.println("used solveNakedSingles");
                 solve = true; //we've solved something
                 numAdded = true; //we've added a number to the grid
             }
             while(NP && !solve && sudoku.solveNakedPairs()){
-                solve = true; //we've solved something
+//                System.out.println("used solveNakedPairs");
+                solve = true; //we've found at least one new pair
             }
-            while(PP && !solve && sudoku.solvePointingPairs()){
-//                System.out.println("solvePointingSingles SUCCES");
-                solve = true; //we've solved something
+            while(!PN && PP && !solve && sudoku.solvePointingPairs()){
+//                System.out.println("used solvePointingPairs");
+                solve = true; //we've found at least one new pointing pair
+            }
+            while(!PN && PT && !solve && sudoku.solvePointingTriplets()){
+//                System.out.println("used solvePointingTriplets");
+                solve = true; //we've found at least one new pointing triplet
+            }
+            while(PN && !solve && sudoku.solvePointingNumbers()){
+//                System.out.println("used solvePointingNumbers");
+                solve = true; //we've found at least one new pointing
+                //pair or triplet
             }
             if(numAdded){
                 System.out.println("SUDOKU AT ITER "+count+":");

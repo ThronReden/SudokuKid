@@ -381,6 +381,24 @@ public class Sudoku {
          */
     }
     
+    public boolean isSolved(){
+        return this.isFilled() && this.isCorrect();
+    }
+    
+    public boolean isFilled(){
+        boolean filled = true;
+        for(int i = 0; i < this.rows.length; i++) {
+            for(int j = 0; j < this.rows[i].cells.length; j++) {
+                filled &= this.rows[i].cells[j].isFilled();
+            }
+        }
+        return filled;
+    }
+    
+    public boolean isCorrect(){
+        return Sudoku.validSudokuMatrix(this.toMatrix());
+    }
+    
     /* //////////////////////////////////////////////////////////////////////
      * SOLVING METHODS:
      * we use them to fill in digits into the grid based on the
@@ -497,17 +515,16 @@ public class Sudoku {
      */
     
     /**
-     * Method solvePointingSingles searches for patterns in which the only
+     * Method solvePointingNumbers searches for patterns in which the only
      * cells in a square of the sudoku that could allocate a ceirtain number
      * are in the same row or column, meaning there shouldn't be any other
      * plausible cells for that numnber in cells of that row or column outside
      * of the square.
-     * This includes pointing pairs and pointing triplets pattersn but we'll
-     * name the method after the first case, as it is the most known.
+     * This includes both pointing pairs and pointing triplets patterns.
      * 
-     * @return true if we've found a new pointing digit, false otherwise
+     * @return true if we've found a new pointing pattern, false otherwise
      */
-    public boolean solvePointingPairs(){
+    public boolean solvePointingNumbers(){
         boolean solve = false;
         for(int i = 0; i < this.sqrs.length; i++){
             int numMissingVals = this.sqrs[i].numMissingValues();
@@ -555,23 +572,113 @@ public class Sudoku {
      * {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}}
      *
      */
-    
-    public boolean isSolved(){
-        return this.isFilled() && this.isCorrect();
-    }
-    
-    public boolean isFilled(){
-        boolean filled = true;
-        for(int i = 0; i < this.rows.length; i++) {
-            for(int j = 0; j < this.rows[i].cells.length; j++) {
-                filled &= this.rows[i].cells[j].isFilled();
+    /**
+     * Method solvePointingPairs searches for patterns in which the only two
+     * cells in a square of the sudoku that could allocate a ceirtain number
+     * are in the same row or column, meaning there shouldn't be any other
+     * plausible cells for that numnber in cells of that row or column outside
+     * of the square.
+     * This includes only pointing pairs patterns.
+     * 
+     * @return true if we've found a new pointing pair, false otherwise
+     */
+    public boolean solvePointingPairs(){
+        boolean solve = false;
+        for(int i = 0; i < this.sqrs.length; i++){
+            int numMissingVals = this.sqrs[i].numMissingValues();
+            for(int n = 1; n <= numMissingVals; n++){
+                int val = this.sqrs[i].getMissingVal(n);
+                int[] plausCells = this.sqrs[i].getPlausCellsIndex(val);
+                if(plausCells.length == 2){
+                    boolean sameRow = true;
+                    boolean sameCol = true;
+                    for(int j = 1; j < plausCells.length; j++){
+                        sameRow &=
+                        getRow(i,plausCells[j]) == getRow(i,plausCells[j-1]);
+                        sameCol &=
+                        getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
+                    }
+                    if(sameRow){
+                        int row = getRow(i,plausCells[0]);
+                        if(plausCells.length
+                        != this.rows[row].numPlausCells(val)){
+                            solve = true;
+                            for(int j = 0; j < this.rows[row].cells.length; j++){
+                                if(i != getSqr(row,j)){
+                                    this.rows[row].cells[j].removePlausible(val);
+                                }
+                            }
+                        }
+                    } else if(sameCol){
+                        int col = getCol(i,plausCells[0]);
+                        if(plausCells.length
+                        != this.cols[col].numPlausCells(val)){
+                            solve = true;
+                            for(int j = 0; j < this.cols[col].cells.length; j++){
+                                if(i != getSqr(j,col)){
+                                    this.cols[col].cells[j].removePlausible(val);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        return filled;
+        return solve;
     }
-    
-    public boolean isCorrect(){
-        return Sudoku.validSudokuMatrix(this.toMatrix());
+    /**
+     * Method solvePointingTriplets searches for patterns in which the only
+     * three cells in a square of the sudoku that could allocate a ceirtain
+     * number are in the same row or column, meaning there shouldn't be any
+     * other plausible cells for that numnber in cells of that row or column
+     * outside of the square.
+     * This includes only pointing triplets patterns.
+     * 
+     * @return true if we've found a new pointing triplet, false otherwise
+     */
+    public boolean solvePointingTriplets(){
+        boolean solve = false;
+        for(int i = 0; i < this.sqrs.length; i++){
+            int numMissingVals = this.sqrs[i].numMissingValues();
+            for(int n = 1; n <= numMissingVals; n++){
+                int val = this.sqrs[i].getMissingVal(n);
+                int[] plausCells = this.sqrs[i].getPlausCellsIndex(val);
+                if(plausCells.length == 3){
+                    boolean sameRow = true;
+                    boolean sameCol = true;
+                    for(int j = 1; j < plausCells.length; j++){
+                        sameRow &=
+                        getRow(i,plausCells[j]) == getRow(i,plausCells[j-1]);
+                        sameCol &=
+                        getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
+                    }
+                    if(sameRow){
+                        int row = getRow(i,plausCells[0]);
+                        if(plausCells.length
+                        != this.rows[row].numPlausCells(val)){
+                            solve = true;
+                            for(int j = 0; j < this.rows[row].cells.length; j++){
+                                if(i != getSqr(row,j)){
+                                    this.rows[row].cells[j].removePlausible(val);
+                                }
+                            }
+                        }
+                    } else if(sameCol){
+                        int col = getCol(i,plausCells[0]);
+                        if(plausCells.length
+                        != this.cols[col].numPlausCells(val)){
+                            solve = true;
+                            for(int j = 0; j < this.cols[col].cells.length; j++){
+                                if(i != getSqr(j,col)){
+                                    this.cols[col].cells[j].removePlausible(val);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return solve;
     }
     
     /* //////////////////////////////////////////////////////////////////////

@@ -105,3 +105,7 @@ DEVELOPMENT NOTES:
     + Added overloaded constructor to Sudoku.
     % There's lack of commentary, should check code from top to bottom and
     comment if needed.
+    * Pointin Singles is now Pointing Numbers, as it found both pointing pairs
+    and triplets from the begining.
+    + New solvePointingPairs & solvePointingTriplets methods in Sudoku that
+    asolate those solving methods.
