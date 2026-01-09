@@ -13,8 +13,8 @@ public class CellGroup {
      * ATTRIBUTES:
      * //////////////////////////////////////////////////////////////////////
      */
-    public Cell cells[];//the list of 9 cells composing the group.
-    public boolean values[];//a list of 9 booleans representing if
+    public Cell[] cells;//the list of 9 cells composing the group.
+    public boolean[] values;//a list of 9 booleans representing if
     //the digits from 1 to 9 already exist in a cell of the group.
     //Usefull information for some of the solving algorithms.
 

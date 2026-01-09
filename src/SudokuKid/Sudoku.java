@@ -14,11 +14,11 @@ public class Sudoku {
      * ATTRIBUTES:
      * //////////////////////////////////////////////////////////////////////
      */
-    private final CellGroup rows[] = new CellGroup [9];
+    private final CellGroup[] rows = new CellGroup[9];
     //will contain the 9 rows of the sudoku
-    private final CellGroup cols[] = new CellGroup [9];
+    private final CellGroup[] cols = new CellGroup[9];
     //will contain the 9 columns
-    private final CellGroup sqrs[] = new CellGroup [9];
+    private final CellGroup[] sqrs = new CellGroup[9];
     //will contain the 9 squares
     
     /* //////////////////////////////////////////////////////////////////////
@@ -27,7 +27,10 @@ public class Sudoku {
      * //////////////////////////////////////////////////////////////////////
      */
     /**
-     * Constructor for objects of class Sudoku
+     * Constructor for objects of class Sudoku.
+     * It initializes the lists of rows, columns and squares, creates all the
+     * new cells for the sudoku and assigns them to the correct position in
+     * all lists.
      */
     public Sudoku(){
         //honnestly, this is a messy one, I'm considering encapsulating
@@ -116,6 +119,17 @@ public class Sudoku {
         }
         //That's it, we finaly have our sudoku with 9 rows, 9 columns
         //and 9 squares sharing cells for a total of 81 slots.
+    }
+    /**
+     * Overloaded constructor for objects of class Sudoku that initializes the
+     * sudoku with the main constructor and adds the numbers from a given
+     * bidimentional array of integers to the grid. 
+     * 
+     * @param nums 
+     */
+    public Sudoku (int nums[][]){
+        this();
+        this.addNum(nums);
     }
     
     /* //////////////////////////////////////////////////////////////////////
@@ -485,8 +499,11 @@ public class Sudoku {
     /**
      * Method solvePointingSingles searches for patterns in which the only
      * cells in a square of the sudoku that could allocate a ceirtain number
+     * are in the same row or column, meaning there shouldn't be any other
+     * plausible cells for that numnber in cells of that row or column outside
+     * of the square.
      * 
-     * @return 
+     * @return true if we've found a new pointing digit, false otherwise
      */
     public boolean solvePointingSingles(){
         boolean solve = false;
@@ -505,19 +522,25 @@ public class Sudoku {
                         getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
                     }
                     if(sameRow){
-                        solve = true;
                         int row = getRow(i,plausCells[0]);
-                        for(int j = 0; j < this.rows[row].cells.length; j++){
-                            if(i != getSqr(row,j)){
-                                this.rows[row].cells[j].removePlausible(val);
+                        if(plausCells.length
+                        != this.rows[row].numPlausCells(val)){
+                            solve = true;
+                            for(int j = 0; j < this.rows[row].cells.length; j++){
+                                if(i != getSqr(row,j)){
+                                    this.rows[row].cells[j].removePlausible(val);
+                                }
                             }
                         }
                     } else if(sameCol){
-                        solve = true;
                         int col = getCol(i,plausCells[0]);
-                        for(int j = 0; j < this.cols[col].cells.length; j++){
-                            if(i != getSqr(j,col)){
-                                this.cols[col].cells[j].removePlausible(val);
+                        solve = true;
+                        if(plausCells.length
+                        != this.cols[col].numPlausCells(val)){
+                            for(int j = 0; j < this.cols[col].cells.length; j++){
+                                if(i != getSqr(j,col)){
+                                    this.cols[col].cells[j].removePlausible(val);
+                                }
                             }
                         }
                     }
@@ -525,6 +548,28 @@ public class Sudoku {
             }
         }
         return solve;
+    }
+    /*Example Solvable Matrixs:
+     * {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}}
+     *
+     */
+    
+    public boolean isSolved(){
+        return this.isFilled() && this.isCorrect();
+    }
+    
+    public boolean isFilled(){
+        boolean filled = true;
+        for(int i = 0; i < this.rows.length; i++) {
+            for(int j = 0; j < this.rows[i].cells.length; j++) {
+                filled &= this.rows[i].cells[j].isFilled();
+            }
+        }
+        return filled;
+    }
+    
+    public boolean isCorrect(){
+        return Sudoku.validSudokuMatrix(this.toMatrix());
     }
     
     /* //////////////////////////////////////////////////////////////////////
@@ -561,10 +606,27 @@ public class Sudoku {
     }
     
     /**
+     * Method toMatrix converts our Sudoku into an int[][] Sudoku matrix,
+     * a 9x9 bidimentional java array of integers where the numbers correlate
+     * to the value of the cell in that position in the Sudoku.
+     *
+     * @return matrix, an int[][] that represents our Sudoku.
+     */
+    public int[][] toMatrix(){
+        int[][] matrix = new int[9][9];
+        for(int i = 0; i < this.rows.length; i++){
+            for(int j = 0; j < this.rows[i].cells.length; j++){
+                matrix[i][j] = this.rows[i].cells[j].value;
+            }
+        }
+        return matrix;
+    }
+    
+    /**
      * Method showSudoku prints on terminal a visual representation of the
      * Sudoku. This lets us see the sudoku in the way it's usually depicted.
      */
-    public void showSudoku(){
+    public void showGrid(){
         for(int i = 0; i < this.rows.length; i++){
             System.out.println("+---+---+---++---+---+---++---+---+---+");
             if(i % 3 == 0 && i != 0){

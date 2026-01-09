@@ -13,7 +13,7 @@ public class Cell {
      */
     public int value; //the digit contained by the cell, 1 to 9.
     //if value is 0 then the Cell is "empty".
-    private boolean plausibleValues[]; //a list representing if each
+    private boolean[] plausibleValues; //a list representing if each
     //of the 9 valid digits could be placed in the cell or not.
     
     /* //////////////////////////////////////////////////////////////////////

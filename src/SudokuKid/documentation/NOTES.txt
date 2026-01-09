@@ -86,3 +86,22 @@ DEVELOPMENT NOTES:
         + Added solvePointingSingles method to Sudoku.
         + Added getRow and getCol methods to Sudoku.
         + Added getPlausCellsIndex method to CellGroup.
+
+09/01/2026 - 
+    + Added new main class to handle execution. It's very lacking rn.
+        % Very litle user input for now.
+        % Missing commentary!
+    * Changes to solvePointingSingles method in Sudoku:
+        + Added Javadoc.
+        * Fixed method returning true for patterns already found before or
+        cases in which the pattern found doesn't add information therefore not
+        making progress with solving.
+        % Missing commentary!
+    * Minor fixes to syntax.
+    * showSudoku() method is now called showGrid().
+    + Added toMatrix method to Sudoku.
+    + Added isFilled, isCorrect and isSolved methods to Sudoku.
+        % Missing Javadoc & commentary!
+    + Added overloaded constructor to Sudoku.
+    % There's lack of commentary, should check code from top to bottom and
+    comment if needed.

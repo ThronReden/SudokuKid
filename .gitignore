@@ -6,3 +6,4 @@
 *.bluej
 *.xml
 *.mf
+/dist/
