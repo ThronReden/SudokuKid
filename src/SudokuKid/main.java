@@ -8,11 +8,16 @@ import java.util.Scanner;
  */
 public class main {
     
-    private static boolean NP = true; //use Naked Pairs
-    private static boolean PS = true; //use Pointing Singles
+    private static boolean NP = false; //weather to use Naked Pairs
+    private static boolean PS = true; //weather to use Pointing Singles
+    
+    private static final int[][] EL_PAIS_experto_2025_12_05 = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
+    private static final int[][] EL_PAIS_medio_2026_01_09 = {{0,2,5,0,4,6,0,0,0},{0,0,0,0,0,0,7,0,0},{1,0,9,0,0,0,0,0,0},{0,0,0,2,9,0,0,7,4},{6,0,7,0,0,0,0,8,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,8,4,0,5,0},{0,6,8,0,0,0,2,0,0},{0,0,0,0,0,1,0,0,9}};
+    private static final int[][] EL_PAIS_dificil_2026_01_09 = {{0,0,0,0,0,0,8,0,0},{0,4,5,0,0,0,0,0,9},{0,9,0,8,0,0,0,0,0},{1,0,0,9,0,0,6,0,0},{0,2,0,0,6,0,0,9,7},{0,0,0,0,0,1,0,0,8},{0,0,0,3,0,7,0,0,2},{0,1,0,0,2,0,0,0,0},{0,0,6,0,0,0,3,0,4}};
     
     public static void main (String[] args){
-        int[][] sudokuMatrix = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
+        //the sudoku statement we want to solve:
+        int[][] sudokuMatrix = EL_PAIS_dificil_2026_01_09;
         Sudoku sudoku = new Sudoku(sudokuMatrix);
         Scanner scanner = new Scanner(System.in);
         System.out.println("INITIAL SUDOKU STATEMENT:");
@@ -33,6 +38,7 @@ public class main {
                 solve = true; //we've solved something
             }
             while(PS && !solve && sudoku.solvePointingSingles()){
+                System.out.println("solvePointingSingles SUCCES");
                 solve = true; //we've solved something
             }
             if(numAdded){
