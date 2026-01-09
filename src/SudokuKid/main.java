@@ -8,6 +8,9 @@ import java.util.Scanner;
  */
 public class main {
     
+    private static boolean NS = true; //weather to use Naked Singles
+    private static boolean HS = true; //weather to use Hidden Singles
+    private static boolean AS = NS && HS; //weather to use All Singles
     private static boolean NP = true; //weather to use Naked Pairs
     private static boolean PP = true; //weather to use Pointing Pairs
     private static boolean PT = true; //weather to use Pointing Triplets
@@ -34,8 +37,18 @@ public class main {
             count++;
             solve = false;
             numAdded = false;
-            while(sudoku.solveNakedSingles()){
+            while(!AS && NS && sudoku.solveNakedSingles()){
 //                System.out.println("used solveNakedSingles");
+                solve = true; //we've solved something
+                numAdded = true; //we've added a number to the grid
+            }
+            while(!AS && HS && sudoku.solveHiddenSingles()){
+//                System.out.println("used solveHiddenSingles");
+                solve = true; //we've solved something
+                numAdded = true; //we've added a number to the grid
+            }
+            while(AS && sudoku.solveAllSingles()){
+//                System.out.println("used solveAllSingles");
                 solve = true; //we've solved something
                 numAdded = true; //we've added a number to the grid
             }
