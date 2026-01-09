@@ -172,6 +172,25 @@ public class CellGroup {
     }
     
     /**
+     * Method getPlausCellsIndex gets us the indexes in this.cells for the
+     * cells that could be filled with a given value.
+     * 
+     * @param val, the value we want to check for
+     * @return a list with the corresponding indexes
+     */
+    public int[] getPlausCellsIndex(int val){
+        int[] indexs = new int[this.numPlausCells(val)];
+        int j = 0;
+        for(int i = 0; i < this.cells.length; i++){
+            if(this.cells[i].isPlausible(val)){
+                indexs[j] = i;
+                j++;
+            }
+        }
+        return indexs;
+    }
+    
+    /**
      * Method getPlausCells gets us the list of cells in this group, in case
      * any exists, that could be filled with both given numbers.
      * 
@@ -394,7 +413,7 @@ public class CellGroup {
                             //both can only be filled with one or the other
                             //and not any other number:
                             if(numCellsOnlyPair == 2){
-                                //then we've found a naked pair and the
+                                //then we've found a pair and the
                                 //rest of the cells in the group can't be
                                 //filled with those numbers:
                                 solve = true;
@@ -402,6 +421,9 @@ public class CellGroup {
                                     restCells[k].removePlausible(val1);
                                     restCells[k].removePlausible(val2);
                                 }
+                                //This pattern applied to a row or a column is
+                                //what we call a pointing pair.
+                                //Not sure if it has a name for squares.
                             }
                         //in the case we found only two cells and those are
                         //the only cells in the group that can be filled
@@ -417,6 +439,7 @@ public class CellGroup {
                                 foundCells[k].
                                 removeAllPlausibleBut(val1,val2);
                             }
+                            //This is a hidden pair pattern.
                         }
                     }
                 }
