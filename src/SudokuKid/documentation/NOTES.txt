@@ -89,7 +89,7 @@ DEVELOPMENT NOTES:
 
 09/01/2026 - 
     + Added new main class to handle execution. It's very lacking rn.
-        % No user input for now.
+        % Very litle user input for now.
         % Missing commentary!
     * Changes to solvePointingSingles method in Sudoku:
         + Added Javadoc.
