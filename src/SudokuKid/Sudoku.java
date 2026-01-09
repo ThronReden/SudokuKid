@@ -285,6 +285,34 @@ public class Sudoku {
     }
     
     /**
+     * Method getRow finds the row a Cell in a given position of a given
+     * square belongs to.
+     * 
+     * @param sqr, the Cells square
+     * @param pos, its position in the square
+     * @return an integer from 0 to 8 corresponding to this Cells row
+     * position in our rows array.
+     */
+    public int getRow(int sqr, int pos){
+        int row = sqr/3*3+pos/3; //the corresponding row
+        return row; //we return it
+    }
+    
+    /**
+     * Method getCol finds the column a Cell in a given position of a given
+     * square belongs to.
+     * 
+     * @param sqr, the Cells square
+     * @param pos, its position in the square
+     * @return an integer from 0 to 8 corresponding to this Cells column
+     * position in our cols array.
+     */
+    public int getCol(int sqr, int pos){
+        int col = sqr%3*3+pos%3; //the corresponding column
+        return col; //we return it
+    }
+    
+    /**
      * Method getPosInSqr finds the position a Cell in a given row and column
      * will be at in its square, but not the square it belongs to.
      * We encapsulated this as we may need to use it a bunch of times.
@@ -425,10 +453,11 @@ public class Sudoku {
      */
     
     /**
-     * Method solveNakedPairs searches for pair patterns in groups that can
-     * eliminate plausible values from some cells in the group. This method
-     * role is mearly calling the method that does this for each of the groups
-     * in our sudoku.
+     * Method solveNakedPairs searches for hidden pair and pointing pair
+     * patterns in groups that can eliminate plausible values from some cells
+     * in the group.
+     * This methods role is mearly calling the method that does this for each
+     * of the groups in our sudoku: all rows, columns and squares.
      * 
      * @return true if we're closer to solving the sudoku, else otherwise
      */
@@ -453,12 +482,46 @@ public class Sudoku {
      *
      */
     
+    /**
+     * Method solvePointingSingles searches for patterns in which the only
+     * cells in a square of the sudoku that could allocate a ceirtain number
+     * 
+     * @return 
+     */
     public boolean solvePointingSingles(){
         boolean solve = false;
         for(int i = 0; i < this.sqrs.length; i++){
             int numMissingVals = this.sqrs[i].numMissingValues();
             for(int n = 1; n <= numMissingVals; n++){
-                
+                int val = this.sqrs[i].getMissingVal(n);
+                int[] plausCells = this.sqrs[i].getPlausCellsIndex(val);
+                if(plausCells.length <= 3){
+                    boolean sameRow = true;
+                    boolean sameCol = true;
+                    for(int j = 1; j < plausCells.length; j++){
+                        sameRow &=
+                        getRow(i,plausCells[j]) == getRow(i,plausCells[j-1]);
+                        sameCol &=
+                        getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
+                    }
+                    if(sameRow){
+                        solve = true;
+                        int row = getRow(i,plausCells[0]);
+                        for(int j = 0; j < this.rows[row].cells.length; j++){
+                            if(i != getSqr(row,j)){
+                                this.rows[row].cells[j].removePlausible(val);
+                            }
+                        }
+                    } else if(sameCol){
+                        solve = true;
+                        int col = getCol(i,plausCells[0]);
+                        for(int j = 0; j < this.cols[col].cells.length; j++){
+                            if(i != getSqr(j,col)){
+                                this.cols[col].cells[j].removePlausible(val);
+                            }
+                        }
+                    }
+                }
             }
         }
         return solve;

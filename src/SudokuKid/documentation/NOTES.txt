@@ -74,10 +74,15 @@ DEVELOPMENT NOTES:
         + Added getPlausCells, getRestCells, valsExistAlone and
         numCellsOnlyPair methods to CellGroup.
         + Added removeAllPlausibleBut method to Cell.
-        % numPlausCells for two values is kinda obsolete as it's the same as
-        checking the length of the array returned by getPlausCells for those
-        same values, but it's staying for now JIC.
     * Fixed removePlausible(int val) in Cell and findNakedPairs() in CellGroup
     accounting for filled cells, when it shouldn't.
     * Changed showSudoku() so it prints an empty space instead of a 0 for
     empty cells, this cleans the visual representation a lot.
+    * Fixed  error in valsExistAlone method in CellGroup: the boolean value
+    was being overwritten (re-asigned w/ "=") instead of added (w/ "|=")
+    for every Cell we checked.
+
+    + New feature being developed: Pointing Singles:
+        + Added solvePointingSingles method to Sudoku.
+        + Added getRow and getCol methods to Sudoku.
+        + Added getPlausCellsIndex method to CellGroup.
