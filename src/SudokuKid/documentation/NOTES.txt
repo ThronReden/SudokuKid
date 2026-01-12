@@ -87,7 +87,7 @@ DEVELOPMENT NOTES:
         + Added getRow and getCol methods to Sudoku.
         + Added getPlausCellsIndex method to CellGroup.
 
-09/01/2026 - 
+09/01/2026 - Big big progress and main class:
     + Added new main class to handle execution. It's very lacking rn.
         % Very little user input for now.
         % Missing commentary!
@@ -105,3 +105,20 @@ DEVELOPMENT NOTES:
     + Added overloaded constructor to Sudoku.
     % There's lack of commentary, should check code from top to bottom and
     comment if needed.
+    * Pointin Singles is now Pointing Numbers, as it found both pointing pairs
+    and triplets from the begining.
+    + New solvePointingPairs & solvePointingTriplets methods in Sudoku that
+    asolate those solving methods.
+    * solveNakedSingles now is solveAllSingles, as it found both naked singles
+    and hidden singles from the begining.
+    + New solveNakedSingles & solveHiddenSingles methods in Sudoku to asolate
+    those solving methods.
+
+12/01/2026 - 
+    + Added some commentary to main method.
+    * Minor fixes in main solving loop so it doesn't print the sudoku twice
+    when it's solved.
+    * All Singles is now Simple Singles.
+    * Naked Pairs is now Simple Pairs.
+    + New solveNakedPairs & solveHiddenPairs methods in Sudoku to asolate
+    those solving methods.
