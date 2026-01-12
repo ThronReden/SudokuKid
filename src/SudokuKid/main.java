@@ -8,16 +8,20 @@ import java.util.Scanner;
  */
 public class main {
     
-    private static boolean NS = true; //weather to use Naked Singles
-    private static boolean HS = true; //weather to use Hidden Singles
-    private static boolean SS = NS && HS; //weather to use Simple Singles
-    private static boolean NP = true; //weather to use Naked Pairs
-    private static boolean HP = true; //weather to use Hidden Pairs
-    private static boolean SP = NP && HP; //weather to use Simple Pairs
-    private static boolean PP = true; //weather to use Pointing Pairs
-    private static boolean PT = true; //weather to use Pointing Triplets
-    private static boolean PN = PP && PT; //weather to use Pointing Numbers
+    //Boolean variables to store weather a certain methods use is enabled:
+    private static boolean NS = true; //weather Naked Singles use is enabled
+    private static boolean HS = true; //weather Hidden Singles  use is enabled
+    private static boolean SS = NS && HS; //Simple Singles (both previous)
     
+    private static boolean NP = true; //Naked Pairs
+    private static boolean HP = true; //Hidden Pairs
+    private static boolean SP = NP && HP; //Simple Pairs (both previous)
+    
+    private static boolean PP = true; //Pointing Pairs
+    private static boolean PT = true; //Pointing Triplets
+    private static boolean PN = PP && PT; //Pointing Numbers (both previous)
+    
+    //Stored sudoku statements:
     //SOLVABLE:
     private static final int[][] EL_PAIS_experto_2025_12_05 = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
     private static final int[][] EL_PAIS_medio_2026_01_09 = {{0,2,5,0,4,6,0,0,0},{0,0,0,0,0,0,7,0,0},{1,0,9,0,0,0,0,0,0},{0,0,0,2,9,0,0,7,4},{6,0,7,0,0,0,0,8,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,8,4,0,5,0},{0,6,8,0,0,0,2,0,0},{0,0,0,0,0,1,0,0,9}};
@@ -26,7 +30,7 @@ public class main {
     
     public static void main (String[] args){
         //the sudoku statement we want to solve:
-        int[][] sudokuMatrix = EL_PAIS_dificil_2026_01_09;
+        int[][] sudokuMatrix = EL_PAIS_experto_2025_12_05;
         //we create a Sudoku object to manage it:
         Sudoku sudoku = new Sudoku(sudokuMatrix);
         //we create a Scanner object for basic user interaction:
@@ -87,19 +91,19 @@ public class main {
             //Naked Pairs:
                 //(used only if Hidden Pairs isn't enabled)
             while(!SP && NP && !solve && sudoku.solveNakedPairs()){
-//                System.out.println("used solveNakedPairs");
+                System.out.println("used solveNakedPairs");
                 solve = true; //we've found at least one new naked pair
             }
-            //Naked Pairs:
-                //(used only if Naked Pairs isn't enabled)
+            //Hidden Pairs:
+                //(used only if Hidden Pairs isn't enabled)
             while(!SP && HP && !solve && sudoku.solveHiddenPairs()){
-//                System.out.println("used solveNakedPairs");
+                System.out.println("used solveHiddenPairs");
                 solve = true; //we've found at least one new naked pair
             }
             //Simple Pairs:
                 //(used if both Naked and Hidden Pairs are enabled)
             while(SP && !solve && sudoku.solveSimplePairs()){
-//                System.out.println("used solveNakedPairs");
+                System.out.println("used solveSimplePairs");
                 solve = true; //we've found at least one new naked pair
             }
             //Pointing Pairs:
