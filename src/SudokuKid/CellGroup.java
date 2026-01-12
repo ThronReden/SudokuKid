@@ -363,18 +363,19 @@ public class CellGroup {
     }
     
     /**
-     * Method findNakedPairs sarches for pair patterns in the group that
+     * Method findSimplePairs sarches for pair patterns in the group that
      * eliminate plausible values from some cells in the group.
      * Specifically, we'll search for cases in which there's a pair of cells
-     * that can only be filled with the same pair, meaning none of the digits
-     * of the pair can fill any other cell in the group; or a pair of cells in
-     * the group that is the only that can be filled with a certain pair of
-     * numbers, meaning the rest of seeingly plausible values for that pair
-     * of cells isn't really plausible and can be removed.
+     * that can only be filled with the same pair, meaning the digits of the
+     * pair can't be in any other cell in the group; or the only pair of cells
+     * in the group that can be filled with a certain pair of numbers, meaning
+     * one of the numbers goes in one and the other in the other and the rest
+     * of seemingly plausible values for that pair of cells isn't really
+     * plausible and can be removed.
      * 
      * @return true if we found a pair and therefore made progress in solving
      */
-    public boolean findNakedPairs(){
+    public boolean findSimplePairs(){
         boolean solve = false; //we'll be returning this
         //if the group isn't solved:
         if(!this.isComplete()){
@@ -426,6 +427,134 @@ public class CellGroup {
                         //the only cells in the group that can be filled
                         //with any and both values of the pair:
                         } else if(numCells == 2 && numCellsOnlyPair != 2){
+                            //(second part of the condition checks if the pair
+                            //was already found before, therefore there's no
+                            //progress in solving)
+                            //we rule out any other value we may have had
+                            //stored as plausible for those two cells:
+                            solve = true;
+                            for(int k = 0; k < foundCells.length; k++){
+                                foundCells[k].
+                                removeAllPlausibleBut(val1,val2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return solve;
+    }
+    /**
+     * Method findNakedPairs sarches for naked pair patterns in the group that
+     * eliminate plausible values from some cells in the group.
+     * Specifically, we'll search for cases in which there's a pair of cells
+     * that can only be filled with the same pair, meaning the digits of the
+     * pair can't be in any other cell in the group.
+     * 
+     * @return true if we found a pair and therefore made progress in solving
+     */
+    public boolean findNakedPairs(){
+        boolean solve = false; //we'll be returning this
+        //if the group isn't solved:
+        if(!this.isComplete()){
+            int n = this.numMissingValues(); //we get how many numbers are
+            //missing
+            //if it is at least 2:
+            if(n > 1){
+                //for each pair of missing values:
+                for(int i = 1; i < n; i++){
+                    for(int j = i + 1; j <= n; j++){
+                        int val1 = this.getMissingVal(i); //first value of the
+                        //pair
+                        int val2 = this.getMissingVal(j); //second value of the
+                        //pair
+                        //we create an array to retain the cells that can be
+                        //filled with both values in the pair:
+                        Cell[] foundCells = this.getPlausCells(val1, val2);
+                        //we create an array to retain the rest of the cells:
+                        Cell[] restCells = this.getRestCells(val1, val2);
+                        //we store how many cells can be filled with both
+                        //values of the pair:
+                        if(foundCells.length+restCells.length != 9){
+                            System.out.println("SOMETHING WENT HORRIBLY WRONG");
+                            System.exit(0);
+                        }
+                        int numCells = foundCells.length;
+                        //we store how many cells can only be filled by the
+                        //pair of numbers:
+                        int numCellsOnlyPair =
+                        this.numCellsOnlyPair(foundCells);
+                        //if the cells that can be filled with both values of
+                        //the pair aren't the only cells in the group that can
+                        //be filled with one of the values in the pair:
+                        if(numCells > 1 && this.valsExistAlone(val1,val2)){
+                            //but two of the cells that can be filled with
+                            //both can only be filled with one or the other
+                            //and not any other number:
+                            if(numCellsOnlyPair == 2){
+                                //then we've found a pair and the
+                                //rest of the cells in the group can't be
+                                //filled with those numbers:
+                                solve = true;
+                                for(int k = 0; k < restCells.length; k++){
+                                    restCells[k].removePlausible(val1);
+                                    restCells[k].removePlausible(val2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return solve;
+    }
+    /**
+     * Method findHiddenPairs sarches for hidden pair patterns in the group
+     * that eliminate plausible values from some cells in the group.
+     * Specifically, we'll search for cases in which there's a single pair of
+     * cells in the group that can be filled with a certain pair of numbers,
+     * meaning one of the numbers goes in one and the other in the other and
+     * the rest of seemingly plausible values for that pair of cells isn't
+     * really plausible and can be removed.
+     * 
+     * @return true if we found a pair and therefore made progress in solving
+     */
+    public boolean findHiddenPairs(){
+        boolean solve = false; //we'll be returning this
+        //if the group isn't solved:
+        if(!this.isComplete()){
+            int n = this.numMissingValues(); //we get how many numbers are
+            //missing
+            //if it is at least 2:
+            if(n > 1){
+                //for each pair of missing values:
+                for(int i = 1; i < n; i++){
+                    for(int j = i + 1; j <= n; j++){
+                        int val1 = this.getMissingVal(i); //first value of the
+                        //pair
+                        int val2 = this.getMissingVal(j); //second value of the
+                        //pair
+                        //we create an array to retain the cells that can be
+                        //filled with both values in the pair:
+                        Cell[] foundCells = this.getPlausCells(val1, val2);
+                        //we create an array to retain the rest of the cells:
+                        Cell[] restCells = this.getRestCells(val1, val2);
+                        //we store how many cells can be filled with both
+                        //values of the pair:
+                        if(foundCells.length+restCells.length != 9){
+                            System.out.println("SOMETHING WENT HORRIBLY WRONG");
+                            System.exit(0);
+                        }
+                        int numCells = foundCells.length;
+                        //we store how many cells can only be filled by the
+                        //pair of numbers:
+                        int numCellsOnlyPair =
+                        this.numCellsOnlyPair(foundCells);
+                        //in the case we found only two cells and those are
+                        //the only cells in the group that can be filled
+                        //with any and both values of the pair:
+                        if(!this.valsExistAlone(val1,val2) && numCells == 2
+                        && numCellsOnlyPair != 2){
                             //(second part of the condition checks if the pair
                             //was already found before, therefore there's no
                             //progress in solving)
