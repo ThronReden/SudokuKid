@@ -55,7 +55,7 @@ public class Sudoku {
         }
         
         //COLUMNS
-        Cell cellList[]; //now we declare the list we'll send to the
+        Cell[] cellList; //now we declare the list we'll send to the
         //overloaded constructor with the correct cells
         for(int i = 0; i < this.cols.length; i++){
             cellList = new Cell[9]; //We initialize it in the for loop
@@ -83,8 +83,8 @@ public class Sudoku {
         }
         
         //SQUARES
-        Cell cellList2[]; //We'll be needing two more aux lists
-        Cell cellList3[]; //as we'll be filling 3 squares at the same
+        Cell[] cellList2; //We'll be needing two more aux lists
+        Cell[] cellList3; //as we'll be filling 3 squares at the same
         //time.
         cellList = new Cell[9];  //We initialize them out of the loop
         cellList2 = new Cell[9]; //cause we don't want all iterations
