@@ -91,19 +91,19 @@ public class main {
             //Naked Pairs:
                 //(used only if Hidden Pairs isn't enabled)
             while(!SP && NP && !solve && sudoku.solveNakedPairs()){
-                System.out.println("used solveNakedPairs");
+//                System.out.println("used solveNakedPairs");
                 solve = true; //we've found at least one new naked pair
             }
             //Hidden Pairs:
                 //(used only if Hidden Pairs isn't enabled)
             while(!SP && HP && !solve && sudoku.solveHiddenPairs()){
-                System.out.println("used solveHiddenPairs");
+//                System.out.println("used solveHiddenPairs");
                 solve = true; //we've found at least one new naked pair
             }
             //Simple Pairs:
                 //(used if both Naked and Hidden Pairs are enabled)
             while(SP && !solve && sudoku.solveSimplePairs()){
-                System.out.println("used solveSimplePairs");
+//                System.out.println("used solveSimplePairs");
                 solve = true; //we've found at least one new naked pair
             }
             //Pointing Pairs:
