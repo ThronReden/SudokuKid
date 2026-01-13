@@ -17,7 +17,7 @@ moment).
 2. Open the main class.
 3. Change the sudokuMatrix variable to match the sudoku you want to solve
 in the format of a 9x9 java array matrix of single integer digits.<br>
-> regex = "^\{(\{(\d\,){8}\d\}\,){8}\{(\d\,){8}\d\}\}$"
+> regex = "^\\{(\\{(\\d\\,){8}\\d\\}\\,){8}\\{(\\d\\,){8}\\d\\}\\}$"
 4. Change the boolean attributes at the top to true if you want to use
 the asociated solving algorithm or false if you don't (all are true by
 default). Don't change the ones with an expression differen to true or
