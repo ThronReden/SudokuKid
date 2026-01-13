@@ -114,7 +114,7 @@ DEVELOPMENT NOTES:
     + New solveNakedSingles & solveHiddenSingles methods in Sudoku to asolate
     those solving methods.
 
-12/01/2026 - 
+12/01/2026 - General progress (General Progress! )
     + Added some commentary to main method.
     * Minor fixes in main solving loop so it doesn't print the sudoku twice
     when it's solved.
@@ -127,3 +127,9 @@ DEVELOPMENT NOTES:
         > X-Wing: patterns with rows or columns with paralel plausible pairs.
         > Y-Wing: patterns with plausible pairs in three cells that see each
         other affecting a fourth cell.
+		
+13/01/2026 - We're on GitHub now! v0.5
+	* Moved the docummentation files to the main folder.
+	* Now master branch name is main.
+	+ Repository pushed to GitHub (all branches).
+	* README has been updated and is now an .md file.
