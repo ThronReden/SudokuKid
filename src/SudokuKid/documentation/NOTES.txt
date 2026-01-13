@@ -122,3 +122,8 @@ DEVELOPMENT NOTES:
     * Naked Pairs is now Simple Pairs.
     + New solveNakedPairs & solveHiddenPairs methods in Sudoku to asolate
     those solving methods.
+    > New features to work on:
+        > Simple Triplets: implementing both Naked and Hidden Triplet patterns.
+        > X-Wing: patterns with rows or columns with paralel plausible pairs.
+        > Y-Wing: patterns with plausible pairs in three cells that see each
+        other affecting a fourth cell.
