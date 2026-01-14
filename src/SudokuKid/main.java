@@ -10,7 +10,7 @@ public class main {
     
     //Boolean variables to store weather a certain methods use is enabled:
     private static boolean NS = true; //weather Naked Singles use is enabled
-    private static boolean HS = true; //weather Hidden Singles  use is enabled
+    private static boolean HS = true; //weather Hidden Singles use is enabled
     private static boolean SS = NS && HS; //Simple Singles (both previous)
     
     private static boolean NP = true; //Naked Pairs

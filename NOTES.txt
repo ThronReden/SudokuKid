@@ -133,3 +133,4 @@ DEVELOPMENT NOTES:
 	* Now master branch name is main.
 	+ Repository pushed to GitHub (all branches).
 	* README has been updated and is now an .md file.
+	+ solveSimpleTriplets development begun
