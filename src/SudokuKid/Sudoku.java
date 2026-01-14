@@ -16,8 +16,10 @@ public class Sudoku {
      */
     private final CellGroup[] rows = new CellGroup[9];
     //will contain the 9 rows of the sudoku
+    
     private final CellGroup[] cols = new CellGroup[9];
     //will contain the 9 columns
+    
     private final CellGroup[] sqrs = new CellGroup[9];
     //will contain the 9 squares
     
@@ -383,21 +385,63 @@ public class Sudoku {
          */
     }
     
+    /**
+     * Method isSolved checks weather the sudoku is solved or not, simple
+     * enough. This is achieved by checking both if all cells are filled and
+     * if sudoku rules are respected all throughout the grid, meaning we have
+     * not made a mistake with any of the numbers added.
+     * 
+     * @return true if the sudoku is correctly solved, false otherwise
+     */
     public boolean isSolved(){
+        //we call the methods that check both conditions mentioned earlier:
         return this.isFilled() && this.isCorrect();
     }
     
+    /**
+     * Method isFilled checks if all cells of the sudoku are filled with a
+     * digit.
+     * It loops through the full sudoku and fails if any of its cells is
+     * empty.
+     * 
+     * @return true if the sudoku is entirely filled, false otherwise
+     */
     public boolean isFilled(){
+        //the variable we'll return later, true by default:
         boolean filled = true;
+        //we loop through the sudoku:   (i for rows and j for columns)
         for(int i = 0; i < this.rows.length; i++) {
             for(int j = 0; j < this.rows[i].cells.length; j++) {
+                //we asign with &= so it'll remain true if the cell is filled
+                //and it was already true but turn false if any of the cells
+                //is empty:
                 filled &= this.rows[i].cells[j].isFilled();
+                //we can finish execution early if a single cell is not filled:
+                if(!filled){
+                    return filled;
+                }
             }
         }
+        //we return our checking variable:
         return filled;
     }
     
+    /**
+     * Method isCorrect checks if all filled cells respect basic sudoku rules.
+     * This means every digit appears, if any, a single time in every row,
+     * column and square. If it's solved every digit from 1 to 9 will appear
+     * only once in each cell group and if it's not solved it may not appear
+     * at all in some of them but there can never be multiple instances of the
+     * same digit in the same group.
+     * As we already have a method that does this with 9x9 integer matrixs
+     * we'll use that.
+     * 
+     * @return true if sudoku rules are respected all throughout the grid,
+     * false otherwise.
+     */
     public boolean isCorrect(){
+        //we convert the sudoku to a 9x9 matrix with .toMatrix() and call the
+        //validSudokuMatrix with it:
         return Sudoku.validSudokuMatrix(this.toMatrix());
     }
     

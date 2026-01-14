@@ -126,11 +126,14 @@ public class main {
                 //pair or triplet
             }
         }
+        //now that the solving loop is over we indicate weather the sudoku
+        //is solved or not:
         if(sudoku.isSolved()){
             System.out.println("SUDOKU IS SOLVED -- "+count+" iterations");
         } else {
             System.out.println("CAN'T SOLVE ANY FURTHER -- "+count+" iterations");
         }
+        //and then print it on terminal:
         sudoku.showGrid();
     }
 }
