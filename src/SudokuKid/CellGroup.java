@@ -83,8 +83,11 @@ public class CellGroup {
     public boolean isComplete(){
         boolean complete = true;
         for(int i = 0; i < this.values.length; i++){
-            if(this.values[i] == false)
+            //if any of the values is missing from the group:
+            if(this.values[i] == false){
                 complete = false;
+                return complete; //we return false
+            }
         }
         return complete;
     }
@@ -172,22 +175,29 @@ public class CellGroup {
     }
     
     /**
-     * Method getPlausCellsIndex gets us the indexes in this.cells for the
-     * cells that could be filled with a given value.
+     * Method getPlausCellsIndex gets us the positions in this group of cells
+     * for the cells that could be filled with a given value.
      * 
      * @param val, the value we want to check for
      * @return a list with the corresponding indexes
      */
     public int[] getPlausCellsIndex(int val){
+        //the list of indexes to return:
         int[] indexs = new int[this.numPlausCells(val)];
-        int j = 0;
+        //its length is equal to the number of cells we calculate with the
+        //numPlausCells method could be filled with the given value
+        int j = 0; //to keep track of which position of the array we want to
+        //fill next
+        //we loop through this groups cells:
         for(int i = 0; i < this.cells.length; i++){
+            //if it could be filled with the given value:
             if(this.cells[i].isPlausible(val)){
+                //we store its index (position in the row):
                 indexs[j] = i;
-                j++;
+                j++; //and move the head to the next position of the array
             }
         }
-        return indexs;
+        return indexs; //we return the array
     }
     
     /**
@@ -199,16 +209,23 @@ public class CellGroup {
      * @return an array with the corresponding cells
      */
     private Cell[] getPlausCells(int val1, int val2) {
+        //the list of cells to return:
         Cell[] plausCells = new Cell[this.numPlausCells(val1, val2)];
-        int j = 0;
+        //its length is equal to the number of cells we calculate with the
+        //numPlausCells method could be filled with both given values
+        int j = 0; //to keep track of which position of the array we want to
+        //fill next
+        //we loop through this groups cells:
         for(int i = 0; i < this.cells.length; i++){
+            //if it could be filled with the given values:
             if(this.cells[i].isPlausible(val1)
             && this.cells[i].isPlausible(val2)){
+                //we store it
                 plausCells[j] = this.cells[i];
-                j++;
+                j++; //and move the head to the next position of the array
             }
         }
-        return plausCells;
+        return plausCells; //we return the array
     }
     
     /**
@@ -222,13 +239,21 @@ public class CellGroup {
      * @return an array with the corresponding cells
      */
     private Cell[] getRestCells(int val1, int val2) {
+        //the list of cells to return:
         Cell[] restCells = new Cell[9-this.numPlausCells(val1, val2)];
-        int j = 0;
+        //its length is equal to the number of cells in the row, 9, minus the 
+        //number of cells we calculate with the numPlausCells method could be
+        //filled with both given values
+        int j = 0; //to keep track of which position of the array we want to
+        //fill next
+        //we loop through this groups cells:
         for(int i = 0; i < this.cells.length; i++){
+            //if it couldn't be filled with both the given values:
             if(!this.cells[i].isPlausible(val1)
             || !this.cells[i].isPlausible(val2)){
+                //we store it
                 restCells[j] = this.cells[i];
-                j++;
+                j++; //and move the head to the next position of the array
             }
         }
         return restCells;
@@ -243,13 +268,18 @@ public class CellGroup {
      * @return true if there's such a cell, false otherwise
      */
     private boolean valsExistAlone(int val1, int val2) {
-        boolean exists = false;
+        boolean exists = false; //we'll be returning this
         for(int i = 0; i < this.cells.length; i++){
+            //if there's a cell that could be filled with one of the digits of
+            //the pair but not the other we update our variable:
             exists |=
             (this.cells[i].isPlausible(val1)
                 && !this.cells[i].isPlausible(val2))
             || (!this.cells[i].isPlausible(val1)
                 && this.cells[i].isPlausible(val2));
+            if(exists){
+                return exists; //once we found even one we can end execution
+            }
         }
         return exists;
     }
@@ -263,18 +293,24 @@ public class CellGroup {
      * @return the number of cells that satisfy this
      */
     private int numCellsOnlyPair(int val1, int val2) {
-        int count = 0;
+        int count = 0; //a variable to store the count
+        //we get the list of plausible cells for both digits:
         Cell[] plausCells = this.getPlausCells(val1, val2);
+        //we loop through it:
         for(int i = 0; i < plausCells.length; i++) {
+            //if any of he cells could be filled with only two values then it
+            //has to be the two we checked for:
             if(plausCells[i].numPlausibleValues() == 2){
-                count++;
+                count++; //and we add it to the count
             }
         }
+        //if theres more than 2 cells in the group that should be filled with
+        //one of two digits something went wrong, that cant happen:
         if(count > 2){
             System.out.println("SOMTHING WENT HORRIBLY WRONG");
             System.exit(0);
         }
-        return count;
+        return count; //we return our count
     }
     /**
      * Method numCellsOnlyPair overload does the same but for a given list of
@@ -289,17 +325,22 @@ public class CellGroup {
      * @return 
      */
     private int numCellsOnlyPair(Cell[] plausCells) {
-        int count = 0;
+        int count = 0; //a variable to store the count
+        //we loop through the given list of plausible cells:
         for(int i = 0; i < plausCells.length; i++) {
+            //if any of he cells could be filled with only two values then it
+            //has to be the two we checked for:
             if(plausCells[i].numPlausibleValues() == 2){
-                count++;
+                count++; //and we add it to the count
             }
         }
+        //if theres more than 2 cells in the group that should be filled with
+        //one of two digits something went wrong, that cant happen:
         if(count > 2){
-            System.out.println("SOMETHING WENT HORRIBLY WRONG");
+            System.out.println("SOMTHING WENT HORRIBLY WRONG");
             System.exit(0);
         }
-        return count;
+        return count; //we return our count
     }
     
     /**

@@ -62,7 +62,7 @@ public class Cell {
      * and false if it is 0, therefore being empty.
      */
     public boolean isFilled(){
-        return this.value != 0;
+        return this.value != 0; //if it's 0 then it's empty
     }
     
     /**
@@ -142,6 +142,8 @@ public class Cell {
      * @return true if it can fill the cell, false otherwise
      */
     public boolean isPlausible(int val) {
+        //it has to be emty and have that digit marked as plausible in our
+        //plausibleValues list:
         return !this.isFilled() && this.plausibleValues[val-1];
     }
     
@@ -152,8 +154,9 @@ public class Cell {
      * @param val the value we want to set to not plausible for this Cell
      */
     public void removePlausible(int val) {
+        //if the cell is empty:
         if(!this.isFilled()){
-            this.plausibleValues[val-1] = false;
+            this.plausibleValues[val-1] = false; //we mark it as not plausible
         }
     }
 
@@ -165,7 +168,9 @@ public class Cell {
      * @param val2, the second
      */
     public void removeAllPlausibleBut(int val1, int val2) {
+        //we loop through this cells list of plausible values:
         for(int i = 0; i < this.plausibleValues.length; i++) {
+            //we mark as not plausible all but the two given digits:
             if(i != val1-1 && i != val2-1){
                 this.plausibleValues[i] = false;
             }
