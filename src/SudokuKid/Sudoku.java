@@ -974,12 +974,29 @@ public class Sudoku {
     }
     
     /**
+     * Method solveSimplePairs searches for naked pair and hidden pair
+     * patterns in groups that can eliminate plausible values from some cells
+     * in the group.
+     * This methods role is mearly calling the method that does this for each
+     * of the groups in our sudoku: all rows, columns and squares.
      * 
-     * @return 
+     * @return true if we found a new triplet pattern, else otherwise
      */
     public boolean solveSimpleTriplets(){
-        boolean solve = false;
-        return solve;
+        boolean solve = false; //we'll be returning this
+        //we loop through our sudoku rows, columns and squares:
+        //(group lists lengths are equal, we use row's but could use whichever)
+        for(int i = 0; i < this.rows.length; i++){
+            //we run each groups triplet finding method:
+            //(it'll internally check if the group is solved before begining)
+            solve |= this.rows[i].findSimpleTriplets(); //rows
+            solve |= this.cols[i].findSimpleTriplets(); //columns
+            solve |= this.sqrs[i].findSimpleTriplets(); //squares
+            //"solve |= " statement will cause our solve variable to become
+            //true if we find a triplet and therefore we've made progress in
+            //solving the sudoku
+        }
+        return solve; //will be true if we're closer to solving the sudoku
     }
     
     /* //////////////////////////////////////////////////////////////////////

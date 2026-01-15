@@ -613,4 +613,12 @@ public class CellGroup {
         }
         return solve;
     }
+    
+    /**
+     * 
+     * @return 
+     */
+    public boolean findSimpleTriplets(){
+        return false;
+    }
 }
