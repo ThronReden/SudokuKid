@@ -137,3 +137,6 @@ DEVELOPMENT NOTES:
 	
 15/01/2026 - Commentary and Simple Triplets
 	+ Added all missing commentary!
+	+ Added new solveSimpleTriplets method to Sudoku.
+	+ Added new findSimpleTriplets method to CellGroup.
+		% It's empty and just returns false for now.
