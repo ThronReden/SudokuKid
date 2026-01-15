@@ -134,3 +134,6 @@ DEVELOPMENT NOTES:
 	+ Repository pushed to GitHub (all branches).
 	* README has been updated and is now an .md file.
 	+ solveSimpleTriplets development begun
+	
+15/01/2026 - Commentary and Simple Triplets
+	+ Added all missing commentary!

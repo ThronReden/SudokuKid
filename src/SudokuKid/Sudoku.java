@@ -174,7 +174,7 @@ public class Sudoku {
                 for(int j = 0; j < nums[i].length; j++){
                     //this next check is redundant
                     int val = nums[i][j]; //we get the digit
-                    //we check if it's valid
+                    //we check if it's valid:
                     if(val > 0 & val < 10){
                         addNum(val,i,j); //we add valid digits
                     }
@@ -202,7 +202,7 @@ public class Sudoku {
         //we check the matrix has 9 rows, no more no less.
         if(nums.length != 9){
             valid = false; //we return false if it doesn't
-            return valid;
+            return valid; //we end the execution
         }
         for(int i = 0; i < nums.length; i++){
             //we check every row has 9 columns, no more no less.
@@ -216,7 +216,7 @@ public class Sudoku {
                 if(nums[i][j] < 0 | nums[i][j] > 9){
                     //if the digit aint valid the matrix isn't either
                     valid = false;
-                    return valid;
+                    return valid; //we end the execution
                 }
                 else if(nums[i][j] != 0){
                     //if the digit is valid and not 0, so it's not an
@@ -280,9 +280,9 @@ public class Sudoku {
      * @param col, the column of that cell
      */
     public void updateAffected(int val, int row, int col){
-        this.rows[row].update(val);
-        this.cols[col].update(val);
-        this.sqrs[getSqr(row,col)].update(val);
+        this.rows[row].update(val); //we cal the method for rows
+        this.cols[col].update(val); //columns
+        this.sqrs[getSqr(row,col)].update(val); //and squares
     }
     
     /**
@@ -300,34 +300,6 @@ public class Sudoku {
         //"maybe encapsulate row/3*3+col/3 as getSqr(row,col)?", we did hehe.
         int sqr = row/3*3+col/3; //the corresponding square
         return sqr; //we return it
-    }
-    
-    /**
-     * Method getRow finds the row a Cell in a given position of a given
-     * square belongs to.
-     * 
-     * @param sqr, the Cells square
-     * @param pos, its position in the square
-     * @return an integer from 0 to 8 corresponding to this Cells row
-     * position in our rows array.
-     */
-    public int getRow(int sqr, int pos){
-        int row = sqr/3*3+pos/3; //the corresponding row
-        return row; //we return it
-    }
-    
-    /**
-     * Method getCol finds the column a Cell in a given position of a given
-     * square belongs to.
-     * 
-     * @param sqr, the Cells square
-     * @param pos, its position in the square
-     * @return an integer from 0 to 8 corresponding to this Cells column
-     * position in our cols array.
-     */
-    public int getCol(int sqr, int pos){
-        int col = sqr%3*3+pos%3; //the corresponding column
-        return col; //we return it
     }
     
     /**
@@ -383,6 +355,74 @@ public class Sudoku {
          * (Thinking further, we very much need them sorted or at
          * the very least it makes our lifes easyer.)
          */
+    }
+    
+    /**
+     * Method getRow finds the row a Cell in a given position of a given
+     * square belongs to.
+     * 
+     * @param sqr, the Cells square
+     * @param pos, its position in the square
+     * @return an integer from 0 to 8 corresponding to this Cells row
+     * position in our rows array.
+     */
+    public int getRow(int sqr, int pos){
+        int row = sqr/3*3+pos/3; //the corresponding row
+        return row; //we return it
+    }
+    
+    /**
+     * Method sameRow checks if a group of cells from a given square and
+     * their position in it are in the same row of the sudoku.
+     * 
+     * @param sqr, the square of origin of the cells
+     * @param cells, a list with the positions of the cells in the square
+     * @return true if the cells are in the same row, false otherwise
+     */
+    public boolean sameRow(int sqr, int[] cells){
+        boolean same = true; //we'll be returning this variable
+        for(int j = 1; j < cells.length; j++){
+            //we asign with &= so it'll remain true if the cell is in the same
+            //row and it was already true but turn false if any of the cells
+            //is in a different row:
+            same &=
+            getRow(sqr,cells[j]) == getRow(sqr,cells[j-1]);
+        }
+        return same;
+    }
+    
+    /**
+     * Method getCol finds the column a Cell in a given position of a given
+     * square belongs to.
+     * 
+     * @param sqr, the Cells square
+     * @param pos, its position in the square
+     * @return an integer from 0 to 8 corresponding to this Cells column
+     * position in our cols array.
+     */
+    public int getCol(int sqr, int pos){
+        int col = sqr%3*3+pos%3; //the corresponding column
+        return col; //we return it
+    }
+    
+    /**
+     * Method sameCol checks if a group of cells from a given square and
+     * their position in it are in the same column of the sudoku.
+     * 
+     * @param sqr, the square of origin of the cells
+     * @param cells, a list with the positions of the cells in the square
+     * @return true if the cells are in the same column, false otherwise
+     */
+    public boolean sameCol(int sqr, int[] cells){
+        boolean same = true; //we'll be returning this variable
+        for(int j = 1; j < cells.length; j++){
+            //we asign with &= so it'll remain true if the cell is in the same
+            //column and it was already true but turn false if any of the cells
+            //is in a different column:
+            same &=
+            getCol(sqr,cells[j]) == getCol(sqr,cells[j-1]);
+        }
+        return same;
     }
     
     /**
@@ -715,40 +755,60 @@ public class Sudoku {
      * @return true if we've found a new pointing pattern, false otherwise
      */
     public boolean solvePointingNumbers(){
-        boolean solve = false;
+        //we create a variable to store weather we've made a solve or not:
+        boolean solve = false; //false by default
+        //we loop through the squares of the sudoku:
         for(int i = 0; i < this.sqrs.length; i++){
+            //we get how many digits are missing from the square:
             int numMissingVals = this.sqrs[i].numMissingValues();
+            //we loop through each value:
             for(int n = 1; n <= numMissingVals; n++){
+                //we store the value:
                 int val = this.sqrs[i].getMissingVal(n);
+                //we store in an array the cells of the group that could be
+                //filled with it:
                 int[] plausCells = this.sqrs[i].getPlausCellsIndex(val);
+                //if it's only three or less cells:
                 if(plausCells.length <= 3){
-                    boolean sameRow = true;
-                    boolean sameCol = true;
-                    for(int j = 1; j < plausCells.length; j++){
-                        sameRow &=
-                        getRow(i,plausCells[j]) == getRow(i,plausCells[j-1]);
-                        sameCol &=
-                        getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
-                    }
-                    if(sameRow){
+                    if(this.sameRow(i,plausCells)){
+                        //if the cells are in the same row
+                        //we get the row index:
                         int row = getRow(i,plausCells[0]);
+                        //if there's any other cell in the row that seemingly
+                        //could be filled with that digit:
                         if(plausCells.length
                         != this.rows[row].numPlausCells(val)){
+                            //we've made progress:
                             solve = true;
-                            for(int j = 0; j < this.rows[row].cells.length; j++){
+                            //and we eliminate those incorrect notes:
+                            for(int j = 0; j < this.rows[row].cells.length;
+                            j++){
+                                //for all cells in the same row but outside
+                                //of the square:
                                 if(i != getSqr(row,j)){
-                                    this.rows[row].cells[j].removePlausible(val);
+                                    this.rows[row].
+                                        cells[j].removePlausible(val);
                                 }
                             }
                         }
-                    } else if(sameCol){
+                    } else if(this.sameCol(i,plausCells)){
+                        //else if the cells are in the same column
+                        //we get the column index:
                         int col = getCol(i,plausCells[0]);
+                        //if there's any other cell in the column that
+                        //seemingly could be filled with that digit:
                         if(plausCells.length
                         != this.cols[col].numPlausCells(val)){
+                            //we've made progress:
                             solve = true;
-                            for(int j = 0; j < this.cols[col].cells.length; j++){
+                            //and we eliminate those incorrect notes:
+                            for(int j = 0; j < this.cols[col].cells.length;
+                            j++){
+                                //for all cells in the same column but outside
+                                //of the square:
                                 if(i != getSqr(j,col)){
-                                    this.cols[col].cells[j].removePlausible(val);
+                                    this.cols[col].
+                                        cells[j].removePlausible(val);
                                 }
                             }
                         }
@@ -775,40 +835,60 @@ public class Sudoku {
      * @return true if we've found a new pointing pair, false otherwise
      */
     public boolean solvePointingPairs(){
-        boolean solve = false;
+        //we create a variable to store weather we've made a solve or not:
+        boolean solve = false; //false by default
+        //we loop through the squares of the sudoku:
         for(int i = 0; i < this.sqrs.length; i++){
+            //we get how many digits are missing from the square:
             int numMissingVals = this.sqrs[i].numMissingValues();
+            //we loop through each value:
             for(int n = 1; n <= numMissingVals; n++){
+                //we store the value:
                 int val = this.sqrs[i].getMissingVal(n);
+                //we store in an array the cells of the group that could be
+                //filled with it:
                 int[] plausCells = this.sqrs[i].getPlausCellsIndex(val);
+                //if it's exactly two cells:
                 if(plausCells.length == 2){
-                    boolean sameRow = true;
-                    boolean sameCol = true;
-                    for(int j = 1; j < plausCells.length; j++){
-                        sameRow &=
-                        getRow(i,plausCells[j]) == getRow(i,plausCells[j-1]);
-                        sameCol &=
-                        getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
-                    }
-                    if(sameRow){
+                    if(this.sameRow(i,plausCells)){
+                        //if the cells are in the same row
+                        //we get the row index:
                         int row = getRow(i,plausCells[0]);
+                        //if there's any other cell in the row that seemingly
+                        //could be filled with that digit:
                         if(plausCells.length
                         != this.rows[row].numPlausCells(val)){
+                            //we've made progress:
                             solve = true;
-                            for(int j = 0; j < this.rows[row].cells.length; j++){
+                            //and we eliminate those incorrect notes:
+                            for(int j = 0; j < this.rows[row].cells.length;
+                            j++){
+                                //for all cells in the same row but outside
+                                //of the square:
                                 if(i != getSqr(row,j)){
-                                    this.rows[row].cells[j].removePlausible(val);
+                                    this.rows[row].
+                                        cells[j].removePlausible(val);
                                 }
                             }
                         }
-                    } else if(sameCol){
+                    } else if(this.sameCol(i,plausCells)){
+                        //else if the cells are in the same column
+                        //we get the column index:
                         int col = getCol(i,plausCells[0]);
+                        //if there's any other cell in the column that
+                        //seemingly could be filled with that digit:
                         if(plausCells.length
                         != this.cols[col].numPlausCells(val)){
+                            //we've made progress:
                             solve = true;
-                            for(int j = 0; j < this.cols[col].cells.length; j++){
+                            //and we eliminate those incorrect notes:
+                            for(int j = 0; j < this.cols[col].cells.length;
+                            j++){
+                                //for all cells in the same column but outside
+                                //of the square:
                                 if(i != getSqr(j,col)){
-                                    this.cols[col].cells[j].removePlausible(val);
+                                    this.cols[col].
+                                        cells[j].removePlausible(val);
                                 }
                             }
                         }
@@ -829,40 +909,60 @@ public class Sudoku {
      * @return true if we've found a new pointing triplet, false otherwise
      */
     public boolean solvePointingTriplets(){
-        boolean solve = false;
+        //we create a variable to store weather we've made a solve or not:
+        boolean solve = false; //false by default
+        //we loop through the squares of the sudoku:
         for(int i = 0; i < this.sqrs.length; i++){
+            //we get how many digits are missing from the square:
             int numMissingVals = this.sqrs[i].numMissingValues();
+            //we loop through each value:
             for(int n = 1; n <= numMissingVals; n++){
+                //we store the value:
                 int val = this.sqrs[i].getMissingVal(n);
+                //we store in an array the cells of the group that could be
+                //filled with it:
                 int[] plausCells = this.sqrs[i].getPlausCellsIndex(val);
+                //if it's exaclt three cells:
                 if(plausCells.length == 3){
-                    boolean sameRow = true;
-                    boolean sameCol = true;
-                    for(int j = 1; j < plausCells.length; j++){
-                        sameRow &=
-                        getRow(i,plausCells[j]) == getRow(i,plausCells[j-1]);
-                        sameCol &=
-                        getCol(i,plausCells[j]) == getCol(i,plausCells[j-1]);
-                    }
-                    if(sameRow){
+                    if(this.sameRow(i,plausCells)){
+                        //if the cells are in the same row
+                        //we get the row index:
                         int row = getRow(i,plausCells[0]);
+                        //if there's any other cell in the row that seemingly
+                        //could be filled with that digit:
                         if(plausCells.length
                         != this.rows[row].numPlausCells(val)){
+                            //we've made progress:
                             solve = true;
-                            for(int j = 0; j < this.rows[row].cells.length; j++){
+                            //and we eliminate those incorrect notes:
+                            for(int j = 0; j < this.rows[row].cells.length;
+                            j++){
+                                //for all cells in the same row but outside
+                                //of the square:
                                 if(i != getSqr(row,j)){
-                                    this.rows[row].cells[j].removePlausible(val);
+                                    this.rows[row].
+                                        cells[j].removePlausible(val);
                                 }
                             }
                         }
-                    } else if(sameCol){
+                    } else if(this.sameCol(i,plausCells)){
+                        //else if the cells are in the same column
+                        //we get the column index:
                         int col = getCol(i,plausCells[0]);
+                        //if there's any other cell in the column that
+                        //seemingly could be filled with that digit:
                         if(plausCells.length
                         != this.cols[col].numPlausCells(val)){
+                            //we've made progress:
                             solve = true;
-                            for(int j = 0; j < this.cols[col].cells.length; j++){
+                            //and we eliminate those incorrect notes:
+                            for(int j = 0; j < this.cols[col].cells.length;
+                            j++){
+                                //for all cells in the same column but outside
+                                //of the square:
                                 if(i != getSqr(j,col)){
-                                    this.cols[col].cells[j].removePlausible(val);
+                                    this.cols[col].
+                                        cells[j].removePlausible(val);
                                 }
                             }
                         }
@@ -923,12 +1023,17 @@ public class Sudoku {
      * @return matrix, an int[][] that represents our Sudoku.
      */
     public int[][] toMatrix(){
+        //we create our 9x9 int matrix:
         int[][] matrix = new int[9][9];
+        //we loop through the sudoku:
         for(int i = 0; i < this.rows.length; i++){
             for(int j = 0; j < this.rows[i].cells.length; j++){
+                //we add each cells digit to it's cells position
+                //of the matrix:
                 matrix[i][j] = this.rows[i].cells[j].value;
             }
         }
+        //we return our sudoku matrix:
         return matrix;
     }
     
@@ -937,25 +1042,38 @@ public class Sudoku {
      * Sudoku. This lets us see the sudoku in the way it's usually depicted.
      */
     public void showGrid(){
+        //we loop through each row of the sudoku:
         for(int i = 0; i < this.rows.length; i++){
+            //we delimitate the rows:
             System.out.println("+---+---+---++---+---+---++---+---+---+");
             if(i % 3 == 0 && i != 0){
+                //double delimitation inbetween rows of different squares:
                 System.out.println("+---+---+---++---+---+---++---+---+---+");
             }
+            //we initialize our row pattern:
             String pattern = "| ";
+            //we loop through the rows columns:
             for(int j = 0; j < this.rows[i].cells.length; j++){
-                String val = " ";
+                String val = " "; //default blank space for empty cells
+                //if it's not empty:
                 if(this.rows[i].cells[j].value != 0){
+                    //we change val to its value to string:
                     val = String.valueOf(this.rows[i].cells[j].value);
                 }
                 if(j % 3 == 2 && j != 8){
+                    //double separation in between columns of different
+                    //squares:
                     pattern += val + " || ";  
                 } else {
+                    //separation in between the rest of columns:
                     pattern += val + " | ";  
                 }
             }
+            //we print the pattern of the row:
             System.out.println(pattern);
         }
+        //we print the last delimitation:
         System.out.println("+---+---+---++---+---+---++---+---+---+");
+        //done!
     }
 }
