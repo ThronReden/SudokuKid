@@ -128,7 +128,7 @@ DEVELOPMENT NOTES:
         > Y-Wing: patterns with plausible pairs in three cells that see each
         other affecting a fourth cell.
 		
-13/01/2026 - We're on GitHub now! v0.5
+13/01/2026 - We're on GitHub now! v0.2
 	* Moved the docummentation files to the main folder.
 	* Now master branch name is main.
 	+ Repository pushed to GitHub (all branches).

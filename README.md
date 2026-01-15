@@ -1,5 +1,5 @@
 
-# **Sudoku Kid v0.5**
+# **Sudoku Kid v0.2**
 
 This application is still in **early development** so, please, bear with
 any and all issues or noob mistakes you may find. -u-"
