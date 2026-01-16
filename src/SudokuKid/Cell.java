@@ -157,8 +157,7 @@ public class Cell {
     public boolean isPlausible(int val1, int val2) {
         //it has to be emty and have both digits marked as plausible in our
         //plausibleValues list:
-        return !this.isFilled()
-        && this.isPlausible(val1) && this.isPlausible(val2);
+        return this.isPlausible(val1) && this.isPlausible(val2);
     }
     /**
      * Method isPlausible overload 2 returns if three given values could fill
@@ -172,8 +171,8 @@ public class Cell {
     public boolean isPlausible(int val1, int val2, int val3) {
         //it has to be emty and have the three digits marked as plausible in
         //our plausibleValues list:
-        return !this.isFilled() && this.isPlausible(val1)
-        && this.isPlausible(val2) && this.isPlausible(val3);
+        return this.isPlausible(val1) && this.isPlausible(val2)
+        && this.isPlausible(val3);
     }
     
     /**
