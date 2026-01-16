@@ -129,6 +129,18 @@ public class main {
                 solve = true; //we've found at least one new pointing
                 //pair or triplet
             }
+            //Naked Triplets:
+                //(used only if Hidden Triplets isn't enabled)
+            while(!ST && NT && !solve && sudoku.solveNakedTriplets()){
+//                System.out.println("used solveNakedTriplets");
+                solve = true; //we've found at least one new naked triplet
+            }
+            //Hidden Triplets:
+                //(used only if Hidden Triplets isn't enabled)
+            while(!ST && HT && !solve && sudoku.solveHiddenTriplets()){
+//                System.out.println("used solveHiddenTriplets");
+                solve = true; //we've found at least one new hidden triplet
+            }
             //Simple Triplets:
                 //(used if both Naked and Hidden Triplets are enabled)
             while(ST && !solve && sudoku.solveSimpleTriplets()){

@@ -674,7 +674,7 @@ public class Sudoku {
      * This methods role is mearly calling the method that does this for each
      * of the groups in our sudoku: all rows, columns and squares.
      * 
-     * @return true if we're closer to solving the sudoku, else otherwise
+     * @return true if we're closer to solving the sudoku, false otherwise
      */
     public boolean solveSimplePairs(){
         boolean solve = false; //we'll be returning this
@@ -701,7 +701,7 @@ public class Sudoku {
      * This methods role is mearly calling the method that does this for each
      * of the groups in our sudoku: all rows, columns and squares.
      * 
-     * @return true if we're closer to solving the sudoku, else otherwise
+     * @return true if we're closer to solving the sudoku, false otherwise
      */
     public boolean solveNakedPairs(){
         boolean solve = false; //we'll be returning this
@@ -725,7 +725,7 @@ public class Sudoku {
      * This methods role is mearly calling the method that does this for each
      * of the groups in our sudoku: all rows, columns and squares.
      * 
-     * @return true if we're closer to solving the sudoku, else otherwise
+     * @return true if we're closer to solving the sudoku, false otherwise
      */
     public boolean solveHiddenPairs(){
         boolean solve = false; //we'll be returning this
@@ -974,13 +974,13 @@ public class Sudoku {
     }
     
     /**
-     * Method solveSimplePairs searches for naked pair and hidden pair
+     * Method solveSimpleTriplets searches for both naked and hidden triplet
      * patterns in groups that can eliminate plausible values from some cells
      * in the group.
      * This methods role is mearly calling the method that does this for each
      * of the groups in our sudoku: all rows, columns and squares.
      * 
-     * @return true if we found a new triplet pattern, else otherwise
+     * @return true if we found a new triplet pattern, false otherwise
      */
     public boolean solveSimpleTriplets(){
         boolean solve = false; //we'll be returning this
@@ -992,6 +992,54 @@ public class Sudoku {
             solve |= this.rows[i].findSimpleTriplets(); //rows
             solve |= this.cols[i].findSimpleTriplets(); //columns
             solve |= this.sqrs[i].findSimpleTriplets(); //squares
+            //"solve |= " statement will cause our solve variable to become
+            //true if we find a triplet and therefore we've made progress in
+            //solving the sudoku
+        }
+        return solve; //will be true if we're closer to solving the sudoku
+    }
+    /**
+     * Method solveNakedTriplets searches only for naked triplet patterns in
+     * groups that can eliminate plausible values from some cells in the group.
+     * This methods role is mearly calling the method that does this for each
+     * of the groups in our sudoku: all rows, columns and squares.
+     * 
+     * @return true if we found a new naked triplet pattern, false otherwise
+     */
+    public boolean solveNakedTriplets(){
+        boolean solve = false; //we'll be returning this
+        //we loop through our sudoku rows, columns and squares:
+        //(group lists lengths are equal, we use row's but could use whichever)
+        for(int i = 0; i < this.rows.length; i++){
+            //we run each groups triplet finding method:
+            //(it'll internally check if the group is solved before begining)
+            solve |= this.rows[i].findNakedTriplets(); //rows
+            solve |= this.cols[i].findNakedTriplets(); //columns
+            solve |= this.sqrs[i].findNakedTriplets(); //squares
+            //"solve |= " statement will cause our solve variable to become
+            //true if we find a triplet and therefore we've made progress in
+            //solving the sudoku
+        }
+        return solve; //will be true if we're closer to solving the sudoku
+    }
+    /**
+     * Method solveNakedTriplets searches only for hidden triplet patterns in
+     * groups that can eliminate plausible values from some cells in the group.
+     * This methods role is mearly calling the method that does this for each
+     * of the groups in our sudoku: all rows, columns and squares.
+     * 
+     * @return true if we found a new hidden triplet pattern, false otherwise
+     */
+    public boolean solveHiddenTriplets(){
+        boolean solve = false; //we'll be returning this
+        //we loop through our sudoku rows, columns and squares:
+        //(group lists lengths are equal, we use row's but could use whichever)
+        for(int i = 0; i < this.rows.length; i++){
+            //we run each groups triplet finding method:
+            //(it'll internally check if the group is solved before begining)
+            solve |= this.rows[i].findHiddenTriplets(); //rows
+            solve |= this.cols[i].findHiddenTriplets(); //columns
+            solve |= this.sqrs[i].findHiddenTriplets(); //squares
             //"solve |= " statement will cause our solve variable to become
             //true if we find a triplet and therefore we've made progress in
             //solving the sudoku
