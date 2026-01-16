@@ -128,8 +128,37 @@ DEVELOPMENT NOTES:
         > Y-Wing: patterns with plausible pairs in three cells that see each
         other affecting a fourth cell.
 		
-13/01/2026 - We're on GitHub now! v0.5
+13/01/2026 - We're on GitHub now! v0.2
 	* Moved the docummentation files to the main folder.
 	* Now master branch name is main.
 	+ Repository pushed to GitHub (all branches).
 	* README has been updated and is now an .md file.
+	+ solveSimpleTriplets development begun
+	
+15/01/2026 - Commentary and Simple Triplets
+	+ Added all missing commentary!
+	+ Added new solveSimpleTriplets method to Sudoku.
+	+ Added new findSimpleTriplets method to CellGroup.
+		% It's empty and just returns false for now.
+		
+16/01/2026 - Simple Triplets implemented and tested:
+	* findSimpleTriplets is now functional!
+	* fixes and improvements to all three Simple Pairs methods!
+	* numCellsOnlyPair is now numCellsOnly and got some fixes.
+	+ Added Naked and Hidden Triplet methods and other utilities:
+		To Cell:
+			+ isPlausible overload both for 2 and 3 values for
+			Pairs and Triplets methods.
+			+ removePlausible overload both for 2 and 3 values.
+				% may be able to improve this with an array as a parameter.
+			+ removeAllPlausibleBut overload for 3 values.
+		To CellGroup:
+			+ findNakedTriplets & findHiddenTriplets.
+			+ numPlausCells, getPlausCells, getRestCells, valsExistAlone
+			& numCellsOnly overloaded for 3 digits.
+		To Sudoku:
+			+ solveNakedTriplets & solveHiddenTriplets.
+	% Need to check and fix access labels for both methods and attributes!
+	Most things are public rn...
+	% Need to find more sudoku statements to further test stability and solving
+	capabilities.

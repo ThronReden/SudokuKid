@@ -10,7 +10,7 @@ public class main {
     
     //Boolean variables to store weather a certain methods use is enabled:
     private static boolean NS = true; //weather Naked Singles use is enabled
-    private static boolean HS = true; //weather Hidden Singles  use is enabled
+    private static boolean HS = true; //weather Hidden Singles use is enabled
     private static boolean SS = NS && HS; //Simple Singles (both previous)
     
     private static boolean NP = true; //Naked Pairs
@@ -21,16 +21,20 @@ public class main {
     private static boolean PT = true; //Pointing Triplets
     private static boolean PN = PP && PT; //Pointing Numbers (both previous)
     
+    private static boolean NT = true; //Naked Triplets
+    private static boolean HT = true; //Hidden Triplets
+    private static boolean ST = NT && HT; //Simple Triplets (both previous)
+    
     //Stored sudoku statements:
     //SOLVABLE:
     private static final int[][] EL_PAIS_experto_2025_12_05 = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
     private static final int[][] EL_PAIS_medio_2026_01_09 = {{0,2,5,0,4,6,0,0,0},{0,0,0,0,0,0,7,0,0},{1,0,9,0,0,0,0,0,0},{0,0,0,2,9,0,0,7,4},{6,0,7,0,0,0,0,8,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,8,4,0,5,0},{0,6,8,0,0,0,2,0,0},{0,0,0,0,0,1,0,0,9}};
-    //UNSOLVABLE:
     private static final int[][] EL_PAIS_dificil_2026_01_09 = {{0,0,0,0,0,0,8,0,0},{0,4,5,0,0,0,0,0,9},{0,9,0,8,0,0,0,0,0},{1,0,0,9,0,0,6,0,0},{0,2,0,0,6,0,0,9,7},{0,0,0,0,0,1,0,0,8},{0,0,0,3,0,7,0,0,2},{0,1,0,0,2,0,0,0,0},{0,0,6,0,0,0,3,0,4}};
+    //UNSOLVABLE:
     
     public static void main (String[] args){
         //the sudoku statement we want to solve:
-        int[][] sudokuMatrix = EL_PAIS_experto_2025_12_05;
+        int[][] sudokuMatrix = EL_PAIS_dificil_2026_01_09;
         //we create a Sudoku object to manage it:
         Sudoku sudoku = new Sudoku(sudokuMatrix);
         //we create a Scanner object for basic user interaction:
@@ -98,13 +102,13 @@ public class main {
                 //(used only if Hidden Pairs isn't enabled)
             while(!SP && HP && !solve && sudoku.solveHiddenPairs()){
 //                System.out.println("used solveHiddenPairs");
-                solve = true; //we've found at least one new naked pair
+                solve = true; //we've found at least one new hidden pair
             }
             //Simple Pairs:
                 //(used if both Naked and Hidden Pairs are enabled)
             while(SP && !solve && sudoku.solveSimplePairs()){
 //                System.out.println("used solveSimplePairs");
-                solve = true; //we've found at least one new naked pair
+                solve = true; //we've found at least one new pair
             }
             //Pointing Pairs:
                 //(used only if Pointing Triplets isn't enabled)
@@ -125,12 +129,33 @@ public class main {
                 solve = true; //we've found at least one new pointing
                 //pair or triplet
             }
+            //Naked Triplets:
+                //(used only if Hidden Triplets isn't enabled)
+            while(!ST && NT && !solve && sudoku.solveNakedTriplets()){
+//                System.out.println("used solveNakedTriplets");
+                solve = true; //we've found at least one new naked triplet
+            }
+            //Hidden Triplets:
+                //(used only if Hidden Triplets isn't enabled)
+            while(!ST && HT && !solve && sudoku.solveHiddenTriplets()){
+//                System.out.println("used solveHiddenTriplets");
+                solve = true; //we've found at least one new hidden triplet
+            }
+            //Simple Triplets:
+                //(used if both Naked and Hidden Triplets are enabled)
+            while(ST && !solve && sudoku.solveSimpleTriplets()){
+//                System.out.println("used solveSimpleTriplets");
+                solve = true; //we've found at least one new triplet
+            }
         }
+        //now that the solving loop is over we indicate weather the sudoku
+        //is solved or not:
         if(sudoku.isSolved()){
             System.out.println("SUDOKU IS SOLVED -- "+count+" iterations");
         } else {
             System.out.println("CAN'T SOLVE ANY FURTHER -- "+count+" iterations");
         }
+        //and then print it on terminal:
         sudoku.showGrid();
     }
 }

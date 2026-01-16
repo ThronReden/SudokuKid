@@ -62,7 +62,7 @@ public class Cell {
      * and false if it is 0, therefore being empty.
      */
     public boolean isFilled(){
-        return this.value != 0;
+        return this.value != 0; //if it's 0 then it's empty
     }
     
     /**
@@ -142,7 +142,37 @@ public class Cell {
      * @return true if it can fill the cell, false otherwise
      */
     public boolean isPlausible(int val) {
+        //it has to be emty and have that digit marked as plausible in our
+        //plausibleValues list:
         return !this.isFilled() && this.plausibleValues[val-1];
+    }
+    /**
+     * Method isPlausible overload returns if two given values could fill this
+     * Cell or not.
+     * 
+     * @param val1, the first value we want to check for
+     * @param val2, the second value we want to check for
+     * @return true if they can fill the cell, false otherwise
+     */
+    public boolean isPlausible(int val1, int val2) {
+        //it has to be emty and have both digits marked as plausible in our
+        //plausibleValues list:
+        return this.isPlausible(val1) && this.isPlausible(val2);
+    }
+    /**
+     * Method isPlausible overload 2 returns if three given values could fill
+     * this Cell or not.
+     * 
+     * @param val1, the first value we want to check for
+     * @param val2, the second value we want to check for
+     * @param val3, the third value we want to check for
+     * @return true if they can fill the cell, false otherwise
+     */
+    public boolean isPlausible(int val1, int val2, int val3) {
+        //it has to be emty and have the three digits marked as plausible in
+        //our plausibleValues list:
+        return this.isPlausible(val1) && this.isPlausible(val2)
+        && this.isPlausible(val3);
     }
     
     /**
@@ -152,9 +182,34 @@ public class Cell {
      * @param val the value we want to set to not plausible for this Cell
      */
     public void removePlausible(int val) {
+        //if the cell is empty:
         if(!this.isFilled()){
-            this.plausibleValues[val-1] = false;
+            this.plausibleValues[val-1] = false; //we mark it as not plausible
         }
+    }
+    /**
+     * Method removePlausible overload sets the plausibility for two given
+     * values to fill this Cell to false.
+     * 
+     * @param val1, the first value we want to set to not plausible
+     * @param val2, the second
+     */
+    public void removePlausible(int val1, int val2) {
+        this.removePlausible(val1);
+        this.removePlausible(val2);
+    }
+    /**
+     * Method removePlausible overload 2 sets the plausibility for three given
+     * values to fill this Cell to false.
+     * 
+     * @param val1, the first value we want to set to not plausible
+     * @param val2, the second
+     * @param val3, the third
+     */
+    public void removePlausible(int val1, int val2, int val3) {
+        this.removePlausible(val1);
+        this.removePlausible(val2);
+        this.removePlausible(val3);
     }
 
     /**
@@ -165,8 +220,27 @@ public class Cell {
      * @param val2, the second
      */
     public void removeAllPlausibleBut(int val1, int val2) {
+        //we loop through this cells list of plausible values:
         for(int i = 0; i < this.plausibleValues.length; i++) {
+            //we mark as not plausible all but the two given digits:
             if(i != val1-1 && i != val2-1){
+                this.plausibleValues[i] = false;
+            }
+        }
+    }
+    /**
+     * Method removeAllPlausibleBut overload sets all numbers but the three
+     * given to unplausible for filling this cell.
+     * 
+     * @param val1, the first value that will stay plausible
+     * @param val2, the second
+     * @param val3, the third
+     */
+    public void removeAllPlausibleBut(int val1, int val2, int val3) {
+        //we loop through this cells list of plausible values:
+        for(int i = 0; i < this.plausibleValues.length; i++) {
+            //we mark as not plausible all but the three given digits:
+            if(i != val1-1 && i != val2-1 && i != val3-1){
                 this.plausibleValues[i] = false;
             }
         }
