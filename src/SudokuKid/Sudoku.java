@@ -998,6 +998,12 @@ public class Sudoku {
         }
         return solve; //will be true if we're closer to solving the sudoku
     }
+    /*Example Solvable Matrixs:
+     * {{0,0,0,0,0,0,8,0,0},{0,4,5,0,0,0,0,0,9},{0,9,0,8,0,0,0,0,0},{1,0,0,9,0,0,6,0,0},{0,2,0,0,6,0,0,9,7},{0,0,0,0,0,1,0,0,8},{0,0,0,3,0,7,0,0,2},{0,1,0,0,2,0,0,0,0},{0,0,6,0,0,0,3,0,4}}
+     */
+    /*Example Unsolvable Matrixs:
+     * There must be some...
+     */
     /**
      * Method solveNakedTriplets searches only for naked triplet patterns in
      * groups that can eliminate plausible values from some cells in the group.
