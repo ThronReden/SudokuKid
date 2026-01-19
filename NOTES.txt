@@ -140,7 +140,7 @@ DEVELOPMENT NOTES:
 	+ Added new solveSimpleTriplets method to Sudoku.
 	+ Added new findSimpleTriplets method to CellGroup.
 		% It's empty and just returns false for now.
-		
+
 16/01/2026 - Simple Triplets implemented and tested:
 	* findSimpleTriplets is now functional!
 	* fixes and improvements to all three Simple Pairs methods!
@@ -162,3 +162,12 @@ DEVELOPMENT NOTES:
 	Most things are public rn...
 	% Need to find more sudoku statements to further test stability and solving
 	capabilities.
+	
+19/01/2026 - Testing and new sudoku statement format available
+	+ New static toMatrix method overload added to Sudoku that converts a String
+	of 81 digits from 0 to 9 to a 9x9 bidimentional matrix of integers, which we
+	can then add to a Sudoku object and solve.
+	+ Added more sudoku statements for testing.
+	* Minor changes to main class.
+	% Should separate solving methods from Sudoku defining clases to a new
+	SudokuSolver class.

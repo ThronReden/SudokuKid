@@ -1000,6 +1000,7 @@ public class Sudoku {
     }
     /*Example Solvable Matrixs:
      * {{0,0,0,0,0,0,8,0,0},{0,4,5,0,0,0,0,0,9},{0,9,0,8,0,0,0,0,0},{1,0,0,9,0,0,6,0,0},{0,2,0,0,6,0,0,9,7},{0,0,0,0,0,1,0,0,8},{0,0,0,3,0,7,0,0,2},{0,1,0,0,2,0,0,0,0},{0,0,6,0,0,0,3,0,4}}
+     * menneske4813117
      */
     /*Example Unsolvable Matrixs:
      * There must be some...
@@ -1102,6 +1103,29 @@ public class Sudoku {
                 //we add each cells digit to it's cells position
                 //of the matrix:
                 matrix[i][j] = this.rows[i].cells[j].value;
+            }
+        }
+        //we return our sudoku matrix:
+        return matrix;
+    }
+    /**
+     * Method toMatrix overload finds if a String contains a succession of
+     * digits valid as a sudoku statement and converts it to the format of a
+     * 9x9 bidimentional array of integers.
+     * 
+     * @param nums, the String of digits to convert, in case it's valid
+     * @return a bidimentional array sudoku statement from the String
+     */
+    public static int[][] toMatrix(String nums){
+        nums = nums.replaceAll(" ","");
+        //we create our 9x9 int matrix:
+        int[][] matrix = new int[9][9];
+        if(nums.matches("^\\d{81}$")){
+            //we loop through the String:
+            for(int i = 0; i < nums.length(); i++){
+                //this doesn't feel too clean but was the only way I could
+                //make it work as intended:
+                matrix[i/9][i%9] = Integer.parseInt(nums.charAt(i)+"");
             }
         }
         //we return our sudoku matrix:
