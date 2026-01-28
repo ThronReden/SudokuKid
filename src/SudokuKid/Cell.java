@@ -188,7 +188,7 @@ public class Cell {
      * 
      * @param val the value we want to set to not plausible for this Cell
      */
-    public void removePlausible(int val) {
+    protected void removePlausible(int val) {
         //if the cell is empty:
         if(!this.isFilled()){
             this.plausibleValues[val-1] = false; //we mark it as not plausible
@@ -201,7 +201,7 @@ public class Cell {
      * @param val1, the first value we want to set to not plausible
      * @param val2, the second
      */
-    public void removePlausible(int val1, int val2) {
+    protected void removePlausible(int val1, int val2) {
         this.removePlausible(val1);
         this.removePlausible(val2);
     }
@@ -213,7 +213,7 @@ public class Cell {
      * @param val2, the second
      * @param val3, the third
      */
-    public void removePlausible(int val1, int val2, int val3) {
+    protected void removePlausible(int val1, int val2, int val3) {
         this.removePlausible(val1);
         this.removePlausible(val2);
         this.removePlausible(val3);
@@ -226,7 +226,7 @@ public class Cell {
      * @param val1, the first value that will stay plausible
      * @param val2, the second
      */
-    public void removeAllPlausibleBut(int val1, int val2) {
+    protected void removeAllPlausibleBut(int val1, int val2) {
         //we loop through this cells list of plausible values:
         for(int i = 0; i < this.plausibleValues.length; i++) {
             //we mark as not plausible all but the two given digits:
@@ -243,7 +243,7 @@ public class Cell {
      * @param val2, the second
      * @param val3, the third
      */
-    public void removeAllPlausibleBut(int val1, int val2, int val3) {
+    protected void removeAllPlausibleBut(int val1, int val2, int val3) {
         //we loop through this cells list of plausible values:
         for(int i = 0; i < this.plausibleValues.length; i++) {
             //we mark as not plausible all but the three given digits:
