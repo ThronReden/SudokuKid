@@ -164,7 +164,7 @@ public class Sudoku {
      *
      * @param nums, a 9x9 matrix of digits.
      */
-    public void addNum(int nums[][]){
+    private void addNum(int nums[][]){
         //we check if nums matrix is valid
         if(validSudokuMatrix(nums)){
             for(int i = 0; i < nums.length; i++){

@@ -12,10 +12,11 @@ public class CellGroup {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
      *///////////////////////////////////////////////////////////////////////
-    protected Cell[] cells;//the list of 9 cells composing the group.
-    private boolean[] values;//a list of 9 booleans representing if
-    //the digits from 1 to 9 already exist in a cell of the group.
-    //Usefull information for some of the solving algorithms.
+    protected final Cell[] cells = new Cell[9]; //the list of 9 cells
+    //composing the group.
+    private final boolean[] values = new boolean[9];//a list of 9 booleans
+    //representing if the digits from 1 to 9 already exist in a cell of the
+    //group. Usefull information for some of the solving algorithms.
 
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
@@ -28,7 +29,6 @@ public class CellGroup {
         //we create 9 new instances of Cell and add them to our
         //cells list. This will be the cells of this row, column
         //or square.
-        this.cells = new Cell[9];
         for(int i = 0; i < this.cells.length; i++){
             this.cells[i] = new Cell(); //new instances of Cell!!
             //System.out.println(i+" es "+this.group[i]);
@@ -36,7 +36,6 @@ public class CellGroup {
         //we initialize all booleans of the values list to
         //false, as the cells are alwais initialized empty.
         //we'll update it as digits are filled in.
-        this.values = new boolean[9];
         for(int i = 0; i < this.values.length; i++){
             this.values[i] = false;
         }
@@ -49,8 +48,6 @@ public class CellGroup {
      * the group
      */
     public CellGroup(Cell cellList[]){
-        this.cells = new Cell[9];//we initialize an empty list for
-        //our cells
         for(int i = 0; i < this.cells.length; i++){
             this.cells[i] = cellList[i]; //we don't create new
             //instances of Cell now, we add the references to already
@@ -60,7 +57,6 @@ public class CellGroup {
         //we initialize all booleans of the values list to
         //false, as the cells are alwais initialized empty.
         //we'll update it as digits are filled in.
-        this.values = new boolean[9];
         for(int i = 0; i < this.values.length; i++){
             this.values[i] = false;
         }
