@@ -9,18 +9,17 @@ package SudokuKid;
 public class Cell {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
-     * //////////////////////////////////////////////////////////////////////
-     */
-    public int value; //the digit contained by the cell, 1 to 9.
+     *///////////////////////////////////////////////////////////////////////
+    private int value; //the digit contained by the cell, 1 to 9.
     //if value is 0 then the Cell is "empty".
-    private boolean[] plausibleValues; //a list representing if each
-    //of the 9 valid digits could be placed in the cell or not.
+    private final boolean[] plausibleValues = new boolean[9]; //a list
+    //representing if each of the 9 valid digits could be placed in the
+    //cell or not.
     
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
      * builds objects of this class.
-     * //////////////////////////////////////////////////////////////////////
-     */
+     *///////////////////////////////////////////////////////////////////////
     /**
      * Constructor for objects of class Cell
      */
@@ -30,7 +29,6 @@ public class Cell {
         //all the booleans in the "plausibleValues" list attribute
         //are initialized to true, as every digit fits in a cell
         //of an empty sudoku.
-        this.plausibleValues = new boolean[9];
         for(int i = 0; i < this.plausibleValues.length; i++){
             this.plausibleValues[i] = true;
             //System.out.println(i+" es "+plausibleValues[i]);
@@ -40,8 +38,17 @@ public class Cell {
     /* //////////////////////////////////////////////////////////////////////
      * METHODS:
      * they do things ~~
-     * //////////////////////////////////////////////////////////////////////
+     *///////////////////////////////////////////////////////////////////////
+    /**
+     * Method getValue returns the "value" attribute of this instance
+     * of Cell.
+     * 
+     * @return this Cells value
      */
+    public int getValue() {
+        return this.value;
+    }
+    
     /**
      * Method setValue sets the "value" attribute of that instance
      * of Cell to a given digit.

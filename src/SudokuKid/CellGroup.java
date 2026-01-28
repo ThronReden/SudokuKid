@@ -11,18 +11,16 @@ package SudokuKid;
 public class CellGroup {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
-     * //////////////////////////////////////////////////////////////////////
-     */
-    public Cell[] cells;//the list of 9 cells composing the group.
-    public boolean[] values;//a list of 9 booleans representing if
+     *///////////////////////////////////////////////////////////////////////
+    protected Cell[] cells;//the list of 9 cells composing the group.
+    private boolean[] values;//a list of 9 booleans representing if
     //the digits from 1 to 9 already exist in a cell of the group.
     //Usefull information for some of the solving algorithms.
 
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
      * builds objects of this class.
-     * //////////////////////////////////////////////////////////////////////
-     */
+     *///////////////////////////////////////////////////////////////////////
     /**
      * Constructor for objects of class CellGroup
      */
@@ -71,8 +69,7 @@ public class CellGroup {
     /* //////////////////////////////////////////////////////////////////////
      * METHODS:
      * they do things ~~
-     * //////////////////////////////////////////////////////////////////////
-     */
+     *///////////////////////////////////////////////////////////////////////
     /**
      * Method isComplete cheks if the list is full and
      * solved, containing all numbers 1 to 9 once.
@@ -103,7 +100,7 @@ public class CellGroup {
         int val = 0;
         for(int i = 0; i < this.cells.length; i++){
             if(!this.cells[i].isFilled()){
-                val = this.cells[i].value; //we set val to the solved
+                val = this.cells[i].getValue(); //we set val to the solved
                 //cell value
                 int pos = val - 1; //we adjust for array index nomenclature
                 if(this.values[pos] == false){
@@ -121,7 +118,7 @@ public class CellGroup {
      *
      * @param val the digit we know already exists in the group
      */
-    public void update(int val){
+    protected void update(int val){
         if(val > 0 & val < 10){
             this.values[val-1] = true; //we mark the digits existence in
             //the group
@@ -231,7 +228,7 @@ public class CellGroup {
      * @param val2, the second
      * @return an array with the corresponding cells
      */
-    private Cell[] getPlausCells(int val1, int val2) {
+    protected Cell[] getPlausCells(int val1, int val2) {
         //the list of cells to return:
         Cell[] plausCells = new Cell[this.numPlausCells(val1, val2)];
         //its length is equal to the number of cells we calculate with the
@@ -259,7 +256,7 @@ public class CellGroup {
      * @param val3, the third value of the triplet
      * @return an array with the corresponding cells
      */
-    private Cell[] getPlausCells(int val1, int val2, int val3) {
+    protected Cell[] getPlausCells(int val1, int val2, int val3) {
         //the list of cells to return:
         Cell[] plausCells = new Cell[this.numPlausCells(val1, val2, val3)];
         //its length is equal to the number of cells we calculate with the
@@ -291,7 +288,7 @@ public class CellGroup {
      * @param val2, the second
      * @return an array with the corresponding cells
      */
-    private Cell[] getRestCells(int val1, int val2) {
+    protected Cell[] getRestCells(int val1, int val2) {
         //the list of cells to return:
         Cell[] restCells = new Cell[9-this.numPlausCells(val1, val2)];
         //its length is equal to the number of cells in the row, 9, minus the 
@@ -321,7 +318,7 @@ public class CellGroup {
      * @param val3, the third value of the triplet
      * @return an array with the corresponding cells
      */
-    private Cell[] getRestCells(int val1, int val2, int val3) {
+    protected Cell[] getRestCells(int val1, int val2, int val3) {
         //the list of cells to return:
         Cell[] restCells = new Cell[9-this.numPlausCells(val1, val2, val3)];
         //its length is equal to the number of cells we calculate with the
@@ -353,7 +350,7 @@ public class CellGroup {
      * @param val2, the second
      * @return true if there's such a cell, false otherwise
      */
-    private boolean valsExistAlone(int val1, int val2) {
+    public boolean valsExistAlone(int val1, int val2) {
         boolean exists = false; //we'll be returning this
         for(int i = 0; i < this.cells.length; i++){
             //if there's a cell that could be filled with one of the digits of
@@ -379,7 +376,7 @@ public class CellGroup {
      * @param val3, the third
      * @return true if there's such a cell, false otherwise
      */
-    private boolean valsExistAlone(int val1, int val2, int val3) {
+    public boolean valsExistAlone(int val1, int val2, int val3) {
         boolean exists = false; //we'll be returning this
         for(int i = 0; i < this.cells.length; i++){
             //if there's a cell that could be filled with one of the digits of
@@ -409,7 +406,7 @@ public class CellGroup {
      * @param val2, the second
      * @return the number of cells that satisfy this
      */
-    private int numCellsOnly(int val1, int val2) {
+    public int numCellsOnly(int val1, int val2) {
         int count = 0; //a variable to store the count
         //we get the list of plausible cells for both digits:
         Cell[] plausCells = this.getPlausCells(val1, val2);
@@ -439,7 +436,7 @@ public class CellGroup {
      * @param val3, the third
      * @return the number of cells that satisfy this
      */
-    private int numCellsOnly(int val1, int val2, int val3) {
+    public int numCellsOnly(int val1, int val2, int val3) {
         int count = 0; //a variable to store the count
         //we get the list of plausible cells for both digits:
         Cell[] plausCells = this.getPlausCells(val1, val2, val3);
@@ -525,428 +522,5 @@ public class CellGroup {
             }
         }
         return val;
-    }
-    
-    /**
-     * Method findSimplePairs searches for pair patterns in the group that
-     * eliminate plausible values from some cells in the group.
-     * Specifically, we'll search for cases in which there's a pair of cells
-     * that can only be filled with the same pair, meaning the digits of the
-     * pair can't be in any other cell in the group; or the only pair of cells
-     * in the group that can be filled with a certain pair of numbers, meaning
-     * one of the numbers goes in one and the other in the other and the rest
-     * of seemingly plausible values for that pair of cells isn't really
-     * plausible and can be removed.
-     * 
-     * @return true if we found a new pair and therefore made progress in
-     * solving
-     */
-    public boolean findSimplePairs(){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!this.isComplete()){
-            int n = this.numMissingValues(); //we get how many numbers are
-            //missing
-            //if it is at least 2:
-            if(n > 1){
-                //for each pair of missing values:
-                for(int i = 1; i < n; i++){
-                    for(int j = i + 1; j <= n; j++){
-                        int val1 = this.getMissingVal(i); //first value of the
-                        //pair
-                        int val2 = this.getMissingVal(j); //second value of the
-                        //pair
-                        int numCells = this.numPlausCells(val1, val2);
-                        //if the cells that can be filled with both values of
-                        //the pair aren't the only cells in the group that can
-                        //be filled with one of the values in the pair:
-                        if(numCells > 1 && this.valsExistAlone(val1,val2)){
-                            //but two of the cells that can be filled with
-                            //both can only be filled with one or the other
-                            //and not any other number:
-                            if(this.numCellsOnly(val1,val2) == 2){
-                                //then we've found a pair and the
-                                //rest of the cells in the group can't be
-                                //filled with those numbers:
-                                solve = true;
-                                //we create an array to retain the rest of the
-                                //cells:
-                                Cell[] restCells =
-                                    this.getRestCells(val1, val2);
-                                for(int k = 0; k < restCells.length; k++){
-                                    restCells[k].removePlausible(val1,val2);
-                                }
-                            }
-                        //in the case we found only two cells and those are
-                        //the only cells in the group that can be filled
-                        //with any and both values of the pair:
-                        } else if(numCells == 2
-                        && this.numCellsOnly(val1,val2) != 2){
-                            //(second part of the condition checks if the pair
-                            //was already found before, therefore there's no
-                            //progress in solving)
-                            //we rule out any other value we may have had
-                            //stored as plausible for those two cells:
-                            solve = true;
-                            //we create an array to retain the cells that can
-                            //be filled with both values in the pair:
-                            Cell[] foundCells =
-                                this.getPlausCells(val1, val2);
-                            for(int k = 0; k < foundCells.length; k++){
-                                foundCells[k].
-                                removeAllPlausibleBut(val1,val2);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return solve;
-    }
-    /**
-     * Method findNakedPairs searches for naked pair patterns in the group
-     * that eliminate plausible values from some cells in the group.
-     * Specifically, we'll search for cases in which there's a pair of cells
-     * that can only be filled with the same pair, meaning the digits of the
-     * pair can't be in any other cell in the group.
-     * 
-     * @return true if we found a new naked pair and therefore made progress
-     * in solving
-     */
-    public boolean findNakedPairs(){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!this.isComplete()){
-            int n = this.numMissingValues(); //we get how many numbers are
-            //missing
-            //if it is at least 2:
-            if(n > 1){
-                //for each pair of missing values:
-                for(int i = 1; i < n; i++){
-                    for(int j = i + 1; j <= n; j++){
-                        int val1 = this.getMissingVal(i); //first value of the
-                        //pair
-                        int val2 = this.getMissingVal(j); //second value of the
-                        //pair
-                        //we store how many cells can be filled with both
-                        //values of the pair:
-                        int numCells = this.numPlausCells(val1, val2);
-                        //if the cells that can be filled with both values of
-                        //the pair aren't the only cells in the group that can
-                        //be filled with one of the values in the pair:
-                        if(numCells > 1 && this.valsExistAlone(val1,val2)){
-                            //but two of the cells that can be filled with
-                            //both can only be filled with one or the other
-                            //and not any other number:
-                            if(this.numCellsOnly(val1,val2) == 2){
-                                //then we've found a pair and the
-                                //rest of the cells in the group can't be
-                                //filled with those numbers:
-                                solve = true;
-                                //we create an array to retain the rest of the
-                                //cells:
-                                Cell[] restCells =
-                                    this.getRestCells(val1, val2);
-                                for(int k = 0; k < restCells.length; k++){
-                                    restCells[k].removePlausible(val1);
-                                    restCells[k].removePlausible(val2);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return solve;
-    }
-    /**
-     * Method findHiddenPairs searches for hidden pair patterns in the group
-     * that eliminate plausible values from some cells in the group.
-     * Specifically, we'll search for cases in which there's a single pair of
-     * cells in the group that can be filled with a certain pair of numbers,
-     * meaning one of the numbers goes in one and the other in the other and
-     * the rest of seemingly plausible values for that pair of cells isn't
-     * really plausible and can be removed.
-     * 
-     * @return true if we found a new hidden pair and therefore made progress
-     * in solving
-     */
-    public boolean findHiddenPairs(){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!this.isComplete()){
-            int n = this.numMissingValues(); //we get how many numbers are
-            //missing
-            //if it is at least 2:
-            if(n > 1){
-                //for each pair of missing values:
-                for(int i = 1; i < n; i++){
-                    for(int j = i + 1; j <= n; j++){
-                        int val1 = this.getMissingVal(i); //first value of the
-                        //pair
-                        int val2 = this.getMissingVal(j); //second value of the
-                        //pair
-                        //we store how many cells can be filled with both
-                        //values of the pair:
-                        int numCells = this.numPlausCells(val1, val2);
-                        //in the case we found only two cells and those are
-                        //the only cells in the group that can be filled
-                        //with any and both values of the pair:
-                        if(!this.valsExistAlone(val1,val2) && numCells == 2
-                        && this.numCellsOnly(val1,val2) != 2){
-                            //(second part of the condition checks if the pair
-                            //was already found before, therefore there's no
-                            //progress in solving)
-                            //we rule out any other value we may have had
-                            //stored as plausible for those two cells:
-                            solve = true;
-                            //we create an array to retain the cells that can
-                            //be filled with both values in the pair:
-                            Cell[] foundCells =
-                                this.getPlausCells(val1, val2);
-                            for(int k = 0; k < foundCells.length; k++){
-                                foundCells[k].
-                                removeAllPlausibleBut(val1,val2);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return solve;
-    }
-    
-    /**
-     * Method findSimpleTriplets searches for triplet patterns in the group
-     * that eliminate plausible values from some cells in the group.
-     * Specifically, we'll search for cases in which there's three cells that
-     * can only be filled with the same triplet, meaning the digits of the
-     * triplet can't be in any other cell in the group; or the only triplet of
-     * cells in the group that can be filled with a certain triplet of numbers,
-     * meaning the rest of seemingly plausible values for that triplet of cells
-     * isn't really plausible and can be removed.
-     * 
-     * @return true if we found a new triplet and therefore made progress in
-     * solving
-     */
-    public boolean findSimpleTriplets(){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!this.isComplete()){
-            //we get how many numbers are missing from the group:
-            int n = this.numMissingValues();
-            //if it is at least 3:
-            if(n > 2){
-                //for each triplet of missing values:
-                for(int i = 1; i < n-1; i++){
-                    for(int j = i + 1; j < n; j++){
-                        for(int k = j + 1; k <= n; k++){
-                            int val1 = this.getMissingVal(i);//first value of
-                            //the triplet
-                            int val2 = this.getMissingVal(j);//second value of
-                            //the triplet
-                            int val3 = this.getMissingVal(k);//third value of
-                            //the triplet
-                            //we store how many cells can be filled with the
-                            //values of the triplet:
-                            int numCells = this.numPlausCells(val1,val2,val3);
-                            ///if the cells that can be filled with the values
-                            //of the triplet aren't the only cells in the group
-                            //that can be filled with one of the values of the
-                            //triplet:
-                            if(numCells > 2
-                            && this.valsExistAlone(val1,val2,val3)){
-                                //but three of the cells that can be filled
-                                //with them can only be filled with them and
-                                //not any other number:
-                                if(this.numCellsOnly(val1,val2,val3) == 3){
-                                    //then we've found a triplet and the
-                                    //rest of the cells in the group can't be
-                                    //filled with those numbers:
-                                    solve = true;
-                                    //we create an array to retain the rest of
-                                    //the cells:
-                                    Cell[] restCells =
-                                        this.getRestCells(val1, val2, val3);
-                                    //we update their plausible values:
-                                    for(int t = 0; t < restCells.length; t++){
-                                        restCells[t].
-                                        removePlausible(val1,val2,val3);
-                                    }
-                                }
-                            //in the case we found only three cells and those
-                            //are the only cells in the group that could be
-                            //filled with any and all values of the triplet:
-                            } else if(numCells == 3
-                            && this.numCellsOnly(val1,val2,val3) != 3){
-                                //(second part of the condition checks if the
-                                //triplet was already found before, therefore
-                                //there's no progress in solving)
-                                //we rule out any other value we may have had
-                                //stored as plausible for those three cells:
-                                solve = true;
-                                //we create an array to retain the cells that
-                                //can be filled with the values in the triplet:
-                                Cell[] foundCells =
-                                    this.getPlausCells(val1, val2, val3);
-                                //we update their plausible values:
-                                for(int t = 0; t < foundCells.length; t++){
-                                    foundCells[t].
-                                    removeAllPlausibleBut(val1,val2,val3);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return solve;
-    }
-    /**
-     * Method findNakedTriplets searches only for naked triplet patterns in
-     * the group that eliminate plausible values from some cells in the group.
-     * Specifically, we'll search for cases in which there's three cells that
-     * can only be filled with the same triplet, meaning the digits of the
-     * triplet can't be in any other cell in the group.
-     * 
-     * @return true if we found a new naked triplet and therefore made
-     * progress in solving
-     */
-    public boolean findNakedTriplets(){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!this.isComplete()){
-            //we get how many numbers are missing from the group:
-            int n = this.numMissingValues();
-            //if it is at least 3:
-            if(n > 2){
-                //for each triplet of missing values:
-                for(int i = 1; i < n-1; i++){
-                    for(int j = i + 1; j < n; j++){
-                        for(int k = j + 1; k <= n; k++){
-                            int val1 = this.getMissingVal(i);//first value of
-                            //the triplet
-                            int val2 = this.getMissingVal(j);//second value of
-                            //the triplet
-                            int val3 = this.getMissingVal(k);//third value of
-                            //the triplet
-                            //we store how many cells can be filled with the
-                            //values of the triplet:
-                            int numCells = this.numPlausCells(val1,val2,val3);
-                            ///if the cells that can be filled with the values
-                            //of the triplet aren't the only cells in the group
-                            //that can be filled with one of the values of the
-                            //triplet:
-                            if(numCells > 2
-                            && this.valsExistAlone(val1,val2,val3)){
-                                //but three of the cells that can be filled
-                                //with them can only be filled with them and
-                                //not any other number:
-                                if(this.numCellsOnly(val1,val2,val3) == 3){
-                                    //then we've found a triplet and the
-                                    //rest of the cells in the group can't be
-                                    //filled with those numbers:
-                                    solve = true;
-                                    //we create an array to retain the rest of
-                                    //the cells:
-                                    Cell[] restCells =
-                                        this.getRestCells(val1, val2, val3);
-                                    //we update their plausible values:
-                                    for(int t = 0; t < restCells.length; t++){
-                                        restCells[t].
-                                        removePlausible(val1,val2,val3);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return solve;
-    }
-    /**
-     * Method findHiddenTriplets searches only for hidden triplet patterns in
-     * the group that eliminate plausible values from some cells in the group.
-     * Specifically, we'll search for cases in which there's a single triplet
-     * of cells in the group that can be filled with a certain triplet of
-     * numbers, meaning the rest of seemingly plausible values for that triplet
-     * of cells isn't really plausible and can be removed.
-     * 
-     * @return true if we found a new hidden triplet and therefore made
-     * progress in solving
-     */
-    public boolean findHiddenTriplets(){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!this.isComplete()){
-            //we get how many numbers are missing from the group:
-            int n = this.numMissingValues();
-            //if it is at least 3:
-            if(n > 2){
-                //for each triplet of missing values:
-                for(int i = 1; i < n-1; i++){
-                    for(int j = i + 1; j < n; j++){
-                        for(int k = j + 1; k <= n; k++){
-                            int val1 = this.getMissingVal(i);//first value of
-                            //the triplet
-                            int val2 = this.getMissingVal(j);//second value of
-                            //the triplet
-                            int val3 = this.getMissingVal(k);//third value of
-                            //the triplet
-                            //we store how many cells can be filled with the
-                            //values of the triplet:
-                            int numCells = this.numPlausCells(val1,val2,val3);
-                            ///if the cells that can be filled with the values
-                            //of the triplet aren't the only cells in the group
-                            //that can be filled with one of the values of the
-                            //triplet:
-                            if(numCells > 2
-                            && this.valsExistAlone(val1,val2,val3)){
-                                //but three of the cells that can be filled
-                                //with them can only be filled with them and
-                                //not any other number:
-                                if(this.numCellsOnly(val1,val2,val3) == 3){
-                                    //then we've found a triplet and the
-                                    //rest of the cells in the group can't be
-                                    //filled with those numbers:
-                                    solve = true;
-                                    //we create an array to retain the rest of
-                                    //the cells:
-                                    Cell[] restCells =
-                                        this.getRestCells(val1, val2, val3);
-                                    //we update their plausible values:
-                                    for(int t = 0; t < restCells.length; t++){
-                                        restCells[t].
-                                        removePlausible(val1,val2,val3);
-                                    }
-                                }
-                            //in the case we found only three cells and those
-                            //are the only cells in the group that could be
-                            //filled with any and all values of the triplet:
-                            } else if(numCells == 3
-                            && this.numCellsOnly(val1,val2,val3) != 3){
-                                //(second part of the condition checks if the
-                                //triplet was already found before, therefore
-                                //there's no progress in solving)
-                                //we rule out any other value we may have had
-                                //stored as plausible for those three cells:
-                                solve = true;
-                                //we create an array to retain the cells that
-                                //can be filled with the values in the triplet:
-                                Cell[] foundCells =
-                                    this.getPlausCells(val1, val2, val3);
-                                //we update their plausible values:
-                                for(int t = 0; t < foundCells.length; t++){
-                                    foundCells[t].
-                                    removeAllPlausibleBut(val1,val2,val3);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return solve;
     }
 }
