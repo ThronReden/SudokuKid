@@ -128,8 +128,24 @@ public class Sudoku {
      * @param nums 
      */
     public Sudoku (int nums[][]){
+        this(); //we call standard constructor
+        this.addNum(nums); //we add the numbers from the matrix
+    }
+    /**
+     * Cloning constructor.
+     * 
+     * @param sudoku, the Sudoku to clone
+     */
+    public Sudoku (Sudoku sudoku){
         this();
-        this.addNum(nums);
+        for(int i = 0; i < this.rows.length; i++) {
+            for(int j = 0; j < this.cols.length; j++) {
+                int val = sudoku.rows[i].cells[j].getValue();
+                addNum(val,i,j);
+                this.rows[i].cells[j].
+                    clonePlausVals(sudoku.rows[i].cells[j].getPlausValsList());
+            }
+        }
     }
     
     /* //////////////////////////////////////////////////////////////////////

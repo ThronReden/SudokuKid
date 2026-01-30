@@ -21,7 +21,7 @@ public class Cell {
      * builds objects of this class.
      *///////////////////////////////////////////////////////////////////////
     /**
-     * Constructor for objects of class Cell
+     * Constructor for objects of class Cell.
      */
     public Cell(){
         //the "value" attribute is always initialized to 0.
@@ -58,6 +58,38 @@ public class Cell {
     public void setValue(int val){
         if(0 < val & val < 10){ //we make sure the digit is valid.
             this.value = val; //we fill in the digit if it is.
+        }
+    }
+    
+    /**
+     * Method getPlausValsList returns the "plausibleValues" attribute of
+     * this instance of Cell.
+     * 
+     * @return this Cells plausible values list
+     */
+    public boolean[] getPlausValsList(){
+        boolean[] list = new boolean[9]; //we create a new array
+        //we set all booleans to the same state as the list in attributes:
+        for(int i = 0; i < this.plausibleValues.length; i++) {
+            list[i] = this.plausibleValues[i];
+        }
+        return list; //we return the new list
+    }
+    
+    /**
+     * Method clonePlausVals sets the plausibleValues list of this instance
+     * of cell to the same boolean state as those in a given list of 9
+     * booleans.
+     * 
+     * @param vals, the plausible values to clone 
+     */
+    protected void clonePlausVals(boolean[] vals){
+        //in case the list of booleans is valid:
+        if(vals.length == 9){
+            //we asign its values to our plausibleValues list:
+            for(int i = 0; i < this.plausibleValues.length; i++){
+                this.plausibleValues[i] = vals[i];
+            }
         }
     }
     

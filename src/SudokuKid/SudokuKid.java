@@ -10,23 +10,65 @@ import java.util.Scanner;
 public class SudokuKid {
     
     //Boolean variables to store weather a certain methods use is enabled:
-    private static boolean NS = true; //weather Naked Singles use is enabled
-    private static boolean HS = true; //weather Hidden Singles use is enabled
-    private static final boolean SS = NS || HS; //Simple Singles
+    private boolean NS = true; //weather Naked Singles use is enabled
+    private boolean HS = true; //weather Hidden Singles use is enabled
     
-    private static boolean NP = true; //Naked Pairs
-    private static boolean HP = true; //Hidden Pairs
-    private static final boolean SP = NP || HP; //Simple Pairs
+    private boolean NP = true; //Naked Pairs
+    private boolean HP = true; //Hidden Pairs
     
-    private static boolean PP = true; //Pointing Pairs
-    private static boolean PT = true; //Pointing Triplets
-    private static final boolean PN = PP || PT; //Pointing Numbers
+    private boolean PP = true; //Pointing Pairs
+    private boolean PT = true; //Pointing Triplets
     
-    private static boolean NT = true; //Naked Triplets
-    private static boolean HT = true; //Hidden Triplets
-    private static final boolean ST = NT || HT; //Simple Triplets
+    private boolean NT = true; //Naked Triplets
+    private boolean HT = true; //Hidden Triplets
     
     private Sudoku sudoku; //our Sudoku statement
+    
+    /* //////////////////////////////////////////////////////////////////////
+     * CONSTRUCTOR:
+     * builds objects of this class.
+     *///////////////////////////////////////////////////////////////////////
+    /**
+     * Standard constructor.
+     */
+    public SudokuKid(){}
+    /**
+     * Constructor overload that initializes this solvers sudoku attribute
+     * to a clone of a given Sudoku object. This includes all plauible values
+     * information in cells.
+     * 
+     * @param newSudoku, a sudoku statement to solve
+     */
+    public SudokuKid(Sudoku newSudoku){
+        //we clone the Sudoku object:
+        this.sudoku = new Sudoku(newSudoku);
+    }
+    /**
+     * Constructor overload that initializes this solvers sudoku attribute
+     * to a new sudoku created from a given valid 9x9 matrix of digits.
+     * Calls the Sudoku constructor that does this.
+     * 
+     * @param sudokuMatrix, the sudoku matrix we want to solve
+     */
+    public SudokuKid(int[][] sudokuMatrix){
+        //we create a Sudoku object to manage the sudoku statement:
+        this.sudoku = new Sudoku(sudokuMatrix);
+    }
+    /**
+     * Constructor overload that initializes this solvers sudoku attribute
+     * to a new sudoku created from a given valid String of 81 digits.
+     * It transforms the String into a 9x9 matrix and then calls the Sudoku
+     * constructor that turns that matrix into a Sudoku object.
+     * 
+     * @param sudokuString 
+     */
+    public SudokuKid(String sudokuString){
+        //we transform the sudoku statement we want to solve to a format we
+        //can work with:
+        int[][] sudokuMatrix = Sudoku.toMatrix(sudokuString);
+        //we create a Sudoku object to manage it:
+        this.sudoku = new Sudoku(sudokuMatrix);
+    }
     
     /* //////////////////////////////////////////////////////////////////////
      * SOLVING METHODS:
@@ -455,10 +497,6 @@ public class SudokuKid {
     //UNSOLVABLE:
     
     public void solvingLoop(){
-        //the sudoku statement we want to solve:
-        int[][] sudokuMatrix = Sudoku.toMatrix(menneske4813117);
-        //we create a Sudoku object to manage it:
-        this.sudoku = new Sudoku(sudokuMatrix);
         //we create a Scanner object for basic user interaction:
         Scanner scanner = new Scanner(System.in);
         System.out.println("INITIAL SUDOKU STATEMENT:");
@@ -499,7 +537,7 @@ public class SudokuKid {
              */
             //Simple Singles:
                 //(used if either Naked and Hidden Singles are enabled)
-            if(SS){
+            if(isEnabledSS()){
                 do{
                     iter++;
 //                    System.out.println("Used solveSimpleSingles.\n");
@@ -513,7 +551,7 @@ public class SudokuKid {
             }
             //Simple Pairs:
                 //(used if either Naked and Hidden Pairs are enabled)
-            if(SP && !solve){
+            if(isEnabledSP() && !solve){
                 do{
                     iter++;
 //                    System.out.println("Used solveSimplePairs.\n");
@@ -526,7 +564,7 @@ public class SudokuKid {
             }
             //Pointing Numbers:
                 //(used if either Pointing Pairs and Triplets are enabled)
-            if(PN && !solve){
+            if(isEnabledPN() && !solve){
                 do{
                     iter++;
 //                    System.out.println("Used solvePointingNumbers.\n");
@@ -540,7 +578,7 @@ public class SudokuKid {
             }
             //Simple Triplets:
                 //(used if either Naked and Hidden Triplets are enabled)
-            if(ST && !solve){
+            if(isEnabledST() && !solve){
                 do{
                     iter++;
 //                    System.out.println("Used solveSimpleTriplets.\n");
@@ -574,9 +612,168 @@ public class SudokuKid {
 //    private static final String vopani2 = "301086504046521070500000001400800002080347900009050038004090200008734090007208103";
 //    private static final String vopani3 = "000598004009100268807000509985703002000000005304005600200070900401906000000201040";
 //    private static final String menneske843211 = "016030900000010004840200000000090000068301250001080700000004086900060000002070490";
-    private static final String menneske4813117 = "300000008010500070096073210009040030007109800080030700058310920040006080900000007";
+    protected static final String menneske4813117 = "300000008010500070096073210009040030007109800080030700058310920040006080900000007";
     //UNSOLVABLE:
 //    private static final int[][] claudeSudoku3 = {{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,0,2,0,3,0},{0,0,0,0,4,0,0,0,0},{0,0,0,5,0,0,0,0,0},{0,0,6,0,0,0,0,0,0},{0,7,0,0,0,0,0,0,0},{0,0,0,0,0,0,8,0,0},{9,0,0,0,0,0,0,0,0}};
 //    private static final String menneske259058 = "000009031090803000006010200000400098060000000037050000000000700000100046201060000";
+
+    /* //////////////////////////////////////////////////////////////////////
+     * ACCESS METHODS:
+     * Encapsulation and stuff...
+     *///////////////////////////////////////////////////////////////////////
+    
+    /**
+     * @return weather NS is enabled
+     */
+    public boolean isEnabledNS() {
+        return NS;
+    }
+
+    /**
+     * @param enabled, the state to set NS to
+     */
+    public void setNS(boolean enabled) {
+        NS = enabled;
+    }
+
+    /**
+     * @return weather HS is enabled
+     */
+    public boolean isEnabledHS() {
+        return HS;
+    }
+
+    /**
+     * @param enabled, the state to set HS to
+     */
+    public void setHS(boolean enabled) {
+        HS = enabled;
+    }
+
+    /**
+     * @return weather SS is enabled
+     */
+    public boolean isEnabledSS() {
+        return NS || HS;
+    }
+
+    /**
+     * @return weather NP is enabled
+     */
+    public boolean isEnabledNP() {
+        return NP;
+    }
+
+    /**
+     * @param enabled, the state to set NP to
+     */
+    public void setNP(boolean enabled) {
+        NP = enabled;
+    }
+
+    /**
+     * @return weather HP is enabled
+     */
+    public boolean isEnabledHP() {
+        return HP;
+    }
+
+    /**
+     * @param enabled, the state to set HP to
+     */
+    public void setHP(boolean enabled) {
+        HP = enabled;
+    }
+
+    /**
+     * @return weather SP is enabled
+     */
+    public boolean isEnabledSP() {
+        return NP || HP;
+    }
+
+    /**
+     * @return weather PP is enabled
+     */
+    public boolean isEnabledPP() {
+        return PP;
+    }
+
+    /**
+     * @param enabled, the state to set PP to
+     */
+    public void setPP(boolean enabled) {
+        PP = enabled;
+    }
+
+    /**
+     * @return weather PT is enabled
+     */
+    public boolean isEnabledPT() {
+        return PT;
+    }
+
+    /**
+     * @param enabled, the state to set PT to
+     */
+    public void setPT(boolean enabled) {
+        PT = enabled;
+    }
+
+    /**
+     * @return weather PN is enabled
+     */
+    public boolean isEnabledPN() {
+        return PP || PT;
+    }
+
+    /**
+     * @return weather NT is enabled
+     */
+    public boolean isEnabledNT() {
+        return NT;
+    }
+
+    /**
+     * @param enabled, the state to set NT to
+     */
+    public void setNT(boolean enabled) {
+        NT = enabled;
+    }
+
+    /**
+     * @return weather HT is enabled
+     */
+    public boolean isEnabledHT() {
+        return HT;
+    }
+
+    /**
+     * @param enabled, the state to set HT to
+     */
+    public void setHT(boolean enabled) {
+        HT = enabled;
+    }
+
+    /**
+     * @return weather ST is enabled
+     */
+    public boolean isEnabledST() {
+        return NT || HT;
+    }
+
+    /**
+     * @return our sudoku
+     */
+    public Sudoku getSudoku() {
+        return sudoku;
+    }
+
+    /**
+     * @param newSudoku the new sudoku to set
+     */
+    public void setSudoku(Sudoku newSudoku) {
+        this.sudoku = newSudoku;
+    }
     
 }
