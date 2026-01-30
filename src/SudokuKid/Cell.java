@@ -9,20 +9,19 @@ package SudokuKid;
 public class Cell {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
-     * //////////////////////////////////////////////////////////////////////
-     */
-    public int value; //the digit contained by the cell, 1 to 9.
+     *///////////////////////////////////////////////////////////////////////
+    private int value; //the digit contained by the cell, 1 to 9.
     //if value is 0 then the Cell is "empty".
-    private boolean[] plausibleValues; //a list representing if each
-    //of the 9 valid digits could be placed in the cell or not.
+    private final boolean[] plausibleValues = new boolean[9]; //a list
+    //representing if each of the 9 valid digits could be placed in the
+    //cell or not.
     
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
      * builds objects of this class.
-     * //////////////////////////////////////////////////////////////////////
-     */
+     *///////////////////////////////////////////////////////////////////////
     /**
-     * Constructor for objects of class Cell
+     * Constructor for objects of class Cell.
      */
     public Cell(){
         //the "value" attribute is always initialized to 0.
@@ -30,7 +29,6 @@ public class Cell {
         //all the booleans in the "plausibleValues" list attribute
         //are initialized to true, as every digit fits in a cell
         //of an empty sudoku.
-        this.plausibleValues = new boolean[9];
         for(int i = 0; i < this.plausibleValues.length; i++){
             this.plausibleValues[i] = true;
             //System.out.println(i+" es "+plausibleValues[i]);
@@ -40,8 +38,17 @@ public class Cell {
     /* //////////////////////////////////////////////////////////////////////
      * METHODS:
      * they do things ~~
-     * //////////////////////////////////////////////////////////////////////
+     *///////////////////////////////////////////////////////////////////////
+    /**
+     * Method getValue returns the "value" attribute of this instance
+     * of Cell.
+     * 
+     * @return this Cells value
      */
+    public int getValue() {
+        return this.value;
+    }
+    
     /**
      * Method setValue sets the "value" attribute of that instance
      * of Cell to a given digit.
@@ -51,6 +58,38 @@ public class Cell {
     public void setValue(int val){
         if(0 < val & val < 10){ //we make sure the digit is valid.
             this.value = val; //we fill in the digit if it is.
+        }
+    }
+    
+    /**
+     * Method getPlausValsList returns the "plausibleValues" attribute of
+     * this instance of Cell.
+     * 
+     * @return this Cells plausible values list
+     */
+    public boolean[] getPlausValsList(){
+        boolean[] list = new boolean[9]; //we create a new array
+        //we set all booleans to the same state as the list in attributes:
+        for(int i = 0; i < this.plausibleValues.length; i++) {
+            list[i] = this.plausibleValues[i];
+        }
+        return list; //we return the new list
+    }
+    
+    /**
+     * Method clonePlausVals sets the plausibleValues list of this instance
+     * of cell to the same boolean state as those in a given list of 9
+     * booleans.
+     * 
+     * @param vals, the plausible values to clone 
+     */
+    protected void clonePlausVals(boolean[] vals){
+        //in case the list of booleans is valid:
+        if(vals.length == 9){
+            //we asign its values to our plausibleValues list:
+            for(int i = 0; i < this.plausibleValues.length; i++){
+                this.plausibleValues[i] = vals[i];
+            }
         }
     }
     
@@ -181,7 +220,7 @@ public class Cell {
      * 
      * @param val the value we want to set to not plausible for this Cell
      */
-    public void removePlausible(int val) {
+    protected void removePlausible(int val) {
         //if the cell is empty:
         if(!this.isFilled()){
             this.plausibleValues[val-1] = false; //we mark it as not plausible
@@ -194,7 +233,7 @@ public class Cell {
      * @param val1, the first value we want to set to not plausible
      * @param val2, the second
      */
-    public void removePlausible(int val1, int val2) {
+    protected void removePlausible(int val1, int val2) {
         this.removePlausible(val1);
         this.removePlausible(val2);
     }
@@ -206,7 +245,7 @@ public class Cell {
      * @param val2, the second
      * @param val3, the third
      */
-    public void removePlausible(int val1, int val2, int val3) {
+    protected void removePlausible(int val1, int val2, int val3) {
         this.removePlausible(val1);
         this.removePlausible(val2);
         this.removePlausible(val3);
@@ -219,7 +258,7 @@ public class Cell {
      * @param val1, the first value that will stay plausible
      * @param val2, the second
      */
-    public void removeAllPlausibleBut(int val1, int val2) {
+    protected void removeAllPlausibleBut(int val1, int val2) {
         //we loop through this cells list of plausible values:
         for(int i = 0; i < this.plausibleValues.length; i++) {
             //we mark as not plausible all but the two given digits:
@@ -236,7 +275,7 @@ public class Cell {
      * @param val2, the second
      * @param val3, the third
      */
-    public void removeAllPlausibleBut(int val1, int val2, int val3) {
+    protected void removeAllPlausibleBut(int val1, int val2, int val3) {
         //we loop through this cells list of plausible values:
         for(int i = 0; i < this.plausibleValues.length; i++) {
             //we mark as not plausible all but the three given digits:
