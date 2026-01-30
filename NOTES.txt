@@ -171,3 +171,13 @@ DEVELOPMENT NOTES:
 	* Minor changes to main class.
 	% Should separate solving methods from Sudoku defining clases to a new
 	SudokuSolver class.
+	
+28/01/2026 - New SudokuSolver class named SudokuKid!
+	+ New sudokuKid class
+	* changes to main
+	+ Commentary added
+	
+30/01/2026 - Improvements to SudokuKid and Sudoku:
+	+ New cloning constructor in Sudoku
+	+ New constructors in SudokuKid
+	* Fields in Cell & SudokuKid encapsulated
