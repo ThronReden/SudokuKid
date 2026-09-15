@@ -22,7 +22,7 @@ public class SudokuKid {
     private boolean NT = true; //Naked Triplets
     private boolean HT = true; //Hidden Triplets
     
-    private Sudoku sudoku; //our Sudoku statement
+    private SudokuObsolete sudoku; //our Sudoku statement
     
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
@@ -39,9 +39,9 @@ public class SudokuKid {
      * 
      * @param newSudoku, a sudoku statement to solve
      */
-    public SudokuKid(Sudoku newSudoku){
+    public SudokuKid(SudokuObsolete newSudoku){
         //we clone the Sudoku object:
-        this.sudoku = new Sudoku(newSudoku);
+        this.sudoku = new SudokuObsolete(newSudoku);
     }
     /**
      * Constructor overload that initializes this solvers sudoku attribute
@@ -52,7 +52,7 @@ public class SudokuKid {
      */
     public SudokuKid(int[][] sudokuMatrix){
         //we create a Sudoku object to manage the sudoku statement:
-        this.sudoku = new Sudoku(sudokuMatrix);
+        this.sudoku = new SudokuObsolete(sudokuMatrix);
     }
     /**
      * Constructor overload that initializes this solvers sudoku attribute
@@ -65,9 +65,9 @@ public class SudokuKid {
     public SudokuKid(String sudokuString){
         //we transform the sudoku statement we want to solve to a format we
         //can work with:
-        int[][] sudokuMatrix = Sudoku.toMatrix(sudokuString);
+        int[][] sudokuMatrix = SudokuObsolete.toMatrix(sudokuString);
         //we create a Sudoku object to manage it:
-        this.sudoku = new Sudoku(sudokuMatrix);
+        this.sudoku = new SudokuObsolete(sudokuMatrix);
     }
     
     /* //////////////////////////////////////////////////////////////////////
@@ -765,14 +765,14 @@ public class SudokuKid {
     /**
      * @return our sudoku
      */
-    public Sudoku getSudoku() {
+    public SudokuObsolete getSudoku() {
         return sudoku;
     }
 
     /**
      * @param newSudoku the new sudoku to set
      */
-    public void setSudoku(Sudoku newSudoku) {
+    public void setSudoku(SudokuObsolete newSudoku) {
         this.sudoku = newSudoku;
     }
     
