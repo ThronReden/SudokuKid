@@ -1,5 +1,4 @@
 /nbproject/
-/test/
 /build/
 *.class
 *.ctxt
@@ -7,3 +6,4 @@
 *.xml
 *.mf
 /dist/
+/target/
