@@ -9,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
- * @author jsanchez
+ * @author TR
+ * @date 25/SEP/26
  */
 public class SudokuTest {
     

@@ -7,7 +7,7 @@ package TR.sudokukid;
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @version 14/SEP/26
+ * @date 14/SEP/26
  */
 public class Sudoku {
     /* //////////////////////////////////////////////////////////////////////

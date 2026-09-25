@@ -4,9 +4,9 @@ package TR.sudokukid;
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @date 27/NOV/25
+ * @date 25/SEP/26
  */
-public class CellObsolete {
+public class Cell {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
      *///////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ public class CellObsolete {
     /**
      * Constructor for objects of class Cell.
      */
-    public CellObsolete(){
+    public Cell(){
         //the "value" attribute is always initialized to 0.
         this.value = 0;
         //all the booleans in the "plausibleValues" list attribute
