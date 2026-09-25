@@ -1,4 +1,4 @@
-package SudokuKid;
+package TR.sudokukid;
 
 import java.util.Scanner;
 

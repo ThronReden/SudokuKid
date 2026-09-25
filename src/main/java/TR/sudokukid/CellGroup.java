@@ -1,4 +1,4 @@
-package SudokuKid;
+package TR.sudokukid;
 
 /**
  * CellGroup objects represent one of the rows, columns

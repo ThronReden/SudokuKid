@@ -1,4 +1,4 @@
-package SudokuKid;
+package TR.sudokukid;
 
 /**
  * Cell objects represent a slot in the sudoku.
