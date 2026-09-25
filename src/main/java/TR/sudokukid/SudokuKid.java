@@ -234,7 +234,7 @@ public class SudokuKid {
 //                                System.out.println("\tFound Naked Pair.\n");
                                 //we create an array to retain the rest of the
                                 //cells:
-                                Cell[] restCells =
+                                CellObsolete[] restCells =
                                     grup.getRestCells(val1, val2);
                                 for(int k = 0; k < restCells.length; k++){
                                     restCells[k].removePlausible(val1,val2);
@@ -255,7 +255,7 @@ public class SudokuKid {
 //                            System.out.println("\tFound Hidden Pair.\n");
                             //we create an array to retain the cells that can
                             //be filled with both values in the pair:
-                            Cell[] foundCells =
+                            CellObsolete[] foundCells =
                                 grup.getPlausCells(val1, val2);
                             for(int k = 0; k < foundCells.length; k++){
                                 foundCells[k].
@@ -442,7 +442,7 @@ public class SudokuKid {
 //                                    System.out.println("\tFound Naked Triplet.\n");
                                     //we create an array to retain the rest of
                                     //the cells:
-                                    Cell[] restCells =
+                                    CellObsolete[] restCells =
                                         grup.getRestCells(val1, val2, val3);
                                     //we update their plausible values:
                                     for(int t = 0; t < restCells.length; t++){
@@ -465,7 +465,7 @@ public class SudokuKid {
 //                                System.out.println("\tFound Hidden Triplet.\n");
                                 //we create an array to retain the cells that
                                 //can be filled with the values in the triplet:
-                                Cell[] foundCells =
+                                CellObsolete[] foundCells =
                                     grup.getPlausCells(val1, val2, val3);
                                 //we update their plausible values:
                                 for(int t = 0; t < foundCells.length; t++){

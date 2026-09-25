@@ -6,7 +6,7 @@ package TR.sudokukid;
  * @author TR 
  * @version 27/NOV/25
  */
-public class Cell {
+public class CellObsolete {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
      *///////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ public class Cell {
     /**
      * Constructor for objects of class Cell.
      */
-    public Cell(){
+    public CellObsolete(){
         //the "value" attribute is always initialized to 0.
         this.value = 0;
         //all the booleans in the "plausibleValues" list attribute
