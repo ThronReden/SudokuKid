@@ -4,284 +4,281 @@ package TR.sudokukid;
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @date 25/SEP/26
+ * @date 28/SEP/26
  */
 public class Cell {
-    /* //////////////////////////////////////////////////////////////////////
+    /* ##################################################################################################################################################
      * ATTRIBUTES:
-     *///////////////////////////////////////////////////////////////////////
-    private int value; //the digit contained by the cell, 1 to 9.
-    //if value is 0 then the Cell is "empty".
-    private final boolean[] plausibleValues = new boolean[9]; //a list
-    //representing if each of the 9 valid digits could be placed in the
-    //cell or not.
-    
-    /* //////////////////////////////////////////////////////////////////////
-     * CONSTRUCTOR:
-     * builds objects of this class.
-     *///////////////////////////////////////////////////////////////////////
-    /**
-     * Constructor for objects of class Cell.
      */
-    public Cell(){
-        //the "value" attribute is always initialized to 0.
-        this.value = 0;
-        //all the booleans in the "plausibleValues" list attribute
-        //are initialized to true, as every digit fits in a cell
-        //of an empty sudoku.
-        for(int i = 0; i < this.plausibleValues.length; i++){
-            this.plausibleValues[i] = true;
-            //System.out.println(i+" es "+plausibleValues[i]);
+    /**
+     * The digit contained by the cell, a number from 1 to 9.
+     * If value is 0 then the Cell is "empty".
+     * It's 0 by default.
+     */
+    private int value = 0;
+    /**
+     * A list indicating whitch values could fill this cell based on the
+     * current state of the sudoku and any asumptions we might have made
+     * while solving.
+     * The plausibli1ity of 1 will be determined by the first index,
+     * plausibleValues[0], the plausibility of 2 by the second,
+     * plausibleValues[1], etc.
+     * If the boolean in the index is true this digit may fill this cell,
+     * and if it's false it means we know for sure it can't.
+     */
+    private boolean[] plausibleValues = new boolean[9];
+    /**
+     * The row the cell is at, a number from 1 to 9.
+     */
+    private final int row;
+    /**
+     * The column the cell is at, a number from 1 to 9.
+     */
+    private final int col;
+    /**
+     * The sudoku this cell belongs to.
+     */
+    private final Sudoku sudoku;    
+    
+    /* ##################################################################################################################################################
+     * CONSTRUCTORS:
+     */
+    /**
+     * Builds objects of class Cell.
+     * 
+     * @param aRow, its row, from 1 to 9
+     * @param aCol, its column, from 1 to 9
+     * @param unSudoku, the sudoku it belongs to
+     */
+    public Cell(int aRow, int aCol, Sudoku unSudoku){
+        // We initialize the attributes with the given parameters:
+        this.row = aRow;
+        this.col = aCol;
+        this.sudoku = unSudoku;
+        // and set the plausibility of all digits to true:
+        for(boolean plausibilityOfDigit : this.plausibleValues){
+            plausibilityOfDigit = true;
         }
     }
 
-    /* //////////////////////////////////////////////////////////////////////
-     * METHODS:
+    /* ##################################################################################################################################################
+     * GETTERS, SETTERS & BOOLS:
      * they do things ~~
-     *///////////////////////////////////////////////////////////////////////
+     */
     /**
-     * Method getValue returns the "value" attribute of this instance
-     * of Cell.
+     * Returns true if the digit filling this cell of the sudoku is 0,
+     * meaning it's empty.
      * 
-     * @return this Cells value
+     * @return true if the value attribute of this cell is equal to 0
+     * and false if it is any other digit, from 1 to 9, therefore being filled.
+     * @see #isFilled() 
+     */
+    public boolean isEmpty(){
+        return this.value == 0; // If it's 0 then it's empty.
+    }
+    
+    /**
+     * Returns true if a digit from 1 to 9 exists in this cell of
+     * the sudoku.
+     * 
+     * @return true if the value attribute of this cell is diferent from 0
+     * and false if it is 0, therefore being empty.
+     * @see #isEmpty() 
+     */
+    public boolean isFilled(){
+        return this.value != 0; // If it's not 0 then it's filled.
+    }
+    
+    /**
+     * Returns the number filled in this instance of Cell.
+     * 
+     * @return this Cell's value
+     * @see #value
      */
     public int getValue() {
         return this.value;
     }
     
     /**
-     * Method setValue sets the "value" attribute of that instance
-     * of Cell to a given digit.
+     * Sets the number filled in this instance of Cell to a given digit.
      * 
      * @param val, the digit you want to fill into the Cell
+     * @see #value
      */
-    public void setValue(int val){
-        if(0 < val & val < 10){ //we make sure the digit is valid.
-            this.value = val; //we fill in the digit if it is.
+    protected void setValue(int val){
+        if(0 < val & val < 10){ // We make sure the digit is valid.
+            this.value = val; // We fill in the digit if it is.
         }
+    }
+
+    /**
+     * Returns the row of this instance of Cell.
+     * 
+     * @return this Cell's row
+     * @see #row
+     */
+    public int getRow() {
+        return row;
+    }
+    /**
+     * Returns the row of this instance of Cell in array index format,
+     * aka, substracting 1 (0 to 8).
+     * 
+     * @return this Cell's row index
+     * @see #row
+     */
+    public int getRowIndex() {
+        return row-1;
+    }
+
+    /**
+     * Returns the column of this instance of Cell.
+     * 
+     * @return this Cell's column
+     * @see #col
+     */
+    public int getCol() {
+        return col;
+    }
+    /**
+     * Returns the column of this instance of Cell in array index format,
+     * aka, substracting 1 (0 to 8).
+     * 
+     * @return this Cell's column index
+     * @see #col
+     */
+    public int getColIndex() {
+        return col -1;
+    }
+
+    /**
+     * Returns the square of this instance of Cell.
+     * It's not an attribute, we calculate it.
+     * 
+     * @return this Cell's square
+     * @see #getSqr(int, int) 
+     */
+    public int getSqr() {
+        return getSqr(this.row,this.col);
+    }
+    /**
+     * Method getSqr finds the square a Cell in a given row and column
+     * belongs to.
+     * We encapsulated this as we may need to use it a bunch of times.
+     *
+     * @param row, the Cell's row
+     * @param col, its column
+     * @return an integer from 1 to 9 corresponding to this Cell's square
+     */
+    public static int getSqr(int row, int col){
+        //"maybe encapsulate row/3*3+col/3 as getSqrCells(row,col)?", we did hehe:
+        int sqr = ((row-1)/3*3+(col-1)/3)+1; //the corresponding square
+        return sqr; //we return it
+    }
+    /**
+     * Method getSqrCells returns the square of this instance 
+     * of Cell in array index format, aka, substracting 1 (0 to 8).
+     * 
+     * @return this Cell's square index
+     */
+    public int getSqrIndex() {
+        return getSqr()-1;
+    }
+
+    /**
+     * Method getSudoku returns the sudoku this cell belongs to.
+     * 
+     * @return the Cell's sudoku
+     * @see #sudoku
+     */
+    public Sudoku getSudoku() {
+        return sudoku;
     }
     
     /**
-     * Method getPlausValsList returns the "plausibleValues" attribute of
+     * Method getPlausVals returns the plausibleValues attribute of
      * this instance of Cell.
      * 
      * @return this Cells plausible values list
+     * @see #plausibleValues
      */
-    public boolean[] getPlausValsList(){
-        boolean[] list = new boolean[9]; //we create a new array
-        //we set all booleans to the same state as the list in attributes:
-        for(int i = 0; i < this.plausibleValues.length; i++) {
-            list[i] = this.plausibleValues[i];
-        }
-        return list; //we return the new list
-    }
-    
-    /**
-     * Method clonePlausVals sets the plausibleValues list of this instance
-     * of cell to the same boolean state as those in a given list of 9
-     * booleans.
-     * 
-     * @param vals, the plausible values to clone 
-     */
-    protected void clonePlausVals(boolean[] vals){
-        //in case the list of booleans is valid:
-        if(vals.length == 9){
-            //we asign its values to our plausibleValues list:
-            for(int i = 0; i < this.plausibleValues.length; i++){
-                this.plausibleValues[i] = vals[i];
-            }
-        }
-    }
-    
-    /**
-     * Method isFilled is true if a digit from 1 to 9 exists in this cell of
-     * the sudoku.
-     * 
-     * @return true if the value attribute of this cell is diferent from 0
-     * and false if it is 0, therefore being empty.
-     */
-    public boolean isFilled(){
-        return this.value != 0; //if it's 0 then it's empty
-    }
-    
-    /**
-     * Method numPlausibleValues gets us the number of digits that could
-     * fill this Cell with the curren information of the Sudoku. Example:
-     * if only a 5, a 6 or a 9 could fill this Cell the method will return
-     * the number 3.
-     *
-     * @return sum, the number of plausible values
-     */
-    public int numPlausibleValues(){
-        int sum = 0; //a variable to contain the number of values
-        if(!this.isFilled()){
-            for(int i = 0; i < this.plausibleValues.length; i++){
-                if(plausibleValues[i]){
-                    sum++; //if a position of the array is true we add 1 to the
-                    //sum of plausible numbers
-                }
-            }
-        }
-        return sum;
-    }
-    
-    /**
-     * Method getPlausVal gets us the "n"th plausible value that could fill
-     * this Cell. Example: if only a 5, a 6 or a 9 could fill this Cell and
-     * we introduce 3 as n, the method will return 9. If we introduce 1 as n
-     * instead, it'll return 3. If we introduce 0 or less or any other value
-     * for n that doesnt match a plausible value (like 4 or more in the given
-     * example) the method will return 0.
-     *
-     * @param n the number plausible value we want
-     * @return val, the value of that plausible value
-     */
-    public int getPlausVal(int n){
-        int val = 0; //a value to be returned, 0 in case of invalid n
-        if(n > 0 && n <= 9){
-            //if valid n
-            int sum = 0; //the sum of plausible values
-            for(int i = 0; i < this.plausibleValues.length; i++){
-                if(plausibleValues[i]){
-                    sum++; //we count the plausible values
-                }
-                if(sum == n){
-                    //if the plausible val number is n
-                    val = i+1; //we return it (its position + 1)
-                    return val;
-                }
-            }
-        }
-        return val;
-    }
-    /**
-     * Method getPlausVal overload gets us the lowest plausible value that
-     * could fill this Cell with the current Sudoku information. We can use
-     * this simpler method if we've already confirmed there's a single
-     * plausible digit for the Cell to get said digit.
-     *
-     * @return val, the lowest plausible value
-     */
-    public int getPlausVal(){
-        int val = 0; //we initialze val in case there's no plausible value
-        for(int i = 0; i < this.plausibleValues.length; i++){
-            if(plausibleValues[i]){
-                //as soon as we get a plausible value
-                val = i+1; //we return it (its position + 1)
-                return val;
-            }
-        }
-        return val; //we return the first plausible value we find, the lowest.
+    public boolean[] getPlausVals(){
+        return this.plausibleValues;
     }
 
     /**
      * Method isPlausible returns if a given value could fill this Cell or not.
      * 
      * @param val, the value we want to check for
-     * @return true if it can fill the cell, false otherwise
+     * @return true if it could fill the cell, false otherwise
+     * @see #isPlausible(int[])
+     * @see #plausibleValues
      */
     public boolean isPlausible(int val) {
-        //it has to be emty and have that digit marked as plausible in our
-        //plausibleValues list:
+        // It has to be emty and have that digit marked as plausible in our
+        // plausibleValues list:
         return !this.isFilled() && this.plausibleValues[val-1];
     }
     /**
-     * Method isPlausible overload returns if two given values could fill this
-     * Cell or not.
+     * Method isPlausible overload returns if all values from a given list of
+     * values could fill this Cell or not.
      * 
-     * @param val1, the first value we want to check for
-     * @param val2, the second value we want to check for
-     * @return true if they can fill the cell, false otherwise
+     * @param vals, the list of values we want to check for
+     * @return true if all could fill the cell, false otherwise
+     * @see #isPlausible(int) 
+     * @see #plausibleValues
      */
-    public boolean isPlausible(int val1, int val2) {
-        //it has to be emty and have both digits marked as plausible in our
-        //plausibleValues list:
-        return this.isPlausible(val1) && this.isPlausible(val2);
-    }
-    /**
-     * Method isPlausible overload 2 returns if three given values could fill
-     * this Cell or not.
-     * 
-     * @param val1, the first value we want to check for
-     * @param val2, the second value we want to check for
-     * @param val3, the third value we want to check for
-     * @return true if they can fill the cell, false otherwise
-     */
-    public boolean isPlausible(int val1, int val2, int val3) {
-        //it has to be emty and have the three digits marked as plausible in
-        //our plausibleValues list:
-        return this.isPlausible(val1) && this.isPlausible(val2)
-        && this.isPlausible(val3);
+    public boolean isPlausible(int[] vals) {
+        // It has to be emty and have all digits marked as plausible in our
+        // plausibleValues list:
+        boolean isPlausible = true;
+        for(int val : vals){
+            isPlausible &= isPlausible(val);
+        }
+        return isPlausible;
     }
     
     /**
-     * Method removePlausible sets the plausibility for a given value to fill
-     * this Cell to false.
+     * Marks a given value as not plausible for this Cell.
      * 
      * @param val the value we want to set to not plausible for this Cell
+     * @see #removePlausible(int[])
+     * @see #plausibleValues
      */
     protected void removePlausible(int val) {
-        //if the cell is empty:
-        if(!this.isFilled()){
-            this.plausibleValues[val-1] = false; //we mark it as not plausible
+        // Only if the cell is empty:
+        if(this.isEmpty()){
+            this.plausibleValues[val-1] = false; // We mark it as not plausible
         }
     }
     /**
-     * Method removePlausible overload sets the plausibility for two given
-     * values to fill this Cell to false.
+     * Marks each value in the given list as not plausible for this Cell.
      * 
-     * @param val1, the first value we want to set to not plausible
-     * @param val2, the second
+     * @param vals, the list of values we want to set to not plausible
+     * @see #removePlausible(int)
+     * @see #plausibleValues
      */
-    protected void removePlausible(int val1, int val2) {
-        this.removePlausible(val1);
-        this.removePlausible(val2);
-    }
-    /**
-     * Method removePlausible overload 2 sets the plausibility for three given
-     * values to fill this Cell to false.
-     * 
-     * @param val1, the first value we want to set to not plausible
-     * @param val2, the second
-     * @param val3, the third
-     */
-    protected void removePlausible(int val1, int val2, int val3) {
-        this.removePlausible(val1);
-        this.removePlausible(val2);
-        this.removePlausible(val3);
+    protected void removePlausible(int[] vals) {
+        for(int val : vals){
+            this.removePlausible(val);
+        }
     }
 
     /**
-     * Method removeAllPlausibleBut sets all numbers but the two given to
-     * unplausible for filling this cell.
+     * Sets all numbers but those in the given list to not plausible for
+     * this cell.
      * 
-     * @param val1, the first value that will stay plausible
-     * @param val2, the second
+     * @param vals, the list of values that will stay plausible
+     * @see #plausibleValues
      */
-    protected void removeAllPlausibleBut(int val1, int val2) {
-        //we loop through this cells list of plausible values:
-        for(int i = 0; i < this.plausibleValues.length; i++) {
-            //we mark as not plausible all but the two given digits:
-            if(i != val1-1 && i != val2-1){
-                this.plausibleValues[i] = false;
-            }
+    protected void removeAllPlausibleBut(int[] vals) {
+        // We set all indexes to false
+        // (booleans get initialized to false by default):
+        this.plausibleValues = new boolean[9];
+        // We set those values in the list as plausible:
+        for(int val : vals){
+            this.plausibleValues[val-1] = true;
         }
     }
-    /**
-     * Method removeAllPlausibleBut overload sets all numbers but the three
-     * given to unplausible for filling this cell.
-     * 
-     * @param val1, the first value that will stay plausible
-     * @param val2, the second
-     * @param val3, the third
-     */
-    protected void removeAllPlausibleBut(int val1, int val2, int val3) {
-        //we loop through this cells list of plausible values:
-        for(int i = 0; i < this.plausibleValues.length; i++) {
-            //we mark as not plausible all but the three given digits:
-            if(i != val1-1 && i != val2-1 && i != val3-1){
-                this.plausibleValues[i] = false;
-            }
-        }
-    }
+    
 }

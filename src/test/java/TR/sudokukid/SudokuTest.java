@@ -33,10 +33,13 @@ public class SudokuTest {
     public void tearDown() {
     }
 
+    /* ##################################################################################################################################################
+     * CONSTRUCTOR:
+     */
     @Test
     public void standardConstructorCreatesEmptySudoku() {
         Sudoku sudoku = new Sudoku();
-        sudoku.showSudoku();
+        sudoku.show();
         
         assertTrue(sudoku.isEmpty());
     }
