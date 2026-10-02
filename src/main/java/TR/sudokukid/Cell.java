@@ -4,7 +4,7 @@ package TR.sudokukid;
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @date 28/SEP/26
+ * @date 01/OCT/26
  */
 public class Cell {
     /* ##################################################################################################################################################
@@ -34,33 +34,48 @@ public class Cell {
     /**
      * The column the cell is at, a number from 1 to 9.
      */
-    private final int col;
-    /**
-     * The sudoku this cell belongs to.
-     */
-    private final Sudoku sudoku;    
+    private final int col; 
     
     /* ##################################################################################################################################################
      * CONSTRUCTORS:
+     * & also the clone() method
      */
     /**
      * Builds objects of class Cell.
      * 
      * @param aRow, its row, from 1 to 9
      * @param aCol, its column, from 1 to 9
-     * @param unSudoku, the sudoku it belongs to
      */
-    public Cell(int aRow, int aCol, Sudoku unSudoku){
+    public Cell(int aRow, int aCol){
         // We initialize the attributes with the given parameters:
         this.row = aRow;
         this.col = aCol;
-        this.sudoku = unSudoku;
         // and set the plausibility of all digits to true:
         for(boolean plausibilityOfDigit : this.plausibleValues){
             plausibilityOfDigit = true;
         }
     }
-
+    /**
+     * Cloning constructor.
+     * 
+     * @param aCell, the cell we want to clone.
+     */
+    private Cell(Cell aCell){
+        this.value = aCell.getValue();
+        this.row = aCell.getRow();
+        this.col = aCell.getCol();
+        this.plausibleValues = aCell.getPlausVals().clone();
+    }
+    /**
+     * Clones the current cell.
+     * 
+     * @return a clone of this cell
+     */
+    @Override
+    public Cell clone(){
+        return new Cell(this);
+    }
+    
     /* ##################################################################################################################################################
      * GETTERS, SETTERS & BOOLS:
      * they do things ~~
@@ -183,16 +198,6 @@ public class Cell {
      */
     public int getSqrIndex() {
         return getSqr()-1;
-    }
-
-    /**
-     * Method getSudoku returns the sudoku this cell belongs to.
-     * 
-     * @return the Cell's sudoku
-     * @see #sudoku
-     */
-    public Sudoku getSudoku() {
-        return sudoku;
     }
     
     /**
