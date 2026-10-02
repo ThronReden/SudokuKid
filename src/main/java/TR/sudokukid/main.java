@@ -1,5 +1,7 @@
 package TR.sudokukid;
 
+import static TR.sudokukid.matrixLibrary.*;
+
 /**
  *
  * @author jsanchez
@@ -7,7 +9,7 @@ package TR.sudokukid;
 public class main {
     
     public static void main (String[] args){        
-        SudokuKid SK = new SudokuKid(SudokuObsolete.toMatrix(SudokuKid.menneske4813117));
+        SudokuKid SK = new SudokuKid(menneske4813117);
         SK.solvingLoop();
     }
     
