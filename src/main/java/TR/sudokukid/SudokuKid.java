@@ -3,9 +3,10 @@ package TR.sudokukid;
 import java.util.Scanner;
 
 /**
- * REVISE ALL COMMENTARY AND DOCUMENTATION
+ * REVISE ALL
  * 
- * @author jsanchez
+ * @author TR
+ * @date 01/OCT/26
  */
 public class SudokuKid {
     
@@ -22,7 +23,7 @@ public class SudokuKid {
     private boolean NT = true; //Naked Triplets
     private boolean HT = true; //Hidden Triplets
     
-    private SudokuObsolete sudoku; //our Sudoku statement
+    private Sudoku sudoku; //our Sudoku statement
     
     /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
@@ -37,11 +38,11 @@ public class SudokuKid {
      * to a clone of a given Sudoku object. This includes all plauible values
      * information in cells.
      * 
-     * @param newSudoku, a sudoku statement to solve
+     * @param aSudoku, a sudoku statement to solve
      */
-    public SudokuKid(SudokuObsolete newSudoku){
+    public SudokuKid(Sudoku aSudoku){
         //we clone the Sudoku object:
-        this.sudoku = new SudokuObsolete(newSudoku);
+        this.sudoku = aSudoku.clone();
     }
     /**
      * Constructor overload that initializes this solvers sudoku attribute
@@ -52,22 +53,16 @@ public class SudokuKid {
      */
     public SudokuKid(int[][] sudokuMatrix){
         //we create a Sudoku object to manage the sudoku statement:
-        this.sudoku = new SudokuObsolete(sudokuMatrix);
+        this.sudoku = new Sudoku(sudokuMatrix);
     }
     /**
      * Constructor overload that initializes this solvers sudoku attribute
      * to a new sudoku created from a given valid String of 81 digits.
-     * It transforms the String into a 9x9 matrix and then calls the Sudoku
-     * constructor that turns that matrix into a Sudoku object.
      * 
      * @param sudokuString 
      */
     public SudokuKid(String sudokuString){
-        //we transform the sudoku statement we want to solve to a format we
-        //can work with:
-        int[][] sudokuMatrix = SudokuObsolete.toMatrix(sudokuString);
-        //we create a Sudoku object to manage it:
-        this.sudoku = new SudokuObsolete(sudokuMatrix);
+        this.sudoku = Sudoku(sudokuString);
     }
     
     /* //////////////////////////////////////////////////////////////////////
@@ -488,14 +483,6 @@ public class SudokuKid {
      * There must be some...
      */
     
-    //Stored sudoku statements (presumably free to use):
-    //SOLVABLE:
-//    private static final int[][] EL_PAIS_experto_2025_12_05 = {{0,1,4,9,2,0,0,0,8},{7,0,6,0,0,0,0,0,0},{0,0,0,0,4,1,5,0,0},{6,8,0,0,0,4,0,1,0},{0,2,0,0,7,0,0,5,0},{0,0,0,0,6,0,0,0,7},{2,0,0,0,0,0,4,0,5},{0,0,8,0,0,0,0,0,0},{0,0,0,0,9,0,2,3,0}};
-//    private static final int[][] EL_PAIS_medio_2026_01_09 = {{0,2,5,0,4,6,0,0,0},{0,0,0,0,0,0,7,0,0},{1,0,9,0,0,0,0,0,0},{0,0,0,2,9,0,0,7,4},{6,0,7,0,0,0,0,8,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,8,4,0,5,0},{0,6,8,0,0,0,2,0,0},{0,0,0,0,0,1,0,0,9}};
-//    private static final int[][] EL_PAIS_dificil_2026_01_09 = {{0,0,0,0,0,0,8,0,0},{0,4,5,0,0,0,0,0,9},{0,9,0,8,0,0,0,0,0},{1,0,0,9,0,0,6,0,0},{0,2,0,0,6,0,0,9,7},{0,0,0,0,0,1,0,0,8},{0,0,0,3,0,7,0,0,2},{0,1,0,0,2,0,0,0,0},{0,0,6,0,0,0,3,0,4}};
-//    private static final int[][] EL_PAIS_experto_2026_01_16 = {{0,0,0,0,0,4,0,7,0},{0,1,0,0,0,0,2,5,0},{7,9,2,0,0,8,0,0,1},{0,4,0,1,0,0,0,0,6},{0,0,0,4,0,7,0,0,0},{1,0,0,0,0,6,0,2,0},{6,0,0,9,0,0,7,1,2},{0,7,3,0,0,0,0,9,0},{0,2,0,7,0,0,0,0,0}};
-    //UNSOLVABLE:
-    
     public void solvingLoop(){
         //we create a Scanner object for basic user interaction:
         Scanner scanner = new Scanner(System.in);
@@ -603,20 +590,6 @@ public class SudokuKid {
         sudoku.showGrid();
     }
     
-    //OTHER STORED SUDOKU STATEMENTS (some may be copyright sensible):
-    //SOLVABLE:
-//    private static final int[][] claudeSudoku = {{5,3,0,0,7,0,0,0,0},{6,0,0,1,9,5,0,0,0},{0,9,8,0,0,0,0,6,0},{8,0,0,0,6,0,0,0,3},{4,0,0,8,0,3,0,0,1},{7,0,0,0,2,0,0,0,6},{0,6,0,0,0,0,2,8,0},{0,0,0,4,1,9,0,0,5},{0,0,0,0,8,0,0,7,9}};
-//    private static final int[][] claudeSudoku2 = {{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,8,5},{0,0,1,0,2,0,0,0,0},{0,0,0,5,0,7,0,0,0},{0,0,4,0,0,0,1,0,0},{0,9,0,0,0,0,0,0,0},{5,0,0,0,0,0,0,7,3},{0,0,2,0,1,0,0,0,0},{0,0,0,0,4,0,0,0,9}};
-//    private static final int[][] claudeSudoku4 = {{0,0,0,0,0,0,0,1,0},{0,0,0,0,0,2,0,0,3},{0,0,0,4,0,0,0,0,0},{0,0,0,0,0,0,5,0,0},{4,0,1,6,0,0,0,0,0},{0,0,7,1,0,0,0,0,0},{0,5,0,0,0,0,2,0,0},{0,0,0,0,8,0,0,4,0},{0,3,0,9,1,0,0,0,0}};
-//    private static final String vopani1 = "070000043040009610800634900094052000358460020000800530080070091902100005007040802";
-//    private static final String vopani2 = "301086504046521070500000001400800002080347900009050038004090200008734090007208103";
-//    private static final String vopani3 = "000598004009100268807000509985703002000000005304005600200070900401906000000201040";
-//    private static final String menneske843211 = "016030900000010004840200000000090000068301250001080700000004086900060000002070490";
-    protected static final String menneske4813117 = "300000008010500070096073210009040030007109800080030700058310920040006080900000007";
-    //UNSOLVABLE:
-//    private static final int[][] claudeSudoku3 = {{0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,1},{0,0,0,0,0,2,0,3,0},{0,0,0,0,4,0,0,0,0},{0,0,0,5,0,0,0,0,0},{0,0,6,0,0,0,0,0,0},{0,7,0,0,0,0,0,0,0},{0,0,0,0,0,0,8,0,0},{9,0,0,0,0,0,0,0,0}};
-//    private static final String menneske259058 = "000009031090803000006010200000400098060000000037050000000000700000100046201060000";
-
     /* //////////////////////////////////////////////////////////////////////
      * ACCESS METHODS:
      * Encapsulation and stuff...
@@ -765,14 +738,14 @@ public class SudokuKid {
     /**
      * @return our sudoku
      */
-    public SudokuObsolete getSudoku() {
+    public Sudoku getSudoku() {
         return sudoku;
     }
 
     /**
      * @param newSudoku the new sudoku to set
      */
-    public void setSudoku(SudokuObsolete newSudoku) {
+    public void setSudoku(Sudoku newSudoku) {
         this.sudoku = newSudoku;
     }
     
