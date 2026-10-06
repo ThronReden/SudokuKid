@@ -6,10 +6,10 @@ import static TR.sudokukid.matrixLibrary.*;
  *
  * @author jsanchez
  */
-public class main {
+public class mainObsolete {
     
     public static void main (String[] args){        
-        SudokuKid SK = new SudokuKid(menneske4813117);
+        SudokuKidObsolete SK = new SudokuKidObsolete(SudokuObsolete.toMatrix(menneske4813117));
         SK.solvingLoop();
     }
     

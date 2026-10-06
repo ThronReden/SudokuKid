@@ -1,17 +1,13 @@
 package TR.sudokukid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Scanner;
 
 /**
- * REVISE ALL
+ * REVISE ALL COMMENTARY AND DOCUMENTATION
  * 
- * @author TR
- * @date 06/OCT/26
+ * @author jsanchez
  */
-public class SudokuKid {
+public class SudokuKidObsolete {
     
     //Boolean variables to store weather a certain methods use is enabled:
     private boolean NS = true; //weather Naked Singles use is enabled
@@ -26,25 +22,26 @@ public class SudokuKid {
     private boolean NT = true; //Naked Triplets
     private boolean HT = true; //Hidden Triplets
     
-    private Sudoku sudoku; //our Sudoku statement
+    private SudokuObsolete sudoku; //our Sudoku statement
     
-    /* ##################################################################################################################################################
+    /* //////////////////////////////////////////////////////////////////////
      * CONSTRUCTOR:
      * builds objects of this class.
-     */
+     *///////////////////////////////////////////////////////////////////////
     /**
-     * Mandatory empty constructor.
+     * Standard constructor.
      */
-    public SudokuKid(){}
+    public SudokuKidObsolete(){}
     /**
-     * Initializes this solvers sudoku attribute to a clone of a given
-     * Sudoku object. This includes all plauible values information in cells.
+     * Constructor overload that initializes this solvers sudoku attribute
+     * to a clone of a given Sudoku object. This includes all plauible values
+     * information in cells.
      * 
-     * @param aSudoku, a sudoku statement to solve
+     * @param newSudoku, a sudoku statement to solve
      */
-    public SudokuKid(Sudoku aSudoku){
+    public SudokuKidObsolete(SudokuObsolete newSudoku){
         //we clone the Sudoku object:
-        this.sudoku = aSudoku.clone();
+        this.sudoku = new SudokuObsolete(newSudoku);
     }
     /**
      * Constructor overload that initializes this solvers sudoku attribute
@@ -53,31 +50,36 @@ public class SudokuKid {
      * 
      * @param sudokuMatrix, the sudoku matrix we want to solve
      */
-    public SudokuKid(int[][] sudokuMatrix){
-        // We create a Sudoku object to manage the sudoku statement:
-        this.sudoku = new Sudoku(sudokuMatrix);
+    public SudokuKidObsolete(int[][] sudokuMatrix){
+        //we create a Sudoku object to manage the sudoku statement:
+        this.sudoku = new SudokuObsolete(sudokuMatrix);
     }
     /**
      * Constructor overload that initializes this solvers sudoku attribute
      * to a new sudoku created from a given valid String of 81 digits.
+     * It transforms the String into a 9x9 matrix and then calls the Sudoku
+     * constructor that turns that matrix into a Sudoku object.
      * 
      * @param sudokuString 
      */
-    public SudokuKid(String sudokuString){
-        this.sudoku = new Sudoku(sudokuString);
+    public SudokuKidObsolete(String sudokuString){
+        //we transform the sudoku statement we want to solve to a format we
+        //can work with:
+        int[][] sudokuMatrix = SudokuObsolete.toMatrix(sudokuString);
+        //we create a Sudoku object to manage it:
+        this.sudoku = new SudokuObsolete(sudokuMatrix);
     }
     
-    /* ##################################################################################################################################################
-     * MAIN SOLVING METHODS:
-     * we use them to fill in digits into the grid based on the available
-     * information and adding new information to the sudoku. I'm gonna try to
-     * ordem them from most simple to most complicated but the middlegrounds
-     * might be muddy.
-     */
+    /* //////////////////////////////////////////////////////////////////////
+     * SOLVING METHODS:
+     * we use them to fill in digits into the grid based on the
+     * available information. I'm gonna try to ordem them from most
+     * simple to most complicated but the middlegrounds might be muddy.
+     *///////////////////////////////////////////////////////////////////////
     //DISCLAIMER: some of them have funny names so bare with me "O3O
     /**
-     * Searches both for Naked and Hidden Singles patterns, as long as they're
-     * enabled in a single sweep of the sudoku.
+     * Method solveAllSingles searches both for Naked and Hidden Singles
+     * patterns, as long as they're enabled in a single sweep of the sudoku.
      * It will try to solve for the whole sudoku, wont stop untill we've
      * looped throug all of its cells.
      * 
@@ -86,42 +88,61 @@ public class SudokuKid {
      * @return true if a solve was made, false else.
      */
     public boolean solveSimpleSingles(){
-        boolean solve = false; // We'll be returning this
-        // We loop through the list of rows:
-        for(int i = 0; i < sudoku.cells.length; i++){
-            int row = i+1;
-            // If a row is full we wont try to fill it:
-            if(!sudoku.isRowFilled(row)){
-                // Now we loop through the list of cells of this row looking
-                // for empty Cells:
-                for(int j = 0; j < sudoku.cells[i].length; j++){
-                    int col = j+1;
-                    // If the cell is empty:
-                    if(!sudoku.getCell(row,col).isFilled()){
-                        // We get the number of digits that fit in it:
-                        int[] plausVals = 
-                                sudoku.getCell(row,col).getPlausValsList();
-                        // If it could only be filled with one digit:
-                        if(NS && plausVals.length == 1){
-                            // We fill it in
-                            sudoku.fill(plausVals[0],row,col);
-                            solve = true; // We've solved a Cell
-                        // Else, if multiple digits fit:
-                        } else if(HS && plausVals.length > 1){
-                            // For each Val:
-                            for(int n = 0; n <= plausVals.length; n++){
-                                // We get the digit we're cheking for:
-                                int val = plausVals[n];
-                                // We check if it is the only Cell of its row,
-                                // column or square that could contain that val:
-                                if(isOnlyCellForThisValue(row,col,val)){
-                                    // Then it's the only cell that can fit
-                                    // that digit and we fill it in:
-                                    sudoku.fill(val,row,col);
-                                    solve = true; // We've solved a Cell
-                                    break; // We stop this loop so no more
-                                    // digits are filled in this cell, as it's
-                                    // not empty anymore.
+        boolean solve = false; //we'll be returning this
+        //we loop through the list of rows:
+        for(int i = 0; i < this.sudoku.rows.length; i++){
+            //if a row is full we wont try to fill it:
+            if(!this.sudoku.rows[i].isComplete()){
+                //now we loop through the list of cells of this row looking
+                //for empty Cells:
+                for(int j = 0; j < this.sudoku.rows[i].cells.length; j++){
+                    //if the cell is empty: 
+                    if(!this.sudoku.rows[i].cells[j].isFilled()){
+//                        System.out.println("Cell "+i+", "+j+" is empty.");
+                        //we get the number of digits that fit in it:
+                        int plausVals = 
+                                this.sudoku.rows[i].
+                                    cells[j].numPlausibleValues();
+                        //if it could only be filled with one digit:
+                        if(NS && plausVals == 1){
+                            //we fill it in
+                            sudoku.addNum(this.sudoku.rows[i].
+                                            cells[j].getPlausVal(),i,j);
+                            solve = true; //we've solved a Cell
+//                            System.out.println("\tFound Naked Single.\n");
+//                            System.out.println("Cell "+i+", "+j+" solved.");
+                        //else, if multiple digits fit:
+                        } else if(HS && plausVals > 1){
+                            //we check if it is the only Cell of its row,
+                            //column or square that could contain that digit:
+                            int val = 0;//we'll save the plausible digits here
+                            //we check for each of the plausible digits:
+                            for(int n = 1; n <= plausVals; n++){
+                                //we get the digit we're cheking for:
+                                val = this.sudoku.rows[i].
+                                        cells[j].getPlausVal(n);
+//                                System.out.println("Seach groups for "+val+".");
+                                
+                                //if the number of cells that could be filled
+                                //with that specific digit in the same row,
+                                //column or square as the original cell we're
+                                //trying to solve is 1:
+                                if(this.sudoku.
+                                    rows[i].numPlausCells(val) == 1 ||
+                                this.sudoku.
+                                    cols[j].numPlausCells(val) == 1 ||
+                                this.sudoku.
+                                    sqrs[sudoku.getSqr(i,j)].
+                                        numPlausCells(val) == 1){
+                                    //then it's the only cell that can fit that
+                                    //digit and we fill it in:
+                                    sudoku.addNum(val,i,j); //we add the digit
+                                    solve = true; //we've solved a Cell
+//                                    System.out.println("\tFound Hidden Single.\n");
+//                                    System.out.println("Cell "+i+", "+j+" solved for "+val+".");
+                                    break; //we stop this for so no more digits
+                                    //are filled in this cell, as it's not
+                                    //empty anymore.
                                 }
                             }
                         }
@@ -129,7 +150,8 @@ public class SudokuKid {
                 }
             }
         }
-        return solve; // We return weather we've solved or not.
+        return solve; //we return our boolean variable,
+        //weather we solved or not.
     }
     /*Example Solvable Matrixs:
      * {{0,0,3,7,0,6,9,0,5},{7,5,4,9,0,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6,5,3}}
@@ -142,23 +164,24 @@ public class SudokuKid {
      */
     
     /**
-     * Searches for naked pair and hidden pair patterns in groups that can
-     * eliminate plausible values from some cells in the group.
+     * Method solveSimplePairs searches for naked pair and hidden pair
+     * patterns in groups that can eliminate plausible values from some cells
+     * in the group.
      * This methods role is mearly calling the method that does this for each
      * of the groups in our sudoku: all rows, columns and squares.
      * 
-     * @return true if we've added information to our sudoku, false otherwise
+     * @return true if we're closer to solving the sudoku, false otherwise
      */
     public boolean solveSimplePairs(){
         boolean solve = false; //we'll be returning this
         //we loop through our sudoku rows, columns and squares:
         //(group lists lengths are equal, we use row's but could use whichever)
-        for(int i = 1; i <= this.sudoku.cells.length; i++){
+        for(int i = 0; i < this.sudoku.rows.length; i++){
             //we run each groups pair finding method:
             //(it'll internally check if the group is solved before begining)
-            solve |= findSimplePairs(this.sudoku.getRowCells(i)); //rows
-            solve |= findSimplePairs(this.sudoku.getColCells(i)); //columns
-            solve |= findSimplePairs(this.sudoku.getSqrCells(i)); //squares
+            solve |= findSimplePairs(this.sudoku.rows[i]); //rows
+            solve |= findSimplePairs(this.sudoku.cols[i]); //columns
+            solve |= findSimplePairs(this.sudoku.sqrs[i]); //squares
             //"solve |= " statement will cause our solve variable to become
             //true if we find a pair and therefore we've made progress in
             //solving the sudoku
@@ -176,72 +199,69 @@ public class SudokuKid {
      * of seemingly plausible values for that pair of cells isn't really
      * plausible and can be removed.
      * 
-     * @param Cell[], the group to seach in
+     * @param grup, the group to seach in
      * @return true if we found a new pair and therefore made progress in
      * solving
      */
-    private boolean findSimplePairs(Cell[] cellGroup){
-        boolean solve = false; // We'll be returning this
-        // If the group isn't solved:
-        if(Sudoku.isGroupFilled(cellGroup)){
-            return false;
-        }
-        int[] missingValues = getMissingDigits(cellGroup);
-        // If the group is missing at least 2 digits:
-        if(missingValues.length < 2){
-            return false;
-        }
-        // For each pair of missing values:
-        for(int i = 0; i < missingValues.length - 1; i++){
-            for(int j = i + 1; j < missingValues.length; j++){
-                int val1 = missingValues[i]; // First value of the pair
-                int val2 = missingValues[j]; // second value of the pair
-                // We get the cells of the group that have both values
-                // as candidates:
-                Cell[] plausCells = 
-                        findCellsWithGivenCandidates(cellGroup, val1, val2);
-                // If there's less than 2 plausible cells for this pair
-                // we dont check any further:
-                if(plausCells.length < 2){
-                    continue;
-                } 
-                // We store the number of plausible cells for the first value:
-                int nCellsVal1 = countCellsWithGivenCandidates(cellGroup,val1);
-                // And the same for the second value:
-                int nCellsVal2 = countCellsWithGivenCandidates(cellGroup,val2);
-                // And also store the cells with only those two candidates:
-                Cell[] cellsOnly = 
-                            findCellsWithOnlyCandidates(cellGroup,val1,val2);
-                // If there's other cells int the group that have
-                // either of the values in the pair as candidates:
-                if(NP && (nCellsVal1 > plausCells.length
-                        || nCellsVal2 > plausCells.length)){
-                    // but two of the cells that have both as candidates can
-                    // only be filled with one or the other and not any other
-                    // number (only those two candidates):
-                    if(cellsOnly.length == 2){
-                        // then we've found a pair and the rest of the cells in
-                        // the group can't be filled with those numbers:
-                        solve = true;
-                        Cell[] restCells = getRestCells(cellGroup,cellsOnly);
-                        for (Cell cell : restCells) {
-                            cell.removeCandidates(val1, val2);
+    private boolean findSimplePairs(CellGroup grup){
+        boolean solve = false; //we'll be returning this
+        //if the group isn't solved:
+        if(!grup.isComplete()){
+            int n = grup.numMissingValues(); //we get how many numbers are
+            //missing
+            //if it is at least 2:
+            if(n > 1){
+                //for each pair of missing values:
+                for(int i = 1; i < n; i++){
+                    for(int j = i + 1; j <= n; j++){
+                        int val1 = grup.getMissingVal(i); //first value of the
+                        //pair
+                        int val2 = grup.getMissingVal(j); //second value of the
+                        //pair
+                        int numCells = grup.numPlausCells(val1, val2);
+                        //if the cells that can be filled with both values of
+                        //the pair aren't the only cells in the group that can
+                        //be filled with one of the values in the pair:
+                        if(numCells > 1 && grup.valsExistAlone(val1,val2)){
+                            //but two of the cells that can be filled with
+                            //both can only be filled with one or the other
+                            //and not any other number:
+                            if(NP && grup.numCellsOnly(val1,val2) == 2){
+                                //then we've found a pair and the
+                                //rest of the cells in the group can't be
+                                //filled with those numbers:
+                                solve = true;
+//                                System.out.println("\tFound Naked Pair.\n");
+                                //we create an array to retain the rest of the
+                                //cells:
+                                CellObsolete[] restCells =
+                                    grup.getRestCells(val1, val2);
+                                for(int k = 0; k < restCells.length; k++){
+                                    restCells[k].removePlausible(val1,val2);
+                                }
+                            }
+                        //in the case we found only two cells and those are
+                        //the only cells in the group that can be filled
+                        //with any and both values of the pair:
+                        } else if(HP && numCells == 2
+                            && grup.numCellsOnly(val1,val2) != 2)
+                        {
+                            //(second part of the condition checks if the pair
+                            //was already found before, therefore there's no
+                            //progress in solving)
+                            //we rule out any other value we may have had
+                            //stored as plausible for those two cells:
+                            solve = true;
+//                            System.out.println("\tFound Hidden Pair.\n");
+                            //we create an array to retain the cells that can
+                            //be filled with both values in the pair:
+                            CellObsolete[] foundCells =
+                                grup.getPlausCells(val1, val2);
+                            for(int k = 0; k < foundCells.length; k++){
+                                foundCells[k].
+                                removeAllPlausibleBut(val1,val2);
+                            }
                         }
-                    }
-                //in the case we found only two cells and those are
-                //the only cells in the group that can be filled
-                //with any and both values of the pair:
-                } else if(HP && plausCells.length == 2) {
-                    // We check if the pair was already found before and,
-                    // therefore, there's no progress in solving:
-                    if(cellsOnly.length == 2){
-                        continue;
-                    }
-                    // Then we rule out any other value we may have had
-                    // stored as plausible for those two cells:
-                    solve = true;
-                    for (Cell cell : plausCells) {
-                        cell.removeAllCandidatesBut(val1, val2);
                     }
                 }
             }
@@ -572,186 +592,13 @@ public class SudokuKid {
         }
         System.out.println(txt+" -- "+iter+" solve iterations -- "+superIter+" main loop iterations");
         //and then print it on terminal:
-        sudoku.show();
+        sudoku.showGrid();
     }
     
-    /* ##################################################################################################################################################
-     * AUX METHODS:
-     * Utils the main solving methods use but dont quite fit in Sudoku, as this
-     * are not representation methods, this are solving methods.
-     */
-    
-    /**
-     * Checks if the cell in the given position is the only of its row, column
-     * or square that can allocate a given value.
-     * 
-     * @param row, the cells row
-     * @param col, the cells column
-     * @param val, the cells square
-     * @return true if it's the only cell for either its row, column or square,
-     * false otherwise.
-     */
-    public boolean isOnlyCellForThisValue(int row, int col, int val) {
-        if (this.sudoku.getCell(row, col).isFilled()) {
-            return false;
-        }
-        // We check its row:
-        if (getRestCellsInRow(row, col).stream()
-                .noneMatch(c -> c.isPlausible(val))) {
-            return true;
-        // We check its column:
-        } else if (getRestCellsInCol(row, col).stream()
-                .noneMatch(c -> c.isPlausible(val))) {
-            return true;
-        // We check its square:
-        } else if (getRestCellsInSqr(row, col).stream()
-                .noneMatch(c -> c.isPlausible(val))) {
-            return true;
-        }
-        return false;
-    }
-    /**
-     * Returns the list of all other the cells in the row of the given cell.
-     * 
-     * @param row, the cells row
-     * @param col, its column
-     * @return a list of all the other cells in its row
-     */
-    private ArrayList<Cell> getRestCellsInRow(int row, int col) {
-        return this.getRestCells(this.sudoku.getRowCells(row),row,col);
-    }
-    /**
-     * Returns the list of all other the cells in the column of the given cell.
-     * 
-     * @param row, the cells row
-     * @param col, its column
-     * @return a list of all the other cells in its column
-     */
-    private ArrayList<Cell> getRestCellsInCol(int row, int col) {
-        return this.getRestCells(this.sudoku.getColCells(col),row,col);
-    }
-    /**
-     * Returns the list of all other the cells in the square of the given cell.
-     * 
-     * @param row, the cells row
-     * @param col, its column
-     * @return a list of all the other cells in its square 
-     */
-    private ArrayList<Cell> getRestCellsInSqr(int row, int col) {
-        return this.getRestCells(this.sudoku.getSqrCells(row,col),row,col);
-    }
-    /**
-     * Returns the list of all the cells in a group excluding the given cell,
-     * if it exists in it.
-     * 
-     * @param group, the group we want
-     * @param row, the cells row
-     * @param col, its column
-     * @return a list of all the other cells in its square 
-     */
-    private ArrayList<Cell> getRestCells(Cell[] group,int row, int col){
-        ArrayList<Cell> restCells = new ArrayList<>();
-        Collections.addAll(restCells,group);
-        restCells.remove(this.sudoku.getCell(row, col));
-        return restCells;
-    }
-    /**
-     * Returns the given group with the given list of cells removed from it.
-     * 
-     * @param group, the initial group of cells
-     * @param dontInclude, the list of cells we want to remove
-     * @return a list including all other cells 
-     */
-    private Cell[] getRestCells(Cell[] group, Cell[] dontInclude){
-        ArrayList<Cell> restCells = new ArrayList<>();
-        Collections.addAll(restCells,group);
-        restCells.removeAll(Arrays.asList(dontInclude));
-        return restCells.toArray(Cell[]::new);
-    }
-    
-    private Cell[] findCellsWithGivenCandidates(Cell[] group, int... vals){
-        if (vals.length == 0) {
-            throw new IllegalArgumentException("You must specify at least one candidate.");
-        }
-        ArrayList<Cell> cells = new ArrayList<>();
-        Collections.addAll(cells,group);
-        Cell[] cellsWithGivenCandidates = cells.stream()
-                .filter(c -> c.isPlausible(vals)).toArray(Cell[]::new);
-        return cellsWithGivenCandidates;
-    }
-    
-    private int countCellsWithGivenCandidates(Cell[] group, int... vals){
-        return findCellsWithGivenCandidates(group,vals).length;
-    }
-    
-    /**
-     * Finds the cells that can allocate only the given candidates in a given
-     * group. 
-     * 
-     * @param group, the group of cells we want to search in
-     * @param vals, the candidates we want to check for
-     * @return a list with the found cells, if any.
-     */
-    private Cell[] findCellsWithOnlyCandidates(Cell[] group, int... vals){
-        if (vals.length == 0) {
-            throw new IllegalArgumentException("You must specify at least one candidate.");
-        }
-        ArrayList<Cell> cells = new ArrayList<>();
-        Collections.addAll(cells,group);
-        Cell[] cellsWithOnlyCandidates = cells.stream()
-                .filter(c -> c.isOnlyCandidate(vals)).toArray(Cell[]::new);
-        return cellsWithOnlyCandidates;
-    }
-
-    /**
-     * Counts how many digits are missing from a given group of cells.
-     * A valid group of cells is either a row, column or square of the sudoku.
-     * 
-     * @param cellGroup, the group we want to search in
-     * @return the number of missing digits
-     */
-    private int getNumMissingDigits(Cell[] cellGroup) {
-        if (cellGroup.length != 9) {
-            throw new IllegalArgumentException("The given list is not a valid sudoku group.");
-        }
-        int count = 0;
-        for (Cell cell : cellGroup) {
-            if (cell.isEmpty()) {
-                count++;
-            }
-        }
-        return count;
-    }
-    
-    /**
-     * Returns a list with the missing digits for the given group of cells.
-     * 
-     * @param cellGroup, the group we want to search in
-     * @return  a list containing its missing digits
-     */
-    private int[] getMissingDigits(Cell[] cellGroup) {
-        if (cellGroup.length != 9) {
-            throw new IllegalArgumentException("The given list is not a valid sudoku group.");
-        }
-        int[] missingVals = new int[getNumMissingDigits(cellGroup)];
-        int index = 0;
-        for (int val = 1; val <= 9; val++) {
-            boolean isMissing = true;
-            for (Cell cell : cellGroup) {
-                isMissing &= cell.getValue() != val;
-            }
-            if (isMissing) {
-                missingVals[index] = val;
-                index++;
-            }
-        }
-        return missingVals;
-    }
-    
-    /* ##################################################################################################################################################
+    /* //////////////////////////////////////////////////////////////////////
      * ACCESS METHODS:
      * Encapsulation and stuff...
-     */
+     *///////////////////////////////////////////////////////////////////////
     
     /**
      * @return weather NS is enabled
@@ -896,14 +743,14 @@ public class SudokuKid {
     /**
      * @return our sudoku
      */
-    public Sudoku getSudoku() {
+    public SudokuObsolete getSudoku() {
         return sudoku;
     }
 
     /**
      * @param newSudoku the new sudoku to set
      */
-    public void setSudoku(Sudoku newSudoku) {
+    public void setSudoku(SudokuObsolete newSudoku) {
         this.sudoku = newSudoku;
     }
     
