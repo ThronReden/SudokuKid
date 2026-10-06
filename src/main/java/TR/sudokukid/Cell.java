@@ -4,7 +4,7 @@ package TR.sudokukid;
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @date 01/OCT/26
+ * @date 06/OCT/26
  */
 public class Cell {
     /* ##################################################################################################################################################
@@ -207,8 +207,32 @@ public class Cell {
      * @return this Cells plausible values list
      * @see #plausibleValues
      */
-    public boolean[] getPlausVals(){
+    public boolean[] getPlausVals() {
         return this.plausibleValues;
+    }
+
+    public int getNumPlausVals() {
+        int count = 0; // We count plausible values
+        for (boolean isPlausible : this.plausibleValues) {
+            if(isPlausible){
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public int[] getPlausValsList() {
+        int[] plausValsList = new int[this.getNumPlausVals()];
+        int pos = 0;
+        for (int i = 0; i < this.plausibleValues.length; i++) {
+            boolean isPlausible = plausibleValues[i];
+            if(isPlausible){
+                int val = i+1;
+                plausValsList[pos] = val;
+                pos++;
+            }
+        }
+        return plausValsList;
     }
 
     /**
@@ -222,18 +246,20 @@ public class Cell {
     public boolean isPlausible(int val) {
         // It has to be emty and have that digit marked as plausible in our
         // plausibleValues list:
-        return !this.isFilled() && this.plausibleValues[val-1];
+        return this.isEmpty() && this.plausibleValues[val-1];
     }
     /**
-     * Method isPlausible overload returns if all values from a given list of
-     * values could fill this Cell or not.
+     * Returns if all given values are candidates for this Cell or not.
      * 
-     * @param vals, the list of values we want to check for
+     * @param vals, the values we want to check for
      * @return true if all could fill the cell, false otherwise
      * @see #isPlausible(int) 
      * @see #plausibleValues
      */
-    public boolean isPlausible(int[] vals) {
+    public boolean isPlausible(int... vals) {
+        if (vals.length == 0) {
+            throw new IllegalArgumentException("You must check for at least one value.");
+        }
         // It has to be emty and have all digits marked as plausible in our
         // plausibleValues list:
         boolean isPlausible = true;
@@ -241,6 +267,12 @@ public class Cell {
             isPlausible &= isPlausible(val);
         }
         return isPlausible;
+    }
+    
+    public boolean isOnlyCandidate(int... vals){
+        // If the given values are all candidates and theres only that many
+        // candidates:
+        return isPlausible(vals) && this.getNumPlausVals() == vals.length;
     }
     
     /**
@@ -257,31 +289,39 @@ public class Cell {
         }
     }
     /**
-     * Marks each value in the given list as not plausible for this Cell.
+     * Marks each of the given values as not plausible for this Cell.
      * 
-     * @param vals, the list of values we want to set to not plausible
+     * @param vals, the values we want to set to not plausible
      * @see #removePlausible(int)
      * @see #plausibleValues
      */
-    protected void removePlausible(int[] vals) {
+    protected void removePlausible(int... vals) {
+        if (vals.length == 0) {
+            throw new IllegalArgumentException("You must specify at least one value to be set to not plausible.");
+        }
         for(int val : vals){
             this.removePlausible(val);
         }
     }
 
     /**
-     * Sets all numbers but those in the given list to not plausible for
-     * this cell.
+     * Sets all numbers but those given to not plausible for this cell.
      * 
      * @param vals, the list of values that will stay plausible
      * @see #plausibleValues
      */
-    protected void removeAllPlausibleBut(int[] vals) {
+    protected void removeAllPlausibleBut(int... vals) {
+        if (vals.length == 0) {
+            throw new IllegalArgumentException("You must specify at least one value to be kept as plausible.");
+        }
         // We set all indexes to false
         // (booleans get initialized to false by default):
         this.plausibleValues = new boolean[9];
         // We set those values in the list as plausible:
         for(int val : vals){
+            if (val < 1 || val > 9) {
+                throw new IllegalArgumentException("One of the given values is not valid. (Must be a digit from 1 to 9)");
+            }
             this.plausibleValues[val-1] = true;
         }
     }

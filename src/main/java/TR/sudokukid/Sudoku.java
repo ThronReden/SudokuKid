@@ -1,5 +1,5 @@
 package TR.sudokukid;
- 
+
 /**
  * Sudoku objects represent a whole sudoku containing 9 rows,
  * 9 columns and 9 sqares each containing 9 cells (for a total of
@@ -7,7 +7,7 @@ package TR.sudokukid;
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @date 01/OCT/26
+ * @date 06/OCT/26
  */
 public class Sudoku {
     /* ##################################################################################################################################################
@@ -35,6 +35,16 @@ public class Sudoku {
                 this.cells[i][j] = new Cell(row,col);
             }
         }
+    }
+    /**
+     * Constructor for objects of class Sudoku that also adds a string of
+     * digits to the grid.
+     * 
+     * @param string, a string of 81 ints we'll fill the grid with
+     */
+    public Sudoku(String string){
+        this(); // We call the standard constructor.
+        this.fill(string); // We add the digits on the martix to our grid.
     }
     /**
      * Constructor for objects of class Sudoku that also adds a matrix of
@@ -95,7 +105,8 @@ public class Sudoku {
      * It loops through the full sudoku and fails if any of its cells is
      * empty.
      * 
-     * @return true if the sudoku is entirely filled, false otherwise
+     * @return {@code true} if the sudoku is entirely filled, {@code false}
+     * otherwise
      */
     public boolean isFilled(){
         // We loop through the sudoku:
@@ -109,6 +120,30 @@ public class Sudoku {
             }
         }
         //we return our checking variable:
+        return true;
+    }
+    /**
+     * Checks if all cells of the desired row are filled with a digit.
+     * It loops through the row and fails if any of its cells is empty.
+     * 
+     * @param rowNumber, the row we want to check
+     * @return {@code true} if it's full, {@code false} otherwise
+     */
+    public boolean isRowFilled(int rowNumber){
+        return isGroupFilled(this.getRowCells(rowNumber));
+    }
+    /**
+     * Checks if all cells of the group are filled with a digit.
+     * 
+     * @param group, the group we want to check
+     * @return {@code true} if it's full, {@code false} otherwise
+     */
+    protected static boolean isGroupFilled(Cell[] group){
+        for (Cell cell : group) {
+            if (cell.isEmpty()) {
+                return false;
+            }
+        }
         return true;
     }
     
@@ -139,7 +174,7 @@ public class Sudoku {
     }
     
     /**
-     * Returns a the number given row as a list of int, so
+     * Returns the number given row as a list of int, so
      * we dont have to deal with the double wrapping in Cell.
      * 
      * @param rowNumber, the desired row number
@@ -170,7 +205,7 @@ public class Sudoku {
     }
     
     /**
-     * Returns a the number given column as a list of int, so
+     * Returns the number given column as a list of int, so
      * we dont have to deal with the double wrapping in Cell.
      * 
      * @param colNumber, the desired column number
@@ -186,7 +221,7 @@ public class Sudoku {
     }
     
     /**
-     * Returns a the number given square as a list of cells.
+     * Returns the number given square as a list of cells.
      * 
      * @param sqrNumber, the desired square number
      * @return the list of cells in that square
@@ -208,7 +243,20 @@ public class Sudoku {
         return sqrCells;
     }
     /**
-     * Returns a the number given square as a list of int, so 
+     * Returns the square the given cell position belongs in as a list of
+     * cells.
+     * Calls the main method for the correct square.
+     * 
+     * @param row, one of the rows of the square
+     * @param col, one of the columns of the square
+     * @return the list of cells in that square
+     * @see #getSqrCells(int) 
+     */
+    public Cell[] getSqrCells(int row, int col) {
+        return getSqrCells(Cell.getSqr(row, col));
+    }
+    /**
+     * Returns the number given square as a list of int, so 
      * we dont have to deal with the double wrapping in Cell.
      * 
      * @param sqrNumber, the desired square number
@@ -288,6 +336,40 @@ public class Sudoku {
         }
         // If none of this checks fail, the matrix is valid as a sudoku:
         return true;
+    }
+    
+    /**
+     * Checks if all filled cells respect basic sudoku rules.
+     * This means every digit appears, if any, a single time in every row,
+     * column and square. If it's solved every digit from 1 to 9 will appear
+     * only once in each cell group and if it's not solved it may not appear
+     * at all in some of them but there can never be multiple instances of the
+     * same digit in the same group.
+     * As we already have a method that does this with 9x9 integer matrixs
+     * we'll use that.
+     * 
+     * @return {@code true} if sudoku rules are respected all throughout the
+     * grid, {@code false} otherwise.
+     */
+    public boolean isCorrect(){
+        //we convert the sudoku to a 9x9 matrix with .toMatrix() and call the
+        //validSudokuMatrix with it:
+        return SudokuObsolete.validSudokuMatrix(this.toMatrix());
+    }
+    
+    
+    
+    /**
+     * Checks weather the sudoku is solved or not, simple enough.
+     * This is achieved by checking both if all cells are filled and if sudoku
+     * rules are respected all throughout the grid, meaning we have not made a
+     * mistake with any of the numbers added.
+     * 
+     * @return true if the sudoku is correctly solved, false otherwise
+     */
+    public boolean isSolved(){
+        //we call the methods that check both conditions mentioned earlier:
+        return this.isFilled() && this.isCorrect();
     }
     
     /* ##################################################################################################################################################
