@@ -472,7 +472,7 @@ public class SudokuKid {
         //we create a Scanner object for basic user interaction:
         Scanner scanner = new Scanner(System.in);
         System.out.println("INITIAL SUDOKU STATEMENT:");
-        sudoku.showGrid(); //this prints the sudoku to terminal
+        sudoku.show(); //this prints the sudoku to terminal
         scanner.nextLine(); //so there's a hold in the execution
         //we store weather a solve was made or not:
         boolean solve = true; //true by default so first iter of loop runs
@@ -491,7 +491,7 @@ public class SudokuKid {
             //print the sudoku to terminal:
             if(numAdded){
                 System.out.println("SUDOKU AT SOLVE ITER "+iter+" -- "+superIter+" main loop iterations");
-                sudoku.showGrid();
+                sudoku.show();
                 scanner.nextLine(); //we hold for user input
             }
             superIter++; //we add an iteration to the count
