@@ -75,27 +75,64 @@ public class SudokuKid {
      * might be muddy.
      */
     //DISCLAIMER: some of them have funny names so bare with me "O3O
+    
+    /**
+     * Applies basic sudoku rules to the whole grid.
+     * 
+     * We look for filled cells and remove its value from candidates of all
+     * affected cells.
+     */
+    public void basicSudokuRules(){
+        for (Cell[] row : sudoku.cells) {
+            for (Cell cell : row) {
+                if (cell.isFilled()) {
+                    basicSudokuRules(cell);
+                }
+            }
+        }
+    }
+    /**
+     * Removes a given cells value from candidates of all cells the given cell
+     * affects.
+     * 
+     * @param filledCell, a filled cell
+     */
+    public void basicSudokuRules(Cell filledCell){
+        if (filledCell.isEmpty()) {
+            throw new IllegalArgumentException("The given cell must be filled.");
+        }
+        for(Cell cell : sudoku.getRowCells(filledCell.getRow())){
+            cell.removeCandidate(filledCell.getValue());
+        }
+        for(Cell cell : sudoku.getColCells(filledCell.getCol())){
+            cell.removeCandidate(filledCell.getValue());
+        }
+        for(Cell cell : sudoku.getSqrCells(filledCell.getSqr())){
+            cell.removeCandidate(filledCell.getValue());
+        }
+    }
+    public void fill(int val, int row, int col){
+        sudoku.fill(val, row, col);
+        basicSudokuRules(sudoku.getCell(row, col));
+    }
     /**
      * Searches both for Naked and Hidden Singles patterns, as long as they're
      * enabled in a single sweep of the sudoku.
      * It will try to solve for the whole sudoku, wont stop untill we've
      * looped throug all of its cells.
      * 
-     * TOLD YOU THEY HAD FUNNY NAMES!!
-     * 
      * @return true if a solve was made, false else.
      */
     public boolean solveSimpleSingles(){
+        // TOLD YOU THEY HAD FUNNY NAMES!!
         boolean solve = false; // We'll be returning this
         // We loop through the list of rows:
-        for(int i = 0; i < sudoku.cells.length; i++){
-            int row = i+1;
+        for(int row = 1; row <= sudoku.cells.length; row++){
             // If a row is full we wont try to fill it:
             if(!sudoku.isRowFilled(row)){
                 // Now we loop through the list of cells of this row looking
                 // for empty Cells:
-                for(int j = 0; j < sudoku.cells[i].length; j++){
-                    int col = j+1;
+                for(int col = 1; col <= sudoku.cells[row-1].length; col++){
                     // If the cell is empty:
                     if(!sudoku.getCell(row,col).isFilled()){
                         // We get the number of digits that fit in it:
@@ -104,7 +141,7 @@ public class SudokuKid {
                         // If it could only be filled with one digit:
                         if(NS && plausVals.length == 1){
                             // We fill it in
-                            sudoku.fill(plausVals[0],row,col);
+                            fill(plausVals[0],row,col);
                             solve = true; // We've solved a Cell
                         // Else, if multiple digits fit:
                         } else if(HS && plausVals.length > 1){
@@ -117,7 +154,7 @@ public class SudokuKid {
                                 if(isOnlyCellForThisValue(row,col,val)){
                                     // Then it's the only cell that can fit
                                     // that digit and we fill it in:
-                                    sudoku.fill(val,row,col);
+                                    fill(val,row,col);
                                     solve = true; // We've solved a Cell
                                     break; // We stop this loop so no more
                                     // digits are filled in this cell, as it's
@@ -166,8 +203,8 @@ public class SudokuKid {
         return solve; //will be true if we're closer to solving the sudoku
     }
     /**
-     * Method findSimplePairs searches for pair patterns in the group that
-     * eliminate plausible values from some cells in the group.
+     * Searches for pair patterns in the group that eliminate plausible values
+     * from some cells in the group.
      * Specifically, we'll search for cases in which there's a pair of cells
      * that can only be filled with the same pair, meaning the digits of the
      * pair can't be in any other cell in the group; or the only pair of cells
@@ -184,18 +221,19 @@ public class SudokuKid {
         boolean solve = false; // We'll be returning this
         // If the group isn't solved:
         if(Sudoku.isGroupFilled(cellGroup)){
-            return false;
+            return false; // If it is there's no solve to be made
         }
         int[] missingValues = getMissingDigits(cellGroup);
         // If the group is missing at least 2 digits:
         if(missingValues.length < 2){
-            return false;
+            return false; // If theres only 1 missing digit there's no pairs
+            // to be found.
         }
         // For each pair of missing values:
         for(int i = 0; i < missingValues.length - 1; i++){
             for(int j = i + 1; j < missingValues.length; j++){
                 int val1 = missingValues[i]; // First value of the pair
-                int val2 = missingValues[j]; // second value of the pair
+                int val2 = missingValues[j]; // Second value of the pair
                 // We get the cells of the group that have both values
                 // as candidates:
                 Cell[] plausCells = 
@@ -209,32 +247,37 @@ public class SudokuKid {
                 int nCellsVal1 = countCellsWithGivenCandidates(cellGroup,val1);
                 // And the same for the second value:
                 int nCellsVal2 = countCellsWithGivenCandidates(cellGroup,val2);
-                // And also store the cells with only those two candidates:
-                Cell[] cellsOnly = 
+                // If theres more cells with one of the values of the pair as
+                // a candidate than cells with both as candidates we say it
+                // "exists alone":
+                boolean valueExistsAlone =
+                        nCellsVal1 > plausCells.length ||
+                        nCellsVal2 > plausCells.length;
+                // We also store the cells with only the two candidates:
+                Cell[] cellsOnlyCandidatesArePair = 
                             findCellsWithOnlyCandidates(cellGroup,val1,val2);
                 // If there's other cells int the group that have
                 // either of the values in the pair as candidates:
-                if(NP && (nCellsVal1 > plausCells.length
-                        || nCellsVal2 > plausCells.length)){
+                if(NP && valueExistsAlone){
                     // but two of the cells that have both as candidates can
                     // only be filled with one or the other and not any other
                     // number (only those two candidates):
-                    if(cellsOnly.length == 2){
+                    if(cellsOnlyCandidatesArePair.length == 2){
                         // then we've found a pair and the rest of the cells in
                         // the group can't be filled with those numbers:
                         solve = true;
-                        Cell[] restCells = getRestCells(cellGroup,cellsOnly);
+                        Cell[] restCells = getRestCells(cellGroup,cellsOnlyCandidatesArePair);
                         for (Cell cell : restCells) {
                             cell.removeCandidates(val1, val2);
                         }
                     }
-                //in the case we found only two cells and those are
-                //the only cells in the group that can be filled
-                //with any and both values of the pair:
-                } else if(HP && plausCells.length == 2) {
+                // In the case we found only two cells and those are
+                // the only cells in the group that can be filled
+                // with any and both values of the pair:
+                } else if(HP && plausCells.length == 2 && !valueExistsAlone) {
                     // We check if the pair was already found before and,
                     // therefore, there's no progress in solving:
-                    if(cellsOnly.length == 2){
+                    if(cellsOnlyCandidatesArePair.length == 2){
                         continue;
                     }
                     // Then we rule out any other value we may have had
@@ -253,80 +296,71 @@ public class SudokuKid {
      */
     
     /**
-     * Method solvePointingNumbers searches for patterns in which the only
-     * cells in a square of the sudoku that could allocate a ceirtain number
-     * are in the same row or column, meaning there shouldn't be any other
-     * plausible cells for that numnber in cells of that row or column outside
-     * of the square.
+     * Searches for patterns in which the only cells in a square of the sudoku
+     * that could allocate a ceirtain number are in the same row or column,
+     * meaning there shouldn't be any other plausible cells for that numnber
+     * in cells of that row or column outside of the square.
      * This includes both pointing pairs and pointing triplets patterns.
      * 
      * @return true if we've found a new pointing pattern, false otherwise
      */
     public boolean solvePointingNumbers(){
-        //we create a variable to store weather we've made a solve or not:
-        boolean solve = false; //false by default
-        //we loop through the squares of the sudoku:
-        for(int i = 0; i < this.sudoku.sqrs.length; i++){
-            //we get how many digits are missing from the square:
-            int numMissingVals = this.sudoku.sqrs[i].numMissingValues();
-            //we loop through each value:
-            for(int n = 1; n <= numMissingVals; n++){
-                //we store the value:
-                int val = this.sudoku.sqrs[i].getMissingVal(n);
-                //we store in an array the cells of the group that could be
-                //filled with it:
-                int[] plausCells = this.sudoku.sqrs[i].getPlausCellsIndex(val);
-                //if it's only three or less cells:
+        // We create a variable to store weather we've made a solve or not:
+        boolean solve = false; // false by default
+        // We loop through the squares of the sudoku:
+        for(int sqr = 1; sqr <= sudoku.cells.length; sqr++){
+            // We count how many digits are missing from the square:
+            int[] missingVals = getMissingDigits(sudoku.getSqrCells(sqr));
+            // For each value:
+            for(int val : missingVals){
+                // We store in an array the cells of the group that could be
+                // filled with it:
+                Cell[] plausCells = findCellsWithGivenCandidates(
+                        sudoku.getSqrCells(sqr), val);
+                // If it's only three or less cells:
                 if((PP && plausCells.length == 2)
                 || (PT && plausCells.length == 3)){
-                    if(sudoku.sameRow(i,plausCells)){
-                        //if the cells are in the same row
-                        //we get the row index:
-                        int row = sudoku.getRow(i,plausCells[0]);
-                        //if there's any other cell in the row that seemingly
-                        //could be filled with that digit:
-                        if(plausCells.length !=
-                            this.sudoku.rows[row].numPlausCells(val))
+                    if(cellsAreInSameRow(plausCells)){
+                        // if the cells are in the same row
+                        // we get the row:
+                        int row = plausCells[0].getRow();
+                        // if there's any other cell in the row that seemingly
+                        // could be filled with that digit:
+                        if(plausCells.length != countCellsWithGivenCandidates(
+                                sudoku.getRowCells(row),val))
                         {
-                            //we've made progress:
+                            // then we've made progress:
                             solve = true;
-//                            if(plausCells.length == 2){
-//                                System.out.println("\tFound Pointing Pair.\n");
-//                            } else if (plausCells.length == 3){
-//                                System.out.println("\tFound Pointing Triplet.\n");
-//                            }
-                            //and we eliminate those incorrect notes:
-                            for(int j = 0; j < this.sudoku.
-                                rows[row].cells.length; j++)
+                            // and we eliminate the obsolete notes:
+                            for(int col = 1; col <= sudoku.getRowCells(row).length; col++)
                             {
-                                //for all cells in the same row but outside
-                                //of the square:
-                                if(i != sudoku.getSqr(row,j)){
-                                    this.sudoku.rows[row].
-                                        cells[j].removePlausible(val);
+                                // For all cells in the row but outside
+                                // of the square:
+                                if(sqr != Cell.getSqr(row,col)){
+                                    this.sudoku.getCell(row, col)
+                                            .removeCandidate(val);
                                 }
                             }
                         }
-                    } else if(this.sudoku.sameCol(i,plausCells)){
-                        //else if the cells are in the same column
-                        //we get the column index:
-                        int col = sudoku.getCol(i,plausCells[0]);
-                        //if there's any other cell in the column that
-                        //seemingly could be filled with that digit:
-                        if(plausCells.length !=
-                            this.sudoku.cols[col].numPlausCells(val))
+                    } else if(cellsAreInSameCol(plausCells)){
+                        // If the cells are in the same column
+                        // we get the column index:
+                        int col = plausCells[0].getCol();
+                        // If there's any other cell in the column that
+                        // seemingly could be filled with that digit:
+                        if(plausCells.length != countCellsWithGivenCandidates(
+                                sudoku.getColCells(col),val))
                         {
-                            //we've made progress:
+                            // then we've made progress:
                             solve = true;
-                            //and we eliminate those incorrect notes:
-                            for(int j = 0; j < this.sudoku.
-                                cols[col].cells.length; j++)
+                            // and we eliminate the obsolete notes:
+                            for(int row = 1; row <= this.sudoku.getColCells(col).length; row++)
                             {
-                                //for all cells in the same column but outside
-                                //of the square:
-                                if(i != sudoku.getSqr(j,col)){
-                                    this.sudoku.cols[col].
-                                        cells[j].removePlausible(val);
+                                // For all cells in the column but outside
+                                // of the square:
+                                if(sqr != Cell.getSqr(row,col)){
+                                    this.sudoku.getCell(row, col)
+                                            .removeCandidate(val);
                                 }
                             }
                         }
@@ -344,9 +378,8 @@ public class SudokuKid {
      */
     
     /**
-     * Method solveSimpleTriplets searches for both naked and hidden triplet
-     * patterns in groups that can eliminate plausible values from some cells
-     * in the group.
+     * Searches both for naked and hidden triplet patterns in groups.
+     * This can eliminate plausible values from some cells in the group.
      * This methods role is mearly calling the method that does this for each
      * of the groups in our sudoku: all rows, columns and squares.
      * 
@@ -356,12 +389,12 @@ public class SudokuKid {
         boolean solve = false; //we'll be returning this
         //we loop through our sudoku rows, columns and squares:
         //(group lists lengths are equal, we use row's but could use whichever)
-        for(int i = 0; i < this.sudoku.rows.length; i++){
+        for(int i = 1; i <= this.sudoku.cells.length; i++){
             //we run each groups triplet finding method:
             //(it'll internally check if the group is solved before begining)
-            solve |= findSimpleTriplets(this.sudoku.rows[i]); //rows
-            solve |= findSimpleTriplets(this.sudoku.cols[i]); //columns
-            solve |= findSimpleTriplets(this.sudoku.sqrs[i]); //squares
+            solve |= findSimpleTriplets(this.sudoku.getRowCells(i)); //rows
+            solve |= findSimpleTriplets(this.sudoku.getColCells(i)); //columns
+            solve |= findSimpleTriplets(this.sudoku.getSqrCells(i)); //squares
             //"solve |= " statement will cause our solve variable to become
             //true if we find a triplet and therefore we've made progress in
             //solving the sudoku
@@ -381,78 +414,87 @@ public class SudokuKid {
      * @return true if we found a new triplet and therefore made progress in
      * solving
      */
-    private boolean findSimpleTriplets(CellGroup grup){
-        boolean solve = false; //we'll be returning this
-        //if the group isn't solved:
-        if(!grup.isComplete()){
-            //we get how many numbers are missing from the group:
-            int n = grup.numMissingValues();
-            //if it is at least 3:
-            if(n > 2){
-                //for each triplet of missing values:
-                for(int i = 1; i < n-1; i++){
-                    for(int j = i + 1; j < n; j++){
-                        for(int k = j + 1; k <= n; k++){
-                            int val1 = grup.getMissingVal(i);//first value of
-                            //the triplet
-                            int val2 = grup.getMissingVal(j);//second value of
-                            //the triplet
-                            int val3 = grup.getMissingVal(k);//third value of
-                            //the triplet
-                            //we store how many cells can be filled with the
-                            //values of the triplet:
-                            int numCells = grup.numPlausCells(val1,val2,val3);
-                            //we store if there's cells with one plausible
-                            //value but not the others:
-                            boolean exAlone =
-                                grup.valsExistAlone(val1,val2,val3);
-                            ///if the cells that can be filled with the values
-                            //of the triplet aren't the only cells in the group
-                            //that can be filled with one of the values of the
-                            //triplet:  
-                            if(NT && numCells > 2 && exAlone){
-                                //but three of the cells that can be filled
-                                //with them can only be filled with them and
-                                //not any other number:
-                                if(grup.numCellsOnly(val1,val2,val3) == 3){
-                                    //then we've found a triplet and the
-                                    //rest of the cells in the group can't be
-                                    //filled with those numbers:
-                                    solve = true;
-//                                    System.out.println("\tFound Naked Triplet.\n");
-                                    //we create an array to retain the rest of
-                                    //the cells:
-                                    CellObsolete[] restCells =
-                                        grup.getRestCells(val1, val2, val3);
-                                    //we update their plausible values:
-                                    for(int t = 0; t < restCells.length; t++){
-                                        restCells[t].
-                                        removePlausible(val1,val2,val3);
-                                    }
-                                }
-                            //in the case we found only three cells and those
-                            //are the only cells in the group that could be
-                            //filled with any and all values of the triplet:
-                            } else if(HT && numCells == 3 && !exAlone
-                                && grup.numCellsOnly(val1,val2,val3) != 3)
-                            {
-                                //(second part of the condition checks if the
-                                //triplet was already found before, therefore
-                                //there's no progress in solving)
-                                //we rule out any other value we may have had
-                                //stored as plausible for those three cells:
-                                solve = true;
-//                                System.out.println("\tFound Hidden Triplet.\n");
-                                //we create an array to retain the cells that
-                                //can be filled with the values in the triplet:
-                                CellObsolete[] foundCells =
-                                    grup.getPlausCells(val1, val2, val3);
-                                //we update their plausible values:
-                                for(int t = 0; t < foundCells.length; t++){
-                                    foundCells[t].
-                                    removeAllPlausibleBut(val1,val2,val3);
-                                }
+    private boolean findSimpleTriplets(Cell[] cellGroup){
+        boolean solve = false; // we'll be returning this
+        // If the group isn't solved:
+        if(Sudoku.isGroupFilled(cellGroup)){
+            return false; // If it is there's no solve to be made
+        }
+        int[] missingValues = getMissingDigits(cellGroup);
+        // If the group is missing at least 3 digits:
+        if(missingValues.length < 3){
+            return false; // If theres only 2 missing digit there's no triplets
+            // to be found.
+        }
+        // For each triplet of missing values:
+        for(int i = 0; i < missingValues.length - 2; i++){
+            for(int j = i + 1; j < missingValues.length - 1; j++){
+                for(int k = j + 1; k < missingValues.length; k++){
+                    int val1 = missingValues[i]; // First value of the triplet
+                    int val2 = missingValues[j]; // Second value of the triplet
+                    int val3 = missingValues[k]; // Third value of the triplet
+                    // We get the cells of the group that have all three values
+                    // as candidates:
+                    Cell[] plausCells =
+                            findCellsWithGivenCandidates(cellGroup, val1,val2,val3);
+                    // If there's less than 3 plausible cells for this triplet
+                    // we dont check any further:
+                    if(plausCells.length < 3){
+                        continue;
+                    }
+                    // The number of plausible cells for the first value:
+                    int nCellsVal1 = countCellsWithGivenCandidates(cellGroup,val1);
+                    // And for the second value:
+                    int nCellsVal2 = countCellsWithGivenCandidates(cellGroup,val2);
+                    // And the third:
+                    int nCellsVal3 = countCellsWithGivenCandidates(cellGroup,val3);
+                    // If theres more cells with one of the values of the
+                    // triplet as a candidate than cells with all three as
+                    // candidates we say it "exists alone":
+                    boolean valueExistsAlone =
+                            nCellsVal1 > plausCells.length ||
+                            nCellsVal2 > plausCells.length ||
+                            nCellsVal3 > plausCells.length;
+                    // We also store the cells with only the three candidates:
+                    Cell[] celsOnlyCandidatesAreTriplet =
+                            findCellsWithOnlyCandidates(cellGroup,val1,val2,val3);
+                    // If the cells that can be filled with the values
+                    // of the triplet aren't the only cells in the group
+                    // that can be filled with one of the values of the
+                    // triplet:
+                    if(NT && valueExistsAlone){
+                        // But three of the cells that can be filled
+                        // with them can only be filled with them and
+                        // not any other number:
+                        if(celsOnlyCandidatesAreTriplet.length == 3){
+                            // Then we've found a triplet and the
+                            // rest of the cells in the group can't be
+                            // filled with those numbers:
+                            solve = true;
+                            // We create an array to retain the rest of
+                            // the cells:
+                            Cell[] restCells =
+                                getRestCells(cellGroup,celsOnlyCandidatesAreTriplet);
+                            // and update their plausible values:
+                            for(Cell cell : restCells){
+                                cell.removeCandidates(val1,val2,val3);
                             }
+                        }
+                    //in the case we found only three cells and those
+                    //are the only cells in the group that could be
+                    //filled with any and all values of the triplet:
+                    } else if(HT && plausCells.length == 3 && !valueExistsAlone){
+                        // We check if the triplet was already found before and,
+                        // therefore, there's no progress in solving:
+                        if(celsOnlyCandidatesAreTriplet.length != 3){
+                            continue;
+                        }
+                        // We rule out any other value we may have had
+                        // stored as plausible for those three cells:
+                        solve = true;
+                        // We update their plausible values:
+                        for(Cell cell : plausCells){
+                            cell.removeAllCandidatesBut(val1,val2,val3);
                         }
                     }
                 }
@@ -469,6 +511,7 @@ public class SudokuKid {
      */
     
     public void solvingLoop(){
+        basicSudokuRules();
         //we create a Scanner object for basic user interaction:
         Scanner scanner = new Scanner(System.in);
         System.out.println("INITIAL SUDOKU STATEMENT:");
@@ -746,6 +789,44 @@ public class SudokuKid {
             }
         }
         return missingVals;
+    }
+
+    /**
+     * Checks if all the cells in the given list are in the same row.
+     * 
+     * @param cells, a list of cells
+     * @return {@code true} if all cells of the list are in the same row,
+     * {@code false} otherwise.
+     */
+    private boolean cellsAreInSameRow(Cell[] cells) {
+        if (cells.length < 1) {
+            throw new IllegalArgumentException("List of cells must at least incude one cell.");
+        }
+        int row = cells[0].getRow();
+        boolean sameRow = true;
+        for (Cell cell : cells) {
+            sameRow &= cell.getRow() == row;
+        }
+        return sameRow;
+    }
+    
+    /**
+     * Checks if all the cells in the given list are in the same column.
+     * 
+     * @param cells, a list of cells
+     * @return {@code true} if all cells of the list are in the same column,
+     * {@code false} otherwise.
+     */
+    private boolean cellsAreInSameCol(Cell[] cells) {
+        if (cells.length < 1) {
+            throw new IllegalArgumentException("List of cells must at least incude one cell.");
+        }
+        int col = cells[0].getCol();
+        boolean sameCol = true;
+        for (Cell cell : cells) {
+            sameCol &= cell.getCol() == col;
+        }
+        return sameCol;
     }
     
     /* ##################################################################################################################################################
