@@ -55,10 +55,10 @@ public class SudokuObsolete {
         }
         
         //COLUMNS
-        Cell[] cellList; //now we declare the list we'll send to the
+        CellObsolete[] cellList; //now we declare the list we'll send to the
         //overloaded constructor with the correct cells
         for(int i = 0; i < this.cols.length; i++){
-            cellList = new Cell[9]; //We initialize it in the for loop
+            cellList = new CellObsolete[9]; //We initialize it in the for loop
             //so it's cleared with every iteration.
             //Just as all other lists we're using (I'm saying lists
             //for simplicity but it's actually arrays), it's length is
@@ -83,12 +83,12 @@ public class SudokuObsolete {
         }
         
         //SQUARES
-        Cell[] cellList2; //We'll be needing two more aux lists
-        Cell[] cellList3; //as we'll be filling 3 squares at the same
+        CellObsolete[] cellList2; //We'll be needing two more aux lists
+        CellObsolete[] cellList3; //as we'll be filling 3 squares at the same
         //time.
-        cellList = new Cell[9];  //We initialize them out of the loop
-        cellList2 = new Cell[9]; //cause we don't want all iterations
-        cellList3 = new Cell[9]; //to clear them, only some of them.
+        cellList = new CellObsolete[9];  //We initialize them out of the loop
+        cellList2 = new CellObsolete[9]; //cause we don't want all iterations
+        cellList3 = new CellObsolete[9]; //to clear them, only some of them.
         //get ready now, this is some mindbreaking stuff (jk, jk):
         for(int i = 0; i < this.rows.length; i++){
             //for every of the rows in our sudoku
@@ -112,9 +112,9 @@ public class SudokuObsolete {
                 this.sqrs[i-2] = new CellGroup(cellList);
                 this.sqrs[i-1] = new CellGroup(cellList2);
                 this.sqrs[i] = new CellGroup(cellList3);//sqrs 3, 6 & 9
-                cellList = new Cell[9]; //Then, we promptly clear our
-                cellList2 = new Cell[9];//auxiliary lists so there's no
-                cellList3 = new Cell[9];//chance of a data bleed error.
+                cellList = new CellObsolete[9]; //Then, we promptly clear our
+                cellList2 = new CellObsolete[9];//auxiliary lists so there's no
+                cellList3 = new CellObsolete[9];//chance of a data bleed error.
             }
         }
         //That's it, we finaly have our sudoku with 9 rows, 9 columns
