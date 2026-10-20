@@ -15,7 +15,7 @@ public class SudokuParamValidation {
      * @param num, the number we want to check
      * @return {@code true} if it's in range, {@code false} otherwise.
      */
-    protected static boolean isInValidRange(int num){
+    protected static boolean isInValidRange(int num) {
         return num >= 1 && num <= 9;
     }
     /**
@@ -23,8 +23,21 @@ public class SudokuParamValidation {
      * @param num, the number we want to check
      * @return {@code true} if it's NOT in range, {@code false} otherwise.
      */
-    protected static boolean isNotInValidRange(int num){
+    protected static boolean isNotInValidRange(int num) {
         return num < 1 || num > 9;
+    }
+    
+    /**
+     * Checks if a given value is in range and throws an exception in case
+     * it's not.
+     * 
+     * @param val, the value we want to check
+     * @throws IllegalArgumentException 
+     */
+    protected static void checkValidValue(int val) throws IllegalArgumentException {
+        if (val != Cell.EMPTY && isNotInValidRange(val)) {
+            throw new IllegalArgumentException("Invalid value! Must be a number from 0 to 9.");
+        }
     }
     
     /**
@@ -148,7 +161,7 @@ public class SudokuParamValidation {
      * 
      * @param matrix, the matrix we want to check
      */
-    protected static void checkValidMatrix(int[][] matrix){
+    protected static void checkValidMatrix(int[][] matrix) throws IllegalArgumentException {
         if (isNotValidMatrix(matrix)) {
             throw new IllegalArgumentException("The matrix doesn't contain a valid sudoku!");
         }

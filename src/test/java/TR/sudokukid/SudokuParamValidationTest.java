@@ -69,8 +69,19 @@ public class SudokuParamValidationTest {
         assertEquals(!expectedResult, isNotInValidRange(num));
     }
     
-    static Stream<Arguments> validRangeParams() {
+    static Stream<Arguments> validRangeGroupParams() {
         return Stream.of(
+                Arguments.of(2),
+                Arguments.of(1),
+                Arguments.of(5),
+                Arguments.of(9),
+                Arguments.of(8),
+                Arguments.of(4)
+        );
+    }
+    static Stream<Arguments> validRangeValueParams() {
+        return Stream.of(
+                Arguments.of(0),
                 Arguments.of(2),
                 Arguments.of(1),
                 Arguments.of(5),
@@ -81,22 +92,27 @@ public class SudokuParamValidationTest {
     }
     
     @ParameterizedTest
-    @MethodSource("validRangeParams")
+    @MethodSource("validRangeValueParams")
+    public void checkValidValueDoesntThrowExceptionWhenValIsValid(int val){
+        assertDoesNotThrow(() -> checkValidValue(val));
+    }
+    @ParameterizedTest
+    @MethodSource("validRangeGroupParams")
     public void checkValidRowNumberDoesntThrowExceptionWhenRowIsValid(int row){
         assertDoesNotThrow(() -> checkValidRowNumber(row));
     }
     @ParameterizedTest
-    @MethodSource("validRangeParams")
+    @MethodSource("validRangeGroupParams")
     public void checkValidColNumberDoesntThrowExceptionWhenColIsValid(int col){
         assertDoesNotThrow(() -> checkValidColNumber(col));
     }
     @ParameterizedTest
-    @MethodSource("validRangeParams")
+    @MethodSource("validRangeGroupParams")
     public void checkValidSqrNumberDoesntThrowExceptionWhenSqrIsValid(int sqr){
         assertDoesNotThrow(() -> checkValidSqrNumber(sqr));
     }
     
-    static Stream<Arguments> invalidRangeParams() {
+    static Stream<Arguments> invalidRangeGroupParams() {
         return Stream.of(
                 Arguments.of(0),
                 Arguments.of(-1),
@@ -106,9 +122,28 @@ public class SudokuParamValidationTest {
                 Arguments.of(11)
         );
     }
+    static Stream<Arguments> invalidRangeValueParams() {
+        return Stream.of(
+                Arguments.of(-1),
+                Arguments.of(50),
+                Arguments.of(10),
+                Arguments.of(-8),
+                Arguments.of(11)
+        );
+    }
     
     @ParameterizedTest
-    @MethodSource("invalidRangeParams")
+    @MethodSource("invalidRangeValueParams")
+    public void checkValidValueThrowsExceptionWhenValIsNotValid(int val){
+        IllegalArgumentException ex;
+        ex = assertThrowsExactly(
+                IllegalArgumentException.class,
+                () -> checkValidValue(val)
+        );
+        assertEquals("Invalid value! Must be a number from 0 to 9.",ex.getMessage());
+    }
+    @ParameterizedTest
+    @MethodSource("invalidRangeGroupParams")
     public void checkValidRowNumberThrowsExceptionWhenRowIsNotValid(int row){
         IllegalArgumentException ex;
         ex = assertThrowsExactly(
@@ -118,7 +153,7 @@ public class SudokuParamValidationTest {
         assertEquals("Invalid row! Must be a number from 1 to 9.",ex.getMessage());
     }
     @ParameterizedTest
-    @MethodSource("invalidRangeParams")
+    @MethodSource("invalidRangeGroupParams")
     public void checkValidColNumberThrowsExceptionWhenRowIsNotValid(int col){
         IllegalArgumentException ex;
         ex = assertThrowsExactly(
@@ -128,7 +163,7 @@ public class SudokuParamValidationTest {
         assertEquals("Invalid column! Must be a number from 1 to 9.",ex.getMessage());
     }
     @ParameterizedTest
-    @MethodSource("invalidRangeParams")
+    @MethodSource("invalidRangeGroupParams")
     public void checkValidSqrNumberThrowsExceptionWhenRowIsNotValid(int sqr){
         IllegalArgumentException ex;
         ex = assertThrowsExactly(
@@ -141,7 +176,7 @@ public class SudokuParamValidationTest {
     /* ##################################################################################################################################################
      * isValidMatrix:
      */
-    static Stream<Arguments> validSudokus() {
+    static Stream<Arguments> validSudokuMatrixs() {
         return Stream.of(
                 Arguments.of((Object) emptyMatrix),
                 Arguments.of((Object) fullMatrix),
@@ -150,7 +185,7 @@ public class SudokuParamValidationTest {
                 Arguments.of((Object) validMatrix3)
         );
     }
-    static Stream<Arguments> invalidSudokus() {
+    static Stream<Arguments> invalidSudokuMatrixs() {
         return Stream.of(
                 Arguments.of((Object) invalidMatrix1),
                 Arguments.of((Object) invalidMatrix2),
@@ -162,25 +197,25 @@ public class SudokuParamValidationTest {
     }
 
     @ParameterizedTest
-    @MethodSource("validSudokus")
+    @MethodSource("validSudokuMatrixs")
     public void isValidMatrixReturnsTrueWhenSudokuIsValid(int[][] matrix){
         assertTrue(isValidMatrix(matrix));
     }
     
     @ParameterizedTest
-    @MethodSource("invalidSudokus")
+    @MethodSource("invalidSudokuMatrixs")
     public void isValidMatrixReturnsFalseWhenSudokuIsNotValid(int[][] matrix){
         assertFalse(isValidMatrix(matrix));
     }
     
     @ParameterizedTest
-    @MethodSource("validSudokus")
+    @MethodSource("validSudokuMatrixs")
     public void checkValidMatrixDoesntThrowExceptionWhenSudokuIsValid(int[][] matrix){
         assertDoesNotThrow(() -> checkValidMatrix(matrix));
     }
     
     @ParameterizedTest
-    @MethodSource("invalidSudokus")
+    @MethodSource("invalidSudokuMatrixs")
     public void checkValidMatrixThrowsExceptionWhenSudokuIsNotValid(int[][] matrix){
         IllegalArgumentException ex;
         ex = assertThrowsExactly(

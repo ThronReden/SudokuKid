@@ -1,5 +1,7 @@
 package TR.sudokukid;
 
+import static TR.sudokukid.SudokuParamValidation.*;
+
 /**
  * Sudoku objects represent a whole sudoku containing 9 rows,
  * 9 columns and 9 sqares each containing 9 cells (for a total of
@@ -7,7 +9,7 @@ package TR.sudokukid;
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @date 06/OCT/26
+ * @date 20/OCT/26
  */
 public class Sudoku {
     /* ##################################################################################################################################################
@@ -130,7 +132,30 @@ public class Sudoku {
      * @return {@code true} if it's full, {@code false} otherwise
      */
     public boolean isRowFilled(int rowNumber){
+        checkValidRowNumber(rowNumber);
         return isGroupFilled(this.getRowCells(rowNumber));
+    }
+    /**
+     * Checks if all cells of the desired column are filled with a digit.
+     * It loops through the column and fails if any of its cells is empty.
+     * 
+     * @param colNumber, the column we want to check
+     * @return {@code true} if it's full, {@code false} otherwise
+     */
+    public boolean isColFilled(int colNumber){
+        checkValidColNumber(colNumber);
+        return isGroupFilled(this.getColCells(colNumber));
+    }
+    /**
+     * Checks if all cells of the desired square are filled with a digit.
+     * It loops through the square and fails if any of its cells is empty.
+     * 
+     * @param sqrNumber, the square we want to check
+     * @return {@code true} if it's full, {@code false} otherwise
+     */
+    public boolean isSqrFilled(int sqrNumber){
+        checkValidSqrNumber(sqrNumber);
+        return isGroupFilled(this.getSqrCells(sqrNumber));
     }
     /**
      * Checks if all cells of the group are filled with a digit.
@@ -156,6 +181,8 @@ public class Sudoku {
      * @return the cell in this position
      */
     public Cell getCell(int row, int col){
+        checkValidRowNumber(row);
+        checkValidColNumber(col);
         return this.cells[row-1][col-1];
     }
     
@@ -166,6 +193,7 @@ public class Sudoku {
      * @return the list of cells in that row
      */
     public Cell[] getRowCells(int rowNumber) {
+        checkValidRowNumber(rowNumber);
         int rowIndex = rowNumber-1; // We adapt to array index format.
         Cell[] rowCells = new Cell[9];
         // We clone that row of the bidimentional array:
@@ -181,12 +209,7 @@ public class Sudoku {
      * @return the list of numbers in that row, plain and simple
      */
     public int[] getRowVals(int rowNumber) {
-        int[] rowVals = new int[9];
-        Cell[] rowCells = this.getRowCells(rowNumber);
-        for(int i = 0; i < rowCells.length; i++) {
-            rowVals[i] = rowCells[i].getValue();
-        }
-        return rowVals;
+        return getGroupVals(this.getRowCells(rowNumber));
     }
     
     /**
@@ -196,6 +219,7 @@ public class Sudoku {
      * @return the list of cells in that column
      */
     public Cell[] getColCells(int colNumber) {
+        checkValidColNumber(colNumber);
         int colIndex = colNumber-1; // We adapt to array index format.
         Cell[] colCells = new Cell[9];
         for(int i = 0; i < this.cells.length; i++) {
@@ -212,12 +236,7 @@ public class Sudoku {
      * @return the list of numbers in that column, plain and simple
      */
     public int[] getColVals(int colNumber) {
-        int[] colVals = new int[9];
-        Cell[] colCells = this.getColCells(colNumber);
-        for(int i = 0; i < colCells.length; i++) {
-            colVals[i] = colCells[i].getValue();
-        }
-        return colVals;
+        return getGroupVals(this.getColCells(colNumber));
     }
     
     /**
@@ -227,6 +246,7 @@ public class Sudoku {
      * @return the list of cells in that square
      */
     public Cell[] getSqrCells(int sqrNumber) {
+        checkValidSqrNumber(sqrNumber);
         int sqrIndex = sqrNumber-1; // We adapt to array index format.
         // We find this square's first row and column indexes (the row and
         // column indexes of its top-left cell):
@@ -253,6 +273,8 @@ public class Sudoku {
      * @see #getSqrCells(int) 
      */
     public Cell[] getSqrCells(int row, int col) {
+        checkValidRowNumber(row);
+        checkValidColNumber(col);
         return getSqrCells(Cell.getSqr(row, col));
     }
     /**
@@ -263,79 +285,20 @@ public class Sudoku {
      * @return the list of numbers in that square, plain and simple
      */
     public int[] getSqrVals(int sqrNumber) {
-        int[] sqrVals = new int[9];
-        Cell[] sqrCells = this.getSqrCells(sqrNumber);
-        for(int i = 0; i < sqrCells.length; i++) {
-            sqrVals[i] = sqrCells[i].getValue();
-        }
-        return sqrVals;
+        return getGroupVals(this.getSqrCells(sqrNumber));
     }
-    
     /**
-     * Cheks both the length of a given matrix rows and columns and the digits
-     * it contains and returns true if the matrix correctly represents a
-     * Sudoku:9 rows, 9 columns and all digits vary from 0 to 9, 0 representing
-     * an empty cell; and there's no repeating numbers breaking basic sudoku
-     * rules.
-     * It's static, as it doesn't depend on the existence of an
-     * instance of Sudoku.
-     *
-     * @param matrix, the bidimensional matrix of integers we want to check
-     * @return false if the matrix isn't a valid Sudoku puzzle, true otherwise.
+     * Returns a list of integers with the values contained in the given list
+     * of cells.
+     * @param groupCells, the group of cells we want as a list of ints
+     * @return the list of its values
      */
-    public static boolean isValid(int[][] matrix){
-        // We check the matrix has 9 rows, no more no less.
-        if(matrix.length != 9){
-            return false; // We end the execution
+    private int[] getGroupVals(Cell[] groupCells) {
+        int[] groupVals = new int[9];
+        for(int i = 0; i < groupCells.length; i++) {
+            groupVals[i] = groupCells[i].getValue();
         }
-        for(int i = 0; i < matrix.length; i++){
-            // We check every row has 9 columns, no more no less.
-            if(matrix[i].length != 9){
-                return false;
-                // This way we don't keep checking once something is not valid.
-            }
-            for(int j = 0; j < matrix[i].length; j++){
-                // We check the value in [i][j]
-                int val = matrix[i][j]; // We store it's value
-                if(val < 0 | val > 9){
-                    return false; // The digit isn't valid, execution ends.
-                } else if(val == 0){
-                    continue; // The cell is empty, it's valid.
-                    // This way false invalid due to a repeated empty cell
-                    // doesn't trigger.
-                }
-                // We check the value isn't repeated in this cell's row or
-                // column:
-                for(int k = 0; k < matrix.length; k++){
-                    // We loop through the row, excluding this cell:
-                    if(k != j && matrix[i][k] == val){
-                        return false;
-                    }
-                    // We loop through the column, excluding this cell:
-                    if(k != i && matrix[k][j] == val){
-                        return false;
-                    }
-                }
-                // We check the value isn't repeated in this cell's square:
-                // there's now only 4 cells we haven't checked, those in the
-                // same square that aren't also in the same row or column,
-                // so we get the rows of the sqr this cell's not at:
-                int row1 = (i + 1) % 3 + i / 3 * 3;
-                int row2 = (i + 2) % 3 + i / 3 * 3;
-                // and also the columns of the sqr the cell's not at:
-                int col1 = (j + 1) % 3 + j / 3 * 3;
-                int col2 = (j + 2) % 3 + j / 3 * 3;
-                // then we check the four cells obtained by combining them:
-                if(matrix[row1][col1] == val || matrix[row1][col2] == val 
-                    || matrix[row2][col1] == val || matrix[row2][col2] == val){
-                    // If there's an identic digit in any of this cells the
-                    // matrix is not a valid sudoku statement:
-                    return false;
-                }
-            }
-        }
-        // If none of this checks fail, the matrix is valid as a sudoku:
-        return true;
+        return groupVals;
     }
     
     /**
@@ -356,8 +319,6 @@ public class Sudoku {
         //validSudokuMatrix with it:
         return SudokuObsolete.validSudokuMatrix(this.toMatrix());
     }
-    
-    
     
     /**
      * Checks weather the sudoku is solved or not, simple enough.
@@ -383,18 +344,15 @@ public class Sudoku {
      * @param col, the column of the cell we want to fill
      */
     public void fill(int val, int row, int col){
-        if(row < 1 || row > 9){
-            throw new IllegalArgumentException("Invalid row! Must be a number from 1 to 9.");
-        } else if(col < 1 || col > 9){
-            throw new IllegalArgumentException("Invalid column! Must be a number from 1 to 9.");
-        } else {
-            int rowIndex = row - 1;
-            int colIndex = col - 1;
-            this.cells[rowIndex][colIndex].setValue(val);
-        }
+        checkValidValue(val); // We make sure the digit is valid.
+        checkValidRowNumber(row);
+        checkValidColNumber(col);
+        int rowIndex = row - 1;
+        int colIndex = col - 1;
+        this.cells[rowIndex][colIndex].setValue(val);
     }
     /**
-     * Mirrors the given grid if it's a valid sudoku.
+     * Mirrors the given grid if it contains a valid sudoku.
      * 
      * @param matrix, the matrix of digits we will fill into the grid.
      * 
@@ -402,16 +360,15 @@ public class Sudoku {
      * @see #fill(int, int, int) 
      */
     private void fill(int[][] matrix){
-        if (isValid(matrix)) {
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix[i].length; j++) {
-                    int val = matrix[i][j]; // We store the digit.
-                    int row = i+1; // Our fill method works with actual row
-                    int col = j+1; // and column numbers, not indexes, so we
-                    // take that into account and then
-                    // we fill the value in the cell:
-                    fill(val, row, col);
-                }
+        checkValidMatrix(matrix);
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                int val = matrix[i][j]; // We store the digit.
+                int row = i+1; // Our fill method works with actual row
+                int col = j+1; // and column numbers, not indexes, so we
+                // take that into account and then
+                // we fill the value in the cell:
+                fill(val, row, col);
             }
         }
     }
@@ -471,6 +428,12 @@ public class Sudoku {
         System.out.println("+---+---+---++---+---+---++---+---+---+");
         // Done!
     }
+
+    /* ##################################################################################################################################################
+     * SECURITY METHODS:
+     * Functionalities such as checkValidRowNumber, etc.
+     */
+    
     
     /* ##################################################################################################################################################
      * REFACTOR / TRANSFORMING METHODS:

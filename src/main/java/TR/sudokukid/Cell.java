@@ -4,9 +4,10 @@ package TR.sudokukid;
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @date 06/OCT/26
+ * @date 20/OCT/26
  */
 public class Cell {
+    static final int EMPTY = 0;
     /* ##################################################################################################################################################
      * ATTRIBUTES:
      */
@@ -89,7 +90,7 @@ public class Cell {
      * @see #isFilled() 
      */
     public boolean isEmpty(){
-        return this.value == 0; // If it's 0 then it's empty.
+        return this.value == EMPTY; // If it's 0 then it's empty.
     }
     
     /**
@@ -101,7 +102,7 @@ public class Cell {
      * @see #isEmpty() 
      */
     public boolean isFilled(){
-        return this.value != 0; // If it's not 0 then it's filled.
+        return this.value != EMPTY; // If it's not 0 then it's filled.
     }
     
     /**
@@ -120,9 +121,11 @@ public class Cell {
      * @param val, the digit you want to fill into the Cell
      * @see #value
      */
-    protected void setValue(int val){
-        if(0 < val & val < 10){ // We make sure the digit is valid.
+    public void setValue(int val){
+        if(this.isEmpty()){ 
             this.value = val; // We fill in the digit if it is.
+        } else {
+            throw new IllegalArgumentException("This cell is already filled!");
         }
     }
 
