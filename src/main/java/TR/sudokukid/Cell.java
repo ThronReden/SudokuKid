@@ -1,10 +1,13 @@
 package TR.sudokukid;
 
+import static TR.sudokukid.SudokuParamValidation.*;
+import java.util.Arrays;
+
 /**
  * Cell objects represent a slot in the sudoku.
  * 
  * @author TR 
- * @date 20/OCT/26
+ * @date 21/OCT/26
  */
 public class Cell {
     static final int EMPTY = 0;
@@ -44,17 +47,17 @@ public class Cell {
     /**
      * Builds objects of class Cell.
      * 
-     * @param aRow, its row, from 1 to 9
-     * @param aCol, its column, from 1 to 9
+     * @param row, its row, from 1 to 9
+     * @param col, its column, from 1 to 9
      */
-    public Cell(int aRow, int aCol){
+    public Cell(int row, int col){
+        checkValidRowNumber(row);
+        checkValidColNumber(col);
         // We initialize the attributes with the given parameters:
-        this.row = aRow;
-        this.col = aCol;
+        this.row = row;
+        this.col = col;
         // and set the plausibility of all digits to true:
-        for(boolean plausibilityOfDigit : this.plausibleValues){
-            plausibilityOfDigit = true;
-        }
+        Arrays.fill(plausibleValues, true);
     }
     /**
      * Cloning constructor.
@@ -239,11 +242,11 @@ public class Cell {
     }
 
     /**
-     * Method isPlausible returns if a given value could fill this Cell or not.
+     * Method areAllPlausible returns if a given value could fill this Cell or not.
      * 
      * @param val, the value we want to check for
      * @return true if it could fill the cell, false otherwise
-     * @see #isPlausible(int[])
+     * @see #areAllPlausible(int[])
      * @see #plausibleValues
      */
     public boolean isPlausible(int val) {
@@ -259,7 +262,7 @@ public class Cell {
      * @see #isPlausible(int) 
      * @see #plausibleValues
      */
-    public boolean isPlausible(int... vals) {
+    public boolean areAllPlausible(int... vals) {
         if (vals.length == 0) {
             throw new IllegalArgumentException("You must check for at least one value.");
         }
@@ -275,7 +278,7 @@ public class Cell {
     public boolean isOnlyCandidate(int... vals){
         // If the given values are all candidates and theres only that many
         // candidates:
-        return isPlausible(vals) && this.getNumPlausVals() == vals.length;
+        return areAllPlausible(vals) && this.getNumPlausVals() == vals.length;
     }
     
     /**

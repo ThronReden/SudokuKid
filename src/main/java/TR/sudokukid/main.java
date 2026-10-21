@@ -9,7 +9,8 @@ import static TR.sudokukid.matrixLibrary.*;
 public class main {
     
     public static void main (String[] args){        
-        SudokuKid SK = new SudokuKid(claudeSudoku2);
+        SudokuKid SK = new SudokuKid(menneske4813117);
+//        SK.getSudoku().show();
         SK.solvingLoop();
     }
     

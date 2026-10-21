@@ -9,7 +9,7 @@ import java.util.Scanner;
  * REVISE ALL
  * 
  * @author TR
- * @date 06/OCT/26
+ * @date 21/OCT/26
  */
 public class SudokuKid {
     
@@ -146,7 +146,7 @@ public class SudokuKid {
                         // Else, if multiple digits fit:
                         } else if(HS && plausVals.length > 1){
                             // For each Val:
-                            for(int n = 0; n <= plausVals.length; n++){
+                            for(int n = 0; n < plausVals.length; n++){
                                 // We get the digit we're cheking for:
                                 int val = plausVals[n];
                                 // We check if it is the only Cell of its row,
@@ -719,7 +719,7 @@ public class SudokuKid {
         ArrayList<Cell> cells = new ArrayList<>();
         Collections.addAll(cells,group);
         Cell[] cellsWithGivenCandidates = cells.stream()
-                .filter(c -> c.isPlausible(vals)).toArray(Cell[]::new);
+                .filter(c -> c.areAllPlausible(vals)).toArray(Cell[]::new);
         return cellsWithGivenCandidates;
     }
     

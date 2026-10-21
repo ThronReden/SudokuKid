@@ -1,4 +1,4 @@
-package TR.sudokukid;
+package TR.obsolete;
 
 /**
  * CellGroup objects represent one of the rows, columns
