@@ -9,7 +9,7 @@ import static TR.sudokukid.SudokuParamValidation.*;
  * based on the available information from the given numbers.
  * 
  * @author TR 
- * @date 20/OCT/26
+ * @date 21/OCT/26
  */
 public class Sudoku {
     /* ##################################################################################################################################################
@@ -317,7 +317,7 @@ public class Sudoku {
     public boolean isCorrect(){
         //we convert the sudoku to a 9x9 matrix with .toMatrix() and call the
         //validSudokuMatrix with it:
-        return SudokuObsolete.validSudokuMatrix(this.toMatrix());
+        return SudokuParamValidation.isValidMatrix(this.toMatrix());
     }
     
     /**
