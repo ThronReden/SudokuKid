@@ -1,4 +1,4 @@
-package TR.sudokukid;
+package TR.obsolete;
 
 import java.util.Scanner;
 

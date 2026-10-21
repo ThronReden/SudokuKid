@@ -1,4 +1,4 @@
-package TR.sudokukid;
+package TR.obsolete;
  
 /**
  * Sudoku objects represent a whole sudoku containing 9 rows,
