@@ -12,7 +12,7 @@ public class CellGroup {
     /* //////////////////////////////////////////////////////////////////////
      * ATTRIBUTES:
      *///////////////////////////////////////////////////////////////////////
-    protected final Cell[] cells = new Cell[9]; //the list of 9 cells
+    protected final CellObsolete[] cells = new CellObsolete[9]; //the list of 9 cells
     //composing the group.
     private final boolean[] values = new boolean[9];//a list of 9 booleans
     //representing if the digits from 1 to 9 already exist in a cell of the
@@ -30,7 +30,7 @@ public class CellGroup {
         //cells list. This will be the cells of this row, column
         //or square.
         for(int i = 0; i < this.cells.length; i++){
-            this.cells[i] = new Cell(); //new instances of Cell!!
+            this.cells[i] = new CellObsolete(); //new instances of Cell!!
             //System.out.println(i+" es "+this.group[i]);
         }
         //we initialize all booleans of the values list to
@@ -47,7 +47,7 @@ public class CellGroup {
      * @param cellList[], the list of the cells we want to conform
      * the group
      */
-    public CellGroup(Cell cellList[]){
+    public CellGroup(CellObsolete cellList[]){
         for(int i = 0; i < this.cells.length; i++){
             this.cells[i] = cellList[i]; //we don't create new
             //instances of Cell now, we add the references to already
@@ -224,9 +224,9 @@ public class CellGroup {
      * @param val2, the second
      * @return an array with the corresponding cells
      */
-    protected Cell[] getPlausCells(int val1, int val2) {
+    protected CellObsolete[] getPlausCells(int val1, int val2) {
         //the list of cells to return:
-        Cell[] plausCells = new Cell[this.numPlausCells(val1, val2)];
+        CellObsolete[] plausCells = new CellObsolete[this.numPlausCells(val1, val2)];
         //its length is equal to the number of cells we calculate with the
         //numPlausCells method could be filled with both given values
         int j = 0; //to keep track of which position of the array we want to
@@ -252,9 +252,9 @@ public class CellGroup {
      * @param val3, the third value of the triplet
      * @return an array with the corresponding cells
      */
-    protected Cell[] getPlausCells(int val1, int val2, int val3) {
+    protected CellObsolete[] getPlausCells(int val1, int val2, int val3) {
         //the list of cells to return:
-        Cell[] plausCells = new Cell[this.numPlausCells(val1, val2, val3)];
+        CellObsolete[] plausCells = new CellObsolete[this.numPlausCells(val1, val2, val3)];
         //its length is equal to the number of cells we calculate with the
         //numPlausCells method could be filled with the given values
         int j = 0; //to keep track of which position of the array we want to
@@ -284,9 +284,9 @@ public class CellGroup {
      * @param val2, the second
      * @return an array with the corresponding cells
      */
-    protected Cell[] getRestCells(int val1, int val2) {
+    protected CellObsolete[] getRestCells(int val1, int val2) {
         //the list of cells to return:
-        Cell[] restCells = new Cell[9-this.numPlausCells(val1, val2)];
+        CellObsolete[] restCells = new CellObsolete[9-this.numPlausCells(val1, val2)];
         //its length is equal to the number of cells in the row, 9, minus the 
         //number of cells we calculate with the numPlausCells method could be
         //filled with both given values
@@ -314,9 +314,9 @@ public class CellGroup {
      * @param val3, the third value of the triplet
      * @return an array with the corresponding cells
      */
-    protected Cell[] getRestCells(int val1, int val2, int val3) {
+    protected CellObsolete[] getRestCells(int val1, int val2, int val3) {
         //the list of cells to return:
-        Cell[] restCells = new Cell[9-this.numPlausCells(val1, val2, val3)];
+        CellObsolete[] restCells = new CellObsolete[9-this.numPlausCells(val1, val2, val3)];
         //its length is equal to the number of cells we calculate with the
         //numPlausCells method could be filled with the given values
         int j = 0; //to keep track of which position of the array we want to
@@ -405,7 +405,7 @@ public class CellGroup {
     public int numCellsOnly(int val1, int val2) {
         int count = 0; //a variable to store the count
         //we get the list of plausible cells for both digits:
-        Cell[] plausCells = this.getPlausCells(val1, val2);
+        CellObsolete[] plausCells = this.getPlausCells(val1, val2);
         //we loop through it:
         for(int i = 0; i < plausCells.length; i++) {
             //if any of he cells could be filled with only two values then it
@@ -435,7 +435,7 @@ public class CellGroup {
     public int numCellsOnly(int val1, int val2, int val3) {
         int count = 0; //a variable to store the count
         //we get the list of plausible cells for both digits:
-        Cell[] plausCells = this.getPlausCells(val1, val2, val3);
+        CellObsolete[] plausCells = this.getPlausCells(val1, val2, val3);
         //we loop through it:
         for(int i = 0; i < plausCells.length; i++) {
             //we store how many plausible values this cell has:
