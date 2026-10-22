@@ -29,7 +29,7 @@ public class SudokuParamValidation {
     
     /**
      * Checks if a given value is in range and throws an exception in case
-     * it's not.
+     * it's not. Empty cell is a valid value.
      * 
      * @param val, the value we want to check
      * @throws IllegalArgumentException 
@@ -37,6 +37,18 @@ public class SudokuParamValidation {
     protected static void checkValidValue(int val) throws IllegalArgumentException {
         if (val != Cell.EMPTY && isNotInValidRange(val)) {
             throw new IllegalArgumentException("Invalid value! Must be a number from 0 to 9.");
+        }
+    }
+    /**
+     * Checks if a given candidate is in range and throws an exception in case
+     * it's not. Empty cell is NOT a valid candidate.
+     * 
+     * @param candidate, the value we want to check
+     * @throws IllegalArgumentException 
+     */
+    protected static void checkValidCandidate(int candidate) throws IllegalArgumentException {
+        if (isNotInValidRange(candidate)) {
+            throw new IllegalArgumentException("Invalid candidate! Must be a number from 1 to 9.");
         }
     }
     

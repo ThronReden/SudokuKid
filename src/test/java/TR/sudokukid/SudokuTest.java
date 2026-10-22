@@ -253,7 +253,7 @@ public class SudokuTest {
         sudoku.fill(7, 2, 5);
         sudoku.fill(2, 9, 9);
 //        System.out.println("Must have some filled cells:");
-        sudoku.show();
+//        sudoku.show();
         assertFalse(sudoku.isFilled());
     }
 

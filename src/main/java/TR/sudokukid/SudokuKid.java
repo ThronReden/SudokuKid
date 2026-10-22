@@ -719,7 +719,7 @@ public class SudokuKid {
         ArrayList<Cell> cells = new ArrayList<>();
         Collections.addAll(cells,group);
         Cell[] cellsWithGivenCandidates = cells.stream()
-                .filter(c -> c.areAllPlausible(vals)).toArray(Cell[]::new);
+                .filter(c -> c.isPlausible(vals)).toArray(Cell[]::new);
         return cellsWithGivenCandidates;
     }
     

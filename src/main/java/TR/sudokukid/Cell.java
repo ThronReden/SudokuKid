@@ -30,7 +30,7 @@ public class Cell {
      * If the boolean in the index is true this digit may fill this cell,
      * and if it's false it means we know for sure it can't.
      */
-    private boolean[] plausibleValues = new boolean[9];
+    private final boolean[] plausibleValues = new boolean[9];
     /**
      * The row the cell is at, a number from 1 to 9.
      */
@@ -62,13 +62,14 @@ public class Cell {
     /**
      * Cloning constructor.
      * 
-     * @param aCell, the cell we want to clone.
+     * @param cell, the cell we want to clone.
      */
-    private Cell(Cell aCell){
-        this.value = aCell.getValue();
-        this.row = aCell.getRow();
-        this.col = aCell.getCol();
-        this.plausibleValues = aCell.getPlausVals().clone();
+    private Cell(Cell cell){
+        this.value = cell.getValue();
+        this.row = cell.getRow();
+        this.col = cell.getCol();
+        System.arraycopy(cell.getPlausVals().clone(),0,this.plausibleValues,0,
+                this.plausibleValues.length);
     }
     /**
      * Clones the current cell.
@@ -127,6 +128,9 @@ public class Cell {
     public void setValue(int val){
         if(this.isEmpty()){ 
             this.value = val; // We fill in the digit if it is.
+            if (this.isFilled()) {
+                Arrays.fill(this.plausibleValues, false);
+            }
         } else {
             throw new IllegalArgumentException("This cell is already filled!");
         }
@@ -217,7 +221,7 @@ public class Cell {
         return this.plausibleValues;
     }
 
-    public int getNumPlausVals() {
+    public int countPlausVals() {
         int count = 0; // We count plausible values
         for (boolean isPlausible : this.plausibleValues) {
             if(isPlausible){
@@ -228,7 +232,7 @@ public class Cell {
     }
     
     public int[] getPlausValsList() {
-        int[] plausValsList = new int[this.getNumPlausVals()];
+        int[] plausValsList = new int[this.countPlausVals()];
         int pos = 0;
         for (int i = 0; i < this.plausibleValues.length; i++) {
             boolean isPlausible = plausibleValues[i];
@@ -242,14 +246,15 @@ public class Cell {
     }
 
     /**
-     * Method areAllPlausible returns if a given value could fill this Cell or not.
+     * Returns if a given value is a candidate for this Cell or not.
      * 
      * @param val, the value we want to check for
      * @return true if it could fill the cell, false otherwise
-     * @see #areAllPlausible(int[])
+     * @see #isPlausible(int[])
      * @see #plausibleValues
      */
     public boolean isPlausible(int val) {
+        checkValidCandidate(val);
         // It has to be emty and have that digit marked as plausible in our
         // plausibleValues list:
         return this.isEmpty() && this.plausibleValues[val-1];
@@ -262,23 +267,23 @@ public class Cell {
      * @see #isPlausible(int) 
      * @see #plausibleValues
      */
-    public boolean areAllPlausible(int... vals) {
+    public boolean isPlausible(int... vals) {
         if (vals.length == 0) {
             throw new IllegalArgumentException("You must check for at least one value.");
         }
         // It has to be emty and have all digits marked as plausible in our
         // plausibleValues list:
-        boolean isPlausible = true;
+        boolean areAllPlausible = true;
         for(int val : vals){
-            isPlausible &= isPlausible(val);
+            areAllPlausible &= Cell.this.isPlausible(val);
         }
-        return isPlausible;
+        return areAllPlausible;
     }
     
     public boolean isOnlyCandidate(int... vals){
         // If the given values are all candidates and theres only that many
         // candidates:
-        return areAllPlausible(vals) && this.getNumPlausVals() == vals.length;
+        return isPlausible(vals) && this.countPlausVals() == vals.length;
     }
     
     /**
@@ -320,14 +325,11 @@ public class Cell {
         if (vals.length == 0) {
             throw new IllegalArgumentException("You must specify at least one value to be kept as plausible.");
         }
-        // We set all indexes to false
-        // (booleans get initialized to false by default):
-        this.plausibleValues = new boolean[9];
+        // We set all indexes to false:
+        Arrays.fill(plausibleValues, false);
         // We set those values in the list as plausible:
         for(int val : vals){
-            if (val < 1 || val > 9) {
-                throw new IllegalArgumentException("One of the given values is not valid. (Must be a digit from 1 to 9)");
-            }
+            checkValidCandidate(val);
             this.plausibleValues[val-1] = true;
         }
     }
