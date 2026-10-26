@@ -140,7 +140,7 @@ public class SudokuParamValidationTest {
                 IllegalArgumentException.class,
                 () -> checkValidValue(val)
         );
-        assertEquals("Invalid value! Must be a number from 0 to 9.",ex.getMessage());
+        assertEquals("Invalid value! Must be a number from 0 to 9, was "+val+".",ex.getMessage());
     }
     @ParameterizedTest
     @MethodSource("invalidRangeGroupParams")
@@ -150,7 +150,7 @@ public class SudokuParamValidationTest {
                 IllegalArgumentException.class,
                 () -> checkValidRowNumber(row)
         );
-        assertEquals("Invalid row! Must be a number from 1 to 9.",ex.getMessage());
+        assertEquals("Invalid row! Must be a number from 1 to 9, was "+row+".",ex.getMessage());
     }
     @ParameterizedTest
     @MethodSource("invalidRangeGroupParams")
@@ -160,7 +160,7 @@ public class SudokuParamValidationTest {
                 IllegalArgumentException.class,
                 () -> checkValidColNumber(col)
         );
-        assertEquals("Invalid column! Must be a number from 1 to 9.",ex.getMessage());
+        assertEquals("Invalid column! Must be a number from 1 to 9, was "+col+".",ex.getMessage());
     }
     @ParameterizedTest
     @MethodSource("invalidRangeGroupParams")
@@ -170,7 +170,7 @@ public class SudokuParamValidationTest {
                 IllegalArgumentException.class,
                 () -> checkValidSqrNumber(sqr)
         );
-        assertEquals("Invalid square! Must be a number from 1 to 9.",ex.getMessage());
+        assertEquals("Invalid square! Must be a number from 1 to 9, was "+sqr+".",ex.getMessage());
     }
     
     /* ##################################################################################################################################################

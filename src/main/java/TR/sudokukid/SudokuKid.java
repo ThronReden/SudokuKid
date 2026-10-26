@@ -35,7 +35,9 @@ public class SudokuKid {
     /**
      * Mandatory empty constructor.
      */
-    public SudokuKid(){}
+    public SudokuKid(){
+        this.sudoku = new Sudoku();
+    }
     /**
      * Initializes this solvers sudoku attribute to a clone of a given
      * Sudoku object. This includes all plauible values information in cells.
@@ -257,19 +259,22 @@ public class SudokuKid {
                 Cell[] cellsOnlyCandidatesArePair = 
                             findCellsWithOnlyCandidates(cellGroup,val1,val2);
                 // If there's other cells int the group that have
-                // either of the values in the pair as candidates:
-                if(NP && valueExistsAlone){
-                    // but two of the cells that have both as candidates can
-                    // only be filled with one or the other and not any other
-                    // number (only those two candidates):
-                    if(cellsOnlyCandidatesArePair.length == 2){
-                        // then we've found a pair and the rest of the cells in
-                        // the group can't be filled with those numbers:
-                        solve = true;
-                        Cell[] restCells = getRestCells(cellGroup,cellsOnlyCandidatesArePair);
-                        for (Cell cell : restCells) {
-                            cell.removeCandidate(val1, val2);
-                        }
+                // either of the values in the pair as candidates
+                // but two of the cells that have both as candidates can
+                // only be filled with one or the other and not any other
+                // number (only those two candidates):
+                if(NP && cellsOnlyCandidatesArePair.length == 2){
+                    // We check if the pair was already found before and,
+                    // therefore, there's no progress in solving:
+                    if(plausCells.length == 2 && !valueExistsAlone) {
+                        continue;
+                    }
+                    // then we've found a pair and the rest of the cells in
+                    // the group can't be filled with those numbers:
+                    solve = true;
+                    Cell[] restCells = getRestCells(cellGroup,cellsOnlyCandidatesArePair);
+                    for (Cell cell : restCells) {
+                        cell.removeCandidate(val1, val2);
                     }
                 // In the case we found only two cells and those are
                 // the only cells in the group that can be filled

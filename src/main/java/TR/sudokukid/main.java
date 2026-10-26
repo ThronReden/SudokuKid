@@ -1,6 +1,7 @@
 package TR.sudokukid;
 
 import static TR.sudokukid.matrixLibrary.*;
+import java.util.Arrays;
 
 /**
  *
@@ -13,6 +14,10 @@ public class main {
         SK.basicSudokuRules();
 //        SK.getSudoku().show();
         SK.solvingLoop();
+//        String cadena = Arrays.deepToString(SK.getSudoku().toMatrix());
+//        cadena = cadena.replaceAll("\\[", "\\{");
+//        cadena = cadena.replaceAll("\\]", "\\}");
+//        System.out.println(cadena);
     }
     
 }
