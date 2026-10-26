@@ -268,7 +268,7 @@ public class SudokuKid {
                         solve = true;
                         Cell[] restCells = getRestCells(cellGroup,cellsOnlyCandidatesArePair);
                         for (Cell cell : restCells) {
-                            cell.removeCandidates(val1, val2);
+                            cell.removeCandidate(val1, val2);
                         }
                     }
                 // In the case we found only two cells and those are
@@ -477,7 +477,7 @@ public class SudokuKid {
                                 getRestCells(cellGroup,celsOnlyCandidatesAreTriplet);
                             // and update their plausible values:
                             for(Cell cell : restCells){
-                                cell.removeCandidates(val1,val2,val3);
+                                cell.removeCandidate(val1,val2,val3);
                             }
                         }
                     //in the case we found only three cells and those

@@ -290,10 +290,11 @@ public class Cell {
      * Marks a given value as not plausible for this Cell.
      * 
      * @param val the value we want to set to not plausible for this Cell
-     * @see #removeCandidates(int[])
+     * @see #removeCandidate(int[])
      * @see #plausibleValues
      */
     protected void removeCandidate(int val) {
+        checkValidCandidate(val);
         // Only if the cell is empty:
         if(this.isEmpty()){
             this.plausibleValues[val-1] = false; // We mark it as not plausible
@@ -306,7 +307,7 @@ public class Cell {
      * @see #removeCandidate(int)
      * @see #plausibleValues
      */
-    protected void removeCandidates(int... vals) {
+    protected void removeCandidate(int... vals) {
         if (vals.length == 0) {
             throw new IllegalArgumentException("You must specify at least one value to be set to not plausible.");
         }
@@ -325,6 +326,7 @@ public class Cell {
         if (vals.length == 0) {
             throw new IllegalArgumentException("You must specify at least one value to be kept as plausible.");
         }
+        checkValidCandidate(vals);
         // We set all indexes to false:
         Arrays.fill(plausibleValues, false);
         // We set those values in the list as plausible:

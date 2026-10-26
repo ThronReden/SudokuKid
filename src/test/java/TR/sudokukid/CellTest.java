@@ -3,7 +3,6 @@ package TR.sudokukid;
 import static TR.sudokukid.SudokuTest.random;
 import static TR.sudokukid.matrixLibrary.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -43,10 +42,7 @@ public class CellTest {
     
     @AfterEach
     public void tearDown() {
-    }
-
-    @Test
-    public void testSomeMethod() {
+        cell = null;
     }
     
     /* ##################################################################################################################################################
@@ -271,6 +267,46 @@ public class CellTest {
         sudokuKid.basicSudokuRules();
         assertThrows(IllegalArgumentException.class,
                 () -> sudokuKid.getSudoku().getCell(row, col).isPlausible(vals));
+    }
+    
+    /* ##################################################################################################################################################
+     * isOnlyCandidate:
+     */
+    static Stream<Arguments> isOnlyCandidateTestParams() {
+        return Stream.of(
+                Arguments.of(true, new int[]{1,2,9}, new int[]{1,2,9}),
+                Arguments.of(false, new int[]{1}, new int[]{1,2,9}),
+                Arguments.of(true, new int[]{4}, new int[]{4}),
+                Arguments.of(false, new int[]{4,7}, new int[]{4}),
+                Arguments.of(false, new int[]{1,2,9}, new int[]{1})
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("isOnlyCandidateTestParams")
+    public void isOnlyCandidateReturnsWhatsExpected(boolean expected, int[] cellCandidates, int... vals){
+        cell = new Cell(random.nextInt(8)+1, random.nextInt(8)+1);
+        cell.removeAllCandidatesBut(cellCandidates);
+        assertEquals(expected, cell.isOnlyCandidate(vals));
+    }
+    
+    /* ##################################################################################################################################################
+     * removeAllCandidatesBut:
+     */
+    static Stream<Arguments> removeAllCandidatesButTestParams() {
+        return Stream.of(
+                Arguments.of(new int[]{1,2,9}),
+                Arguments.of(new int[]{1}),
+                Arguments.of(new int[]{4}),
+                Arguments.of(new int[]{4,7}),
+                Arguments.of(new int[]{1,2,9})
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("removeAllCandidatesButTestParams")
+    public void removeAllCandidatesButDoesWhatsExpected(int[] candidates){
+        cell = new Cell(random.nextInt(8)+1, random.nextInt(8)+1);
+        cell.removeAllCandidatesBut(candidates);
+        assertArrayEquals(candidates, cell.getPlausValsList());
     }
     
 }

@@ -36,7 +36,7 @@ public class SudokuParamValidation {
      */
     protected static void checkValidValue(int val) throws IllegalArgumentException {
         if (val != Cell.EMPTY && isNotInValidRange(val)) {
-            throw new IllegalArgumentException("Invalid value! Must be a number from 0 to 9.");
+            throw new IllegalArgumentException("Invalid value! Must be a number from 0 to 9, was "+val+".");
         }
     }
     /**
@@ -48,7 +48,12 @@ public class SudokuParamValidation {
      */
     protected static void checkValidCandidate(int candidate) throws IllegalArgumentException {
         if (isNotInValidRange(candidate)) {
-            throw new IllegalArgumentException("Invalid candidate! Must be a number from 1 to 9.");
+            throw new IllegalArgumentException("Invalid candidate! Must be a number from 1 to 9, was "+candidate+".");
+        }
+    }
+    protected static void checkValidCandidate(int... candidates) throws IllegalArgumentException {
+        for (int candidate : candidates) {
+            checkValidCandidate(candidate);
         }
     }
     
@@ -61,7 +66,7 @@ public class SudokuParamValidation {
      */
     protected static void checkValidRowNumber(int row) throws IllegalArgumentException {
         if(isNotInValidRange(row)){
-            throw new IllegalArgumentException("Invalid row! Must be a number from 1 to 9.");
+            throw new IllegalArgumentException("Invalid row! Must be a number from 1 to 9, was "+row+".");
         }
     }
     /**
@@ -73,7 +78,7 @@ public class SudokuParamValidation {
      */
     protected static void checkValidColNumber(int col) throws IllegalArgumentException {
         if(isNotInValidRange(col)){
-            throw new IllegalArgumentException("Invalid column! Must be a number from 1 to 9.");
+            throw new IllegalArgumentException("Invalid column! Must be a number from 1 to 9, was "+col+".");
         }
     }
     /**
@@ -85,7 +90,7 @@ public class SudokuParamValidation {
      */
     protected static void checkValidSqrNumber(int sqr) throws IllegalArgumentException {
         if(isNotInValidRange(sqr)){
-            throw new IllegalArgumentException("Invalid square! Must be a number from 1 to 9.");
+            throw new IllegalArgumentException("Invalid square! Must be a number from 1 to 9, was "+sqr+".");
         }
     }
     
