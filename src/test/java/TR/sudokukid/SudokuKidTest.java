@@ -120,6 +120,9 @@ public class SudokuKidTest {
                 Arguments.of(simplePairsEasySolve1, true),
                 Arguments.of(simplePairsNoSolve1, false),
                 Arguments.of(simplePairsEasySolve2, true),
+                Arguments.of(simplePairsEasySolve3, true),
+                Arguments.of(simplePairsNoSolve2, false),
+                Arguments.of(simpleSinglesEasySolve1, false),
                 Arguments.of(fullMatrix, false)
         );
     }
@@ -131,6 +134,61 @@ public class SudokuKidTest {
 //        System.out.println("solveSimplePairs, expected: "+expected);
 //        sudokukid.getSudoku().show();
         assertEquals(expected, sudokukid.solveSimplePairs());
+//        if (expected) {
+//            System.out.println("Solved:");
+//            sudokukid.solveSimpleSingles();
+//            sudokukid.getSudoku().show();
+//        }
+    }
+    
+    /* ##################################################################################################################################################
+     * solvePointingNumbers:
+     */
+    static Stream<Arguments> solvePointingNumbersTestArgs() {
+        return Stream.of(
+                Arguments.of(emptyMatrix, false),
+                Arguments.of(pointingPairsEasySolve1, true),
+                Arguments.of(pointingPairsEasySolve2, true),
+                Arguments.of(pointingPairsEasySolve3, true),
+                Arguments.of(pointingPairsNoSolve1, false),
+                Arguments.of(fullMatrix, false)
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("solvePointingNumbersTestArgs")
+    public void solvePointingNumbersFindsThemIfExist(int[][] matrix, boolean expected){
+        sudokukid = new SudokuKid(matrix);
+        sudokukid.basicSudokuRules();
+//        System.out.println("solvePointingNumbers, expected: "+expected);
+//        sudokukid.getSudoku().show();
+        assertEquals(expected, sudokukid.solvePointingNumbers());
+//        if (expected) {
+//            System.out.println("Solved:");
+//            sudokukid.solveSimpleSingles();
+//            sudokukid.getSudoku().show();
+//        }
+    }
+    
+    /* ##################################################################################################################################################
+     * solveSimpleTriplets:
+     */
+    static Stream<Arguments> solveSimpleTripletsTestArgs() {
+        return Stream.of(
+                Arguments.of(emptyMatrix, false),
+                Arguments.of(simpleTripletsEasySolve1, true),
+                Arguments.of(simplePairsEasySolve3, false),
+                Arguments.of(simpleTripletsEasySolve2, true),
+                Arguments.of(fullMatrix, false)
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("solveSimpleTripletsTestArgs")
+    public void solveSimpleTripletsFindsTripletsIfExist(int[][] matrix, boolean expected){
+        sudokukid = new SudokuKid(matrix);
+        sudokukid.basicSudokuRules();
+//        System.out.println("solveSimpleTriplets, expected: "+expected);
+//        sudokukid.getSudoku().show();
+        assertEquals(expected, sudokukid.solveSimpleTriplets());
 //        if (expected) {
 //            System.out.println("Solved:");
 //            sudokukid.solveSimpleSingles();

@@ -87,7 +87,7 @@ public class Sudoku {
      * various data methods intended to retrieve information from the sudoku.
      */
     /**
-     * Checks weather the full sudoku grid is empty.
+     * Checks whether the full sudoku grid is empty.
      * 
      * @return {@code true} if the sudoku is empty, {@code false} if one or
      * more cells are filled.
@@ -321,7 +321,7 @@ public class Sudoku {
     }
     
     /**
-     * Checks weather the sudoku is solved or not, simple enough.
+     * Checks whether the sudoku is solved or not, simple enough.
      * This is achieved by checking both if all cells are filled and if sudoku
      * rules are respected all throughout the grid, meaning we have not made a
      * mistake with any of the numbers added.

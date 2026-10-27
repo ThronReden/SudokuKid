@@ -13,9 +13,9 @@ import java.util.Scanner;
  */
 public class SudokuKid {
     
-    //Boolean variables to store weather a certain methods use is enabled:
-    private boolean NS = true; //weather Naked Singles use is enabled
-    private boolean HS = true; //weather Hidden Singles use is enabled
+    //Boolean variables to store whether a certain methods use is enabled:
+    private boolean NS = true; //whether Naked Singles use is enabled
+    private boolean HS = true; //whether Hidden Singles use is enabled
     
     private boolean NP = true; //Naked Pairs
     private boolean HP = true; //Hidden Pairs
@@ -168,7 +168,7 @@ public class SudokuKid {
                 }
             }
         }
-        return solve; // We return weather we've solved or not.
+        return solve; // We return whether we've solved or not.
     }
     /*Example Solvable Matrixs:
      * {{0,0,3,7,0,6,9,0,5},{7,5,4,9,0,8,1,3,6},{0,9,0,5,3,0,4,0,7},{5,2,0,0,6,0,8,7,4},{8,0,0,0,9,0,3,0,2},{3,0,6,0,7,2,5,1,9},{0,3,5,6,1,7,0,4,0},{2,0,0,3,0,0,7,9,1},{0,0,7,2,0,0,6,5,3}}
@@ -310,12 +310,16 @@ public class SudokuKid {
      * @return true if we've found a new pointing pattern, false otherwise
      */
     public boolean solvePointingNumbers(){
-        // We create a variable to store weather we've made a solve or not:
+        // We create a variable to store whether we've made a solve or not:
         boolean solve = false; // false by default
         // We loop through the squares of the sudoku:
         for(int sqr = 1; sqr <= sudoku.cells.length; sqr++){
-            // We count how many digits are missing from the square:
+            // We store the digits that are missing from the square:
             int[] missingVals = getMissingDigits(sudoku.getSqrCells(sqr));
+            //There must be at least 2 empty cells in the square:
+            if (missingVals.length < 2) {
+                continue;
+            }
             // For each value:
             for(int val : missingVals){
                 // We store in an array the cells of the group that could be
@@ -324,28 +328,24 @@ public class SudokuKid {
                         sudoku.getSqrCells(sqr), val);
                 // If it's only three or less cells:
                 if((PP && plausCells.length == 2)
-                || (PT && plausCells.length == 3)){
-                    if(cellsAreInSameRow(plausCells)){
+                || (PT && plausCells.length == 3)) {
+                    if(cellsAreInSameRow(plausCells)) {
                         // if the cells are in the same row
                         // we get the row:
                         int row = plausCells[0].getRow();
                         // if there's any other cell in the row that seemingly
                         // could be filled with that digit:
-                        if(plausCells.length != countCellsWithGivenCandidates(
-                                sudoku.getRowCells(row),val))
-                        {
-                            // then we've made progress:
-                            solve = true;
-                            // and we eliminate the obsolete notes:
-                            for(int col = 1; col <= sudoku.getRowCells(row).length; col++)
-                            {
-                                // For all cells in the row but outside
-                                // of the square:
-                                if(sqr != Cell.getSqr(row,col)){
-                                    this.sudoku.getCell(row, col)
-                                            .removeCandidate(val);
-                                }
-                            }
+                        if(plausCells.length == countCellsWithGivenCandidates(
+                                sudoku.getRowCells(row),val)) {
+                            continue;
+                        }
+                        // then we've made progress:
+                        solve = true;
+                        // and we eliminate the obsolete notes:
+                        Cell[] restCells = getRestCells(
+                                sudoku.getRowCells(row), plausCells);
+                        for (Cell cell : restCells) {
+                            cell.removeCandidate(val);
                         }
                     } else if(cellsAreInSameCol(plausCells)){
                         // If the cells are in the same column
@@ -353,21 +353,17 @@ public class SudokuKid {
                         int col = plausCells[0].getCol();
                         // If there's any other cell in the column that
                         // seemingly could be filled with that digit:
-                        if(plausCells.length != countCellsWithGivenCandidates(
-                                sudoku.getColCells(col),val))
-                        {
-                            // then we've made progress:
-                            solve = true;
-                            // and we eliminate the obsolete notes:
-                            for(int row = 1; row <= this.sudoku.getColCells(col).length; row++)
-                            {
-                                // For all cells in the column but outside
-                                // of the square:
-                                if(sqr != Cell.getSqr(row,col)){
-                                    this.sudoku.getCell(row, col)
-                                            .removeCandidate(val);
-                                }
-                            }
+                        if(plausCells.length == countCellsWithGivenCandidates(
+                                sudoku.getColCells(col),val)) {
+                            continue;
+                        }
+                        // then we've made progress:
+                        solve = true;
+                        // and we eliminate the obsolete notes:
+                        Cell[] restCells = getRestCells(
+                                sudoku.getColCells(col), plausCells);
+                        for (Cell cell : restCells) {
+                            cell.removeCandidate(val);
                         }
                     }
                 }
@@ -466,24 +462,26 @@ public class SudokuKid {
                     // If the cells that can be filled with the values
                     // of the triplet aren't the only cells in the group
                     // that can be filled with one of the values of the
-                    // triplet:
-                    if(NT && valueExistsAlone){
-                        // But three of the cells that can be filled
-                        // with them can only be filled with them and
-                        // not any other number:
-                        if(celsOnlyCandidatesAreTriplet.length == 3){
-                            // Then we've found a triplet and the
-                            // rest of the cells in the group can't be
-                            // filled with those numbers:
-                            solve = true;
-                            // We create an array to retain the rest of
-                            // the cells:
-                            Cell[] restCells =
-                                getRestCells(cellGroup,celsOnlyCandidatesAreTriplet);
-                            // and update their plausible values:
-                            for(Cell cell : restCells){
-                                cell.removeCandidate(val1,val2,val3);
-                            }
+                    // triplet, but three of the cells that can be filled
+                    // with them can only be filled with them and
+                    // not any other number:
+                    if(NT && celsOnlyCandidatesAreTriplet.length == 3){
+                        // We check if the triplet was already found before and,
+                        // therefore, there's no progress in solving:
+                        if(plausCells.length == 3 && !valueExistsAlone){
+                            continue;
+                        }
+                        // Then we've found a triplet and the
+                        // rest of the cells in the group can't be
+                        // filled with those numbers:
+                        solve = true;
+                        // We create an array to retain the rest of
+                        // the cells:
+                        Cell[] restCells =
+                            getRestCells(cellGroup,celsOnlyCandidatesAreTriplet);
+                        // and update their plausible values:
+                        for(Cell cell : restCells){
+                            cell.removeCandidate(val1,val2,val3);
                         }
                     //in the case we found only three cells and those
                     //are the only cells in the group that could be
@@ -522,9 +520,9 @@ public class SudokuKid {
         System.out.println("INITIAL SUDOKU STATEMENT:");
         sudoku.show(); //this prints the sudoku to terminal
         scanner.nextLine(); //so there's a hold in the execution
-        //we store weather a solve was made or not:
+        //we store whether a solve was made or not:
         boolean solve = true; //true by default so first iter of loop runs
-        //we store weather a number was added to the grid or not:
+        //we store whether a number was added to the grid or not:
         boolean numAdded = false; //false by default
         int superIter = 0; //we'll count how many iterations of the main loop we
         //execute
@@ -560,13 +558,13 @@ public class SudokuKid {
             if(isEnabledSS()){
                 do{
                     iter++;
-//                    System.out.println("Used solveSimpleSingles.\n");
+                    System.out.println("Used solveSimpleSingles.\n");
                     keepSolv = this.solveSimpleSingles(); //we try solving
                     solve |= keepSolv; //we've solved something
                     numAdded |= keepSolv; //we've added a number to the grid
-//                    if(!keepSolv){
-//                        System.out.println("\tNo solve made.\n");
-//                    }
+                    if(!keepSolv){
+                        System.out.println("\tNo solve made.\n");
+                    }
                 } while (keepSolv);
             }
             //Simple Pairs:
@@ -574,12 +572,12 @@ public class SudokuKid {
             if(isEnabledSP() && !solve){
                 do{
                     iter++;
-//                    System.out.println("Used solveSimplePairs.\n");
+                    System.out.println("Used solveSimplePairs.\n");
                     keepSolv = this.solveSimplePairs(); //we try solving
                     solve |= keepSolv; //we've found at least one new pair
-//                    if(!keepSolv){
-//                        System.out.println("\tNo solve made.\n");
-//                    }
+                    if(!keepSolv){
+                        System.out.println("\tNo solve made.\n");
+                    }
                 } while (keepSolv);
             }
             //Pointing Numbers:
@@ -587,13 +585,13 @@ public class SudokuKid {
             if(isEnabledPN() && !solve){
                 do{
                     iter++;
-//                    System.out.println("Used solvePointingNumbers.\n");
+                    System.out.println("Used solvePointingNumbers.\n");
                     keepSolv = this.solvePointingNumbers(); //we try solving
                     solve |= keepSolv; //we've found at least one new pointing
                     //pair or triplet
-//                    if(!keepSolv){
-//                        System.out.println("\tNo solve made.\n");
-//                    }
+                    if(!keepSolv){
+                        System.out.println("\tNo solve made.\n");
+                    }
                 } while (keepSolv);
             }
             //Simple Triplets:
@@ -601,16 +599,16 @@ public class SudokuKid {
             if(isEnabledST() && !solve){
                 do{
                     iter++;
-//                    System.out.println("Used solveSimpleTriplets.\n");
+                    System.out.println("Used solveSimpleTriplets.\n");
                     keepSolv = this.solveSimpleTriplets(); //we try solving
                     solve |= keepSolv; //we've found at least one new triplet
-//                    if(!keepSolv){
-//                        System.out.println("\tNo solve made.\n");
-//                    }
+                    if(!keepSolv){
+                        System.out.println("\tNo solve made.\n");
+                    }
                 } while (keepSolv);
             }
         }
-        //now that the solving loop is over we indicate weather the sudoku
+        //now that the solving loop is over we indicate whether the sudoku
         //is solved or not:
         String txt;
         if(sudoku.isSolved()){
@@ -840,7 +838,7 @@ public class SudokuKid {
      */
     
     /**
-     * @return weather NS is enabled
+     * @return whether NS is enabled
      */
     public boolean isEnabledNS() {
         return NS;
@@ -854,7 +852,7 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather HS is enabled
+     * @return whether HS is enabled
      */
     public boolean isEnabledHS() {
         return HS;
@@ -868,14 +866,14 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather SS is enabled
+     * @return whether SS is enabled
      */
     public boolean isEnabledSS() {
         return NS || HS;
     }
 
     /**
-     * @return weather NP is enabled
+     * @return whether NP is enabled
      */
     public boolean isEnabledNP() {
         return NP;
@@ -889,7 +887,7 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather HP is enabled
+     * @return whether HP is enabled
      */
     public boolean isEnabledHP() {
         return HP;
@@ -903,14 +901,14 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather SP is enabled
+     * @return whether SP is enabled
      */
     public boolean isEnabledSP() {
         return NP || HP;
     }
 
     /**
-     * @return weather PP is enabled
+     * @return whether PP is enabled
      */
     public boolean isEnabledPP() {
         return PP;
@@ -924,7 +922,7 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather PT is enabled
+     * @return whether PT is enabled
      */
     public boolean isEnabledPT() {
         return PT;
@@ -938,14 +936,14 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather PN is enabled
+     * @return whether PN is enabled
      */
     public boolean isEnabledPN() {
         return PP || PT;
     }
 
     /**
-     * @return weather NT is enabled
+     * @return whether NT is enabled
      */
     public boolean isEnabledNT() {
         return NT;
@@ -959,7 +957,7 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather HT is enabled
+     * @return whether HT is enabled
      */
     public boolean isEnabledHT() {
         return HT;
@@ -973,7 +971,7 @@ public class SudokuKid {
     }
 
     /**
-     * @return weather ST is enabled
+     * @return whether ST is enabled
      */
     public boolean isEnabledST() {
         return NT || HT;
