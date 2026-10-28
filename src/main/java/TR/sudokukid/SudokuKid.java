@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Scanner;
 
 /**
- * REVISE ALL
  * 
  * @author TR
  * @date 21/OCT/26
@@ -695,7 +694,7 @@ public class SudokuKid {
      * @param col, its column
      * @return a list of all the other cells in its square 
      */
-    private ArrayList<Cell> getRestCells(Cell[] group,int row, int col){
+    protected ArrayList<Cell> getRestCells(Cell[] group,int row, int col){
         ArrayList<Cell> restCells = new ArrayList<>();
         Collections.addAll(restCells,group);
         restCells.remove(this.sudoku.getCell(row, col));
@@ -708,7 +707,7 @@ public class SudokuKid {
      * @param dontInclude, the list of cells we want to remove
      * @return a list including all other cells 
      */
-    private Cell[] getRestCells(Cell[] group, Cell[] dontInclude){
+    protected Cell[] getRestCells(Cell[] group, Cell[] dontInclude){
         ArrayList<Cell> restCells = new ArrayList<>();
         Collections.addAll(restCells,group);
         restCells.removeAll(Arrays.asList(dontInclude));

@@ -3,6 +3,7 @@ package TR.sudokukid;
 import static TR.sudokukid.SudokuTest.random;
 import static TR.sudokukid.matrixLibrary.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -194,6 +195,65 @@ public class SudokuKidTest {
 //            sudokukid.solveSimpleSingles();
 //            sudokukid.getSudoku().show();
 //        }
+    }
+    
+    /* ##################################################################################################################################################
+     * getRestCells:
+     */
+    static Stream<Arguments> getRestCellsRowColTestArgs() {
+        return Stream.of(
+            Arguments.of("row", 1, 2),
+            Arguments.of("row", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("row", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("row", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("col", 2, 1),
+            Arguments.of("col", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("col", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("col", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("sqr", 1, 2),
+            Arguments.of("sqr", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("sqr", random.nextInt(8)+1, random.nextInt(8)+1),
+            Arguments.of("sqr", random.nextInt(8)+1, random.nextInt(8)+1)
+        );
+    }
+    @ParameterizedTest
+    @MethodSource("getRestCellsRowColTestArgs")
+    public void getRestCellsRowColReturnsCorrectList(String group, int row, int col){
+        Cell[] cellGroup;
+        switch (group) {
+            case "row" -> cellGroup = sudokukid.getSudoku().getRowCells(row);
+            case "col" -> cellGroup = sudokukid.getSudoku().getColCells(col);
+            case "sqr" -> cellGroup = sudokukid.getSudoku().getSqrCells(row,col);
+            default -> throw new AssertionError();
+        }
+        ArrayList<Cell> restCells = sudokukid.getRestCells(cellGroup, row, col);
+        
+        assertFalse(restCells.contains(sudokukid.getSudoku().getCell(row, col)));
+    }
+    @ParameterizedTest
+    @MethodSource("getRestCellsRowColTestArgs")
+    public void getRestCellsReturnsCorrectList(String group, int row, int col){
+        Cell[] cellGroup;
+        switch (group) {
+            case "row" -> cellGroup = sudokukid.getSudoku().getRowCells(row);
+            case "col" -> cellGroup = sudokukid.getSudoku().getColCells(col);
+            case "sqr" -> cellGroup = sudokukid.getSudoku().getSqrCells(row,col);
+            default -> throw new AssertionError();
+        }
+        Cell[] dontInclude = {cellGroup[random.nextInt(2)],
+            cellGroup[random.nextInt(2)+3],cellGroup[random.nextInt(2)+6]};
+        ArrayList<Cell> restCells = new ArrayList<>();
+        Collections.addAll(restCells, sudokukid.getRestCells(cellGroup, dontInclude));
+        
+        List<Executable> dontIncludeDontAppear = new ArrayList<>();
+        for (Cell cell : dontInclude) {
+            dontIncludeDontAppear.add(() -> assertFalse(restCells.contains(cell)));
+        }
+        
+        assertAll(
+            () -> assertEquals(cellGroup.length-dontInclude.length,restCells.size()),
+            () -> assertAll(dontIncludeDontAppear)
+        );
     }
     
 }
