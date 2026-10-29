@@ -275,7 +275,7 @@ public class Sudoku {
     public Cell[] getSqrCells(int row, int col) {
         checkValidRowNumber(row);
         checkValidColNumber(col);
-        return getSqrCells(Cell.getSqr(row, col));
+        return getSqrCells(Position.sqr(row, col));
     }
     /**
      * Returns the number given square as a list of int, so 

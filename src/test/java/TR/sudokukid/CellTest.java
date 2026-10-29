@@ -67,8 +67,8 @@ public class CellTest {
             plausibleValuesAllTrue.add(() -> assertTrue(isValCandidate));
         }
         assertAll(
-                () -> assertEquals(row, cell.getRow()),
-                () -> assertEquals(col, cell.getCol()),
+                () -> assertEquals(row, cell.row()),
+                () -> assertEquals(col, cell.col()),
                 () -> assertAll(plausibleValuesAllTrue)
         );
     }
@@ -99,8 +99,8 @@ public class CellTest {
         cell = new Cell(row, col);
         Cell clone = cell.clone();
         assertAll(
-                () -> assertEquals(cell.getRow(), clone.getRow()),
-                () -> assertEquals(cell.getCol(), clone.getCol()),
+                () -> assertEquals(cell.row(), clone.row()),
+                () -> assertEquals(cell.col(), clone.col()),
                 () -> assertArrayEquals(cell.getPlausVals(), clone.getPlausVals())
         );
     }
@@ -126,7 +126,7 @@ public class CellTest {
     @ParameterizedTest
     @MethodSource("getSqrTestParams")
     public void getSqrReturnsWhatsExpected(int row, int col, int expectedSqr){
-        assertEquals(expectedSqr, Cell.getSqr(row, col));
+        assertEquals(expectedSqr, Position.sqr(row, col));
     }
     
     /* ##################################################################################################################################################

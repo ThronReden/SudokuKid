@@ -102,13 +102,13 @@ public class SudokuKid {
         if (filledCell.isEmpty()) {
             throw new IllegalArgumentException("The given cell must be filled.");
         }
-        for(Cell cell : sudoku.getRowCells(filledCell.getRow())){
+        for(Cell cell : sudoku.getRowCells(filledCell.row())){
             cell.removeCandidate(filledCell.getValue());
         }
-        for(Cell cell : sudoku.getColCells(filledCell.getCol())){
+        for(Cell cell : sudoku.getColCells(filledCell.col())){
             cell.removeCandidate(filledCell.getValue());
         }
-        for(Cell cell : sudoku.getSqrCells(filledCell.getSqr())){
+        for(Cell cell : sudoku.getSqrCells(filledCell.sqr())){
             cell.removeCandidate(filledCell.getValue());
         }
     }
@@ -331,7 +331,7 @@ public class SudokuKid {
                     if(cellsAreInSameRow(plausCells)) {
                         // if the cells are in the same row
                         // we get the row:
-                        int row = plausCells[0].getRow();
+                        int row = plausCells[0].row();
                         // if there's any other cell in the row that seemingly
                         // could be filled with that digit:
                         if(plausCells.length == countCellsWithGivenCandidates(
@@ -349,7 +349,7 @@ public class SudokuKid {
                     } else if(cellsAreInSameCol(plausCells)){
                         // If the cells are in the same column
                         // we get the column index:
-                        int col = plausCells[0].getCol();
+                        int col = plausCells[0].col();
                         // If there's any other cell in the column that
                         // seemingly could be filled with that digit:
                         if(plausCells.length == countCellsWithGivenCandidates(
@@ -801,15 +801,7 @@ public class SudokuKid {
      * {@code false} otherwise.
      */
     private boolean cellsAreInSameRow(Cell[] cells) {
-        if (cells.length < 1) {
-            throw new IllegalArgumentException("List of cells must at least incude one cell.");
-        }
-        int row = cells[0].getRow();
-        boolean sameRow = true;
-        for (Cell cell : cells) {
-            sameRow &= cell.getRow() == row;
-        }
-        return sameRow;
+        return Position.sameRow(cells);
     }
     
     /**
@@ -820,15 +812,7 @@ public class SudokuKid {
      * {@code false} otherwise.
      */
     private boolean cellsAreInSameCol(Cell[] cells) {
-        if (cells.length < 1) {
-            throw new IllegalArgumentException("List of cells must at least incude one cell.");
-        }
-        int col = cells[0].getCol();
-        boolean sameCol = true;
-        for (Cell cell : cells) {
-            sameCol &= cell.getCol() == col;
-        }
-        return sameCol;
+        return Position.sameCol(cells);
     }
     
     /* ##################################################################################################################################################

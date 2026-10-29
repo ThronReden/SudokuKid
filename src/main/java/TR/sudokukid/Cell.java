@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author TR 
  * @date 21/OCT/26
  */
-public class Cell {
+public class Cell implements HasPosition {
     static final int EMPTY = 0;
     /* ##################################################################################################################################################
      * ATTRIBUTES:
@@ -25,20 +25,14 @@ public class Cell {
      * current state of the sudoku and any asumptions we might have made
      * while solving.
      * The plausibli1ity of 1 will be determined by the first index,
-     * plausibleValues[0], the plausibility of 2 by the second,
+     * plausibleValues[0], the plausibility of 2 by the second index,
      * plausibleValues[1], etc.
      * If the boolean in the index is true this digit may fill this cell,
      * and if it's false it means we know for sure it can't.
      */
     private final boolean[] plausibleValues = new boolean[9];
-    /**
-     * The row the cell is at, a number from 1 to 9.
-     */
-    private final int row;
-    /**
-     * The column the cell is at, a number from 1 to 9.
-     */
-    private final int col; 
+    
+    private final Position position;
     
     /* ##################################################################################################################################################
      * CONSTRUCTORS:
@@ -54,8 +48,7 @@ public class Cell {
         checkValidRowNumber(row);
         checkValidColNumber(col);
         // We initialize the attributes with the given parameters:
-        this.row = row;
-        this.col = col;
+        this.position = new Position(row, col);
         // and set the plausibility of all digits to true:
         Arrays.fill(plausibleValues, true);
     }
@@ -66,8 +59,7 @@ public class Cell {
      */
     private Cell(Cell cell){
         this.value = cell.getValue();
-        this.row = cell.getRow();
-        this.col = cell.getCol();
+        this.position = Position.of(cell);
         System.arraycopy(cell.getPlausVals().clone(),0,this.plausibleValues,0,
                 this.plausibleValues.length);
     }
@@ -140,75 +132,21 @@ public class Cell {
      * Returns the row of this instance of Cell.
      * 
      * @return this Cell's row
-     * @see #row
      */
-    public int getRow() {
-        return row;
-    }
-    /**
-     * Returns the row of this instance of Cell in array index format,
-     * aka, substracting 1 (0 to 8).
-     * 
-     * @return this Cell's row index
-     * @see #row
-     */
-    public int getRowIndex() {
-        return row-1;
+    @Override
+    public int row() {
+        return this.position.row();
     }
 
     /**
      * Returns the column of this instance of Cell.
      * 
      * @return this Cell's column
-     * @see #col
      */
-    public int getCol() {
-        return col;
-    }
-    /**
-     * Returns the column of this instance of Cell in array index format,
-     * aka, substracting 1 (0 to 8).
-     * 
-     * @return this Cell's column index
-     * @see #col
-     */
-    public int getColIndex() {
-        return col -1;
-    }
-
-    /**
-     * Returns the square of this instance of Cell.
-     * It's not an attribute, we calculate it.
-     * 
-     * @return this Cell's square
-     * @see #getSqr(int, int) 
-     */
-    public int getSqr() {
-        return getSqr(this.row,this.col);
-    }
-    /**
-     * Method getSqr finds the square a Cell in a given row and column
-     * belongs to.
-     * We encapsulated this as we may need to use it a bunch of times.
-     *
-     * @param row, the Cell's row
-     * @param col, its column
-     * @return an integer from 1 to 9 corresponding to this Cell's square
-     */
-    public static int getSqr(int row, int col){
-        //"maybe encapsulate row/3*3+col/3 as getSqrCells(row,col)?", we did hehe:
-        int sqr = ((row-1)/3*3+(col-1)/3)+1; //the corresponding square
-        return sqr; //we return it
-    }
-    /**
-     * Method getSqrCells returns the square of this instance 
-     * of Cell in array index format, aka, substracting 1 (0 to 8).
-     * 
-     * @return this Cell's square index
-     */
-    public int getSqrIndex() {
-        return getSqr()-1;
-    }
+    @Override
+    public int col() {
+        return this.position.col();
+    }    
     
     /**
      * Method getPlausVals returns the plausibleValues attribute of

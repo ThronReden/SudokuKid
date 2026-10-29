@@ -80,8 +80,8 @@ public class SudokuTest {
                         -> IntStream.range(0, 9).mapToObj(j
                                 -> () -> assertAll(
                                         () -> assertNotNull(sudoku.cells[i][j]),
-                                        () -> assertEquals(i + 1, sudoku.cells[i][j].getRow()),
-                                        () -> assertEquals(j + 1, sudoku.cells[i][j].getCol())
+                                        () -> assertEquals(i + 1, sudoku.cells[i][j].row()),
+                                        () -> assertEquals(j + 1, sudoku.cells[i][j].col())
                                 ))));
     }
 
