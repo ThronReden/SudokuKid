@@ -347,9 +347,7 @@ public class Sudoku {
         checkValidValue(val); // We make sure the digit is valid.
         checkValidRowNumber(row);
         checkValidColNumber(col);
-        int rowIndex = row - 1;
-        int colIndex = col - 1;
-        this.cells[rowIndex][colIndex].setValue(val);
+        this.getCell(row, col).setValue(val);
     }
     /**
      * Mirrors the given grid if it contains a valid sudoku.
